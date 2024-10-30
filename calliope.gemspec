@@ -6,7 +6,7 @@ require 'calliope/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'calliope'
-  spec.version       = Discordrb::VERSION
+  spec.version       = Calliope::VERSION
   spec.authors       = %w[droid00000]
   spec.email         = ['']
 
