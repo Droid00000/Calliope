@@ -41,7 +41,7 @@ module Calliope
 
     # @return [String]
     def resolve_source
-      @client.youtube("#{@name} #{@artist}").playback
+      @client.youtube("#{@name} #{@artist}").source
     end
   end
 end

@@ -4,7 +4,7 @@ require 'json'
 require 'faraday'
 require 'endpoints'
 
-# Used to access Lavaplayer.
+# Used to access Lavalink.
 module Calliope
   # @!Calliope Private
   module API
@@ -45,13 +45,15 @@ module Calliope
       def resolve(track)
         case track
         when %r{^(?:https?://)?(?:www\.)?(?:youtu\.be|youtube\.com)}
-          search(track)
+          youtube(track)
+        when %r{^https?://(www\.)?music\.youtube\.com}i
+          youtube(track)
         when %r{(?i)https?://open\.spotify\.com}
-          search(track)
+          youtube(track)
         when %r{(?i)https?://music\.apple\.com}
-          search(track)
+          youtube(track)
         else
-          search(track)
+          spotify(track)
         end
       end
 
@@ -66,17 +68,17 @@ module Calliope
         when 200
           handle_payload(response.body)
         when 400
-          raise 'Calliope::Errors::BadBody'
+          warn 'Calliope::Errors::BadBody'
         when 401
-          raise 'Calliope::Errors::Unauthorized'
+          warn 'Calliope::Errors::Unauthorized'
         when 403
-          raise 'Calliope::Errors::NoPermission'
+          warn 'Calliope::Errors::NoPermission'
         when 404
-          raise 'Calliope::Errors::NotFound'
+          warn 'Calliope::Errors::NotFound'
         when 405
-          raise 'Calliope::MethodNotAllowed'
+          warn 'Calliope::MethodNotAllowed'
         when 429
-          raise 'Calliope::RateLimit'
+          warn 'Calliope::RateLimit'
         end
       end
     end

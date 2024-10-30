@@ -2,8 +2,7 @@
 
 require 'calliope/client'
 require 'calliope/routes'
-require 'calliope/model/track'
-require 'calliope/model/metadata'
+require 'calliope/track'
 
 # Calliope and all of its functionality.
 module Calliope
