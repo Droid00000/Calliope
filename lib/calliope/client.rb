@@ -23,15 +23,20 @@ module Calliope
       # @param address [String]
       # @param password [String]
       def initialize(address, password)
-        @address = address.delete_prefix('/')
+        @address = "#{address.delete_prefix('/')}/v4"
         @password = password
-        @connection = "#{@address}/v4"
+        @connection = Faraday.new(@address) do |builder|
+          builder.headers['Authorization'] = @password
+          builder.response :json
+        end
       end
 
-      # @param query [String]
-      def run_request(query)
-        response = Faraday.get("#{@address}/v4/loadtracks?identifier=#{query}") do |builder|
-          builder.headers['Authorization'] = @password
+      # @param verb [Symbol]
+      # @param endpoint [String]
+      # @param body [Hash]
+      def request(verb, endpoint, body: nil)
+        response = @connection.send(verb.downcase.to_sym, URI::Parser.new.escape(endpoint)) do |builder|
+          builder.body = body if body
         end
         handle_response(response)
       end
@@ -50,11 +55,16 @@ module Calliope
         end
       end
 
+      # @param hash [Hash<Object, Object>]
+      def filter_undef(hash)
+        hash.reject { |_, v| v == :undef }
+      end
+
       # @param response [Faraday::Response]
       def handle_response(response)
         case response.status
         when 200
-          handle_payload(JSON.parse(response.body))
+          handle_payload(response.body)
         when 400
           raise 'Calliope::Errors::BadBody'
         when 401

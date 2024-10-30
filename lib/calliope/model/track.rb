@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
-  class Song
+  class Track
     # @return [String]
     attr_reader :name
 
@@ -23,30 +23,25 @@ module Calliope
     # @return [String]
     attr_reader :duration
 
+    # @return [String]
+    attr_reader :encoded
+
     # @param payload [Hash]
     # @param search [object]
     def initialize(payload, search)
-      @search = search
-      @name = payload['data']['info']['title']
-      @cover = payload['data']['info']['artworkUrl']
-      @artist = payload['data']['info']['author']
-      @source = payload['data']['info']['uri']
-      @playback = resolve_source unless youtube(payload)
-      @duration = resolve_duration(payload['data']['info']['length'])
+      @client = client
+      @name = payload['info']['title']
+      @cover = payload['info']['artworkUrl']
+      @artist = payload['info']['author']
+      @source = payload['info']['uri']
+      @encoded = payload['encoded']
+      @playback = resolve_source unless payload['info']['sourceName'] == 'youtube'
+      @duration = resolve_duration(payload['info']['length'])
     end
 
     # @return [String]
     def resolve_source
-      @search.source("#{@name} #{@artist}").playback
-    end
-
-    # @param payload [Hash]
-    def youtube(payload)
-      payload['data'][0].dig('info', 'sourceName') == 'youtube' if payload['data'].is_a?(Array)
-      payload['data']['tracks'][0].dig('info',
-                                       'sourceName') == 'youtube' if payload['data'].is_a?(Hash) && payload['data']['tracks']
-      payload['data'].dig('info',
-                          'sourceName') == 'youtube' if payload['data'].is_a?(Hash) && payload['data']['tracks'].nil?
+      @client.youtube("#{@name} #{@artist}").playback
     end
   end
 end

@@ -9,9 +9,9 @@ module Calliope
     # @param search [object]
     def initialize(payload, search)
       if payload['data'].is_a?(Array) && !payload['data'].empty?
-        @playback = payload['data'][0].dig('info', 'uri')
+        @playback = payload['data'][0]['info']['uri']
       else
-        @playback = payload['data']['tracks'][0].dig('info', 'uri')
+        @playback = payload['data']['tracks'][0]['info']['uri']
       end
     end
   end
