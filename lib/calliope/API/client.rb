@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'routes'
+require 'json'
 require 'faraday'
+require 'API/routes'
 
 # Used to access the Lavaplayer API.
 module Calliope

@@ -27,7 +27,7 @@ module Calliope
         payload = {
           track: track,
           position: position,
-          end_time: end_time,
+          endTime: end_time,
           volume: volume,
           paused: paused,
           filters: filters,

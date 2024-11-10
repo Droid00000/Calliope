@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.authors       = %w[droid00000]
   spec.email         = ['']
 
-  spec.summary       = 'Lavalink API for Ruby'
+  spec.summary       = 'Lavalink API for Ruby.'
   spec.description   = 'A Ruby implementation of the Lavalink (https://lavalink.dev/api/rest) API.'
   spec.homepage      = 'https://github.com/Droid00000/Calliope'
   spec.license       = 'Apache 2.0'
@@ -23,9 +23,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'faraday', '~> 2.12.0'
-  spec.add_dependency 'json', '~> 2.7.4'
+  spec.add_dependency 'websocket-client-simple', '>= 0.3.0'
 
-  spec.required_ruby_version = '>= 3.1'
+  spec.required_ruby_version = '>= 3.2'
 
   spec.add_development_dependency 'bundler', '>= 1.10', '< 3'
   spec.add_development_dependency 'rubocop', '~> 1.0'
