@@ -4,14 +4,14 @@ module Calliope
   module API
     module Routes
       # Gets an active voice player that already exists.
-      # @param session_id [String, Integer] Voice session ID for a Discord voice connection.
+      # @param session_id [String] Lavalink session ID.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       def get_player(session_id, guild_id)
         request :GET, "/sessions/#{session_id}/players/#{guild_id}"
       end
 
       # Updates or creates a new voice player in a server.
-      # @param session_id [String, Integer] Voice session ID for a Discord voice connection.
+      # @param session_id [String] Lavalink session ID.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       # @param replace [Boolean] If the current track should be overriden by the new track.
       # @param track [Hash] An encoded track object.
@@ -40,13 +40,13 @@ module Calliope
       end
 
       # Deletes and disconnects a voice player, stopping all further playback.
-      # @param session_id [String, Integer] Voice session ID for a Discord voice connection.
+      # @param session_id [String] Lavalink session ID.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       def destory_player(session_id, guild_id)
         request :DELETE, "/sessions/#{session_id}/players/#{guild_id}"
       end
 
-      # @param session_id [String, Integer] Voice session ID for a Discord voice connection.
+      # @param session_id [String] Lavalink session ID.
       # @param resuming [Boolean] If resuming is enabled for this session or not.
       # @param timeout [Integer] The timeout in seconds.
       def update_session(session_id, guild_id, resuming: :undef, timeout: :undef)
