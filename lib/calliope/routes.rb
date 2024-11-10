@@ -2,7 +2,7 @@
 
 module Calliope
   module API
-    module Endpoints
+    module Routes
       # Gets an active voice player that already exists.
       # @param session_id [String, Integer] Voice session ID for a Discord voice connection.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
@@ -22,19 +22,21 @@ module Calliope
       # @param filters [Hash] A hash representing filters to apply.
       # @param voice [Hash] A hash representing a voice state object.
       def modifiy_player(session_id, guild_id, replace: :undef, track: :undef, position: :undef,
-                         end_time: :undef, volume: :undef, paused: :undef, filters: :undef, voice: :undef)
-        data = {
+                         end_time: :undef, volume: :undef, paused: :undef, filters: :undef,
+                         voice: :undef, state: :undef)
+        payload = {
           track: track,
           position: position,
           end_time: end_time,
           volume: volume,
           paused: paused,
           filters: filters,
-          voice: voice
+          voice: voice,
+          state: state
         }
 
         request :PATCH, "/sessions/#{session_id}/players/#{guild_id}?noReplace=#{replace}",
-                body: filter_undef(data)
+                body: filter_undef(payload)
       end
 
       # Deletes and disconnects a voice player, stopping all further playback.
@@ -50,6 +52,13 @@ module Calliope
       def update_session(session_id, guild_id, resuming: :undef, timeout: :undef)
         request :DELETE, "/sessions/#{session_id}",
                 body: filter_undef({ resuming: resuming, timeout: timeout })
+      end
+
+      # Perform a search using the lavasearch extension.
+      # @param query [String] The term to search for.
+      # @param types [String] Track, album, artist, text, etc.
+      def lavasearch(query, types)
+        request :GET, "/loadsearch?query=#{query}&types=#{types}"
       end
 
       # Searches YouTube Music for a track.

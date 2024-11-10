@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require 'json'
+require 'routes'
 require 'faraday'
-require 'endpoints'
 
-# Used to access Lavalink.
+# Used to access the Lavaplayer API.
 module Calliope
   # @!Calliope Private
   module API
     class Client
-      include Endpoints
+      include Routes
 
       # @return [String]
       attr_reader :address
@@ -35,10 +34,10 @@ module Calliope
       # @param endpoint [String]
       # @param body [Hash]
       def request(verb, endpoint, body: nil)
-        response = @connection.send(verb.downcase.to_sym, URI::Parser.new.escape(endpoint)) do |builder|
+        response = @connection.send(verb.downcase.to_sym, "#{@address}#{URI::Parser.new.escape(endpoint)}") do |builder|
           builder.body = body if body
         end
-        handle_response(response)
+        handle_tracks(response)
       end
 
       # @param song [String] Song URL or search term to resolve by.
@@ -62,11 +61,23 @@ module Calliope
         hash.reject { |_, v| v == :undef }
       end
 
+      # @param payload [Hash]
+      # @param client [Object]
+      def handle_tracks(payload, client)
+        if payload['data'].is_a?(Array)
+          Calliope::Track.new(payload['data'][0], client)
+        elsif !payload.dig('data', 'tracks').nil?
+          payload['data']['tracks'].map { |track| Calliope::Track.new(track, client) }
+        else
+          Calliope::Track.new(payload['data'], client)
+        end
+      end
+
       # @param response [Faraday::Response]
       def handle_response(response)
         case response.status
         when 200
-          handle_payload(response.body)
+          response.body
         when 400
           warn 'Calliope::Errors::BadBody'
         when 401

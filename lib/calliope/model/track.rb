@@ -28,7 +28,7 @@ module Calliope
 
     # @param payload [Hash]
     # @param search [object]
-    def initialize(payload, search)
+    def initialize(payload, client)
       @client = client
       @name = payload['info']['title']
       @cover = payload['info']['artworkUrl']
@@ -36,7 +36,7 @@ module Calliope
       @source = payload['info']['uri']
       @encoded = payload['encoded']
       @playback = resolve_source unless payload['info']['sourceName'] == 'youtube'
-      @duration = resolve_duration(payload['info']['length'])
+      @duration = Time.at(payload['info']['length'] / 1000.0).utc.strftime('%M:%S')
     end
 
     # @return [String]
