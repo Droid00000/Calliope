@@ -28,9 +28,9 @@ module Calliope
       # Prepare the headers used for connecting to the WS.
       def prepare_headers
         {
-          'Authorization': @password,
-          'User-Id': @user_id,
-          'Client-Name': @client_name
+          :"Authorization" => @password,
+          :"User-Id" => @user_id,
+          :"Client-Name" => @client_name
         }
       end
 
@@ -48,7 +48,8 @@ module Calliope
         end
       end
 
-      def start_ws
+      # Starts the Web-socket thread used for connecting to the Lavalink servers.
+      def spawn_ws
         Thread.new do
           websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'json'
+require 'errors'
 require 'faraday'
 require 'API/routes'
 
@@ -34,11 +34,17 @@ module Calliope
       # @param verb [Symbol]
       # @param endpoint [String]
       # @param body [Hash]
+      # @return [Hash, Calliope::Errors]
       def request(verb, endpoint, body: nil)
-        response = @connection.send(verb.downcase.to_sym, "#{@address}#{URI::Parser.new.escape(endpoint)}") do |builder|
-          builder.body = body if body
-        end
-        handle_tracks(response)
+        raw_request(verb.downcase, URI::Parser.new.escape(endpoint), body)
+      end
+
+      # @param verb [Symbol]
+      # @param endpoint [String]
+      # @param body [Hash]
+      # @return [Hash, Calliope::Errors]
+      def raw_request(verb, endpoint, body: nil)
+        handle_response(@connection.run_request(verb, endpoint, body, nil))
       end
 
       # @param song [String] Song URL or search term to resolve by.
@@ -58,6 +64,7 @@ module Calliope
       end
 
       # @param hash [Hash<Object, Object>]
+      # @return [Hash]
       def filter_undef(hash)
         hash.reject { |_, v| v == :undef }
       end
@@ -68,29 +75,28 @@ module Calliope
         if payload['data'].is_a?(Array)
           Calliope::Track.new(payload['data'][0], client)
         elsif !payload.dig('data', 'tracks').nil?
-          payload['data']['tracks'].map { |track| Calliope::Track.new(track, client) }
+          payload['data']['tracks'].map { |track| Calliope::Track.new(track, self) }
         else
           Calliope::Track.new(payload['data'], client)
         end
       end
 
       # @param response [Faraday::Response]
+      # @return [Hash, Calliope::Errors]
       def handle_response(response)
         case response.status
         when 200
           response.body
+        when 204
+          nil
         when 400
-          warn 'Calliope::Errors::BadBody'
+          raise Calliope::Errors::BadBody
         when 401
-          warn 'Calliope::Errors::Unauthorized'
-        when 403
-          warn 'Calliope::Errors::NoPermission'
+          raise Calliope::Errors::Unauthorized
         when 404
-          warn 'Calliope::Errors::NotFound'
-        when 405
-          warn 'Calliope::MethodNotAllowed'
-        when 429
-          warn 'Calliope::RateLimit'
+          raise Calliope::Errors::NotFound
+        else
+          response
         end
       end
     end
