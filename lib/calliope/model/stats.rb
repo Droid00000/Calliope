@@ -23,7 +23,7 @@ module Calliope
     # @return [Integer]
     attr_reader :cpu_cores
 
-    # @return [Integer]
+    # @return [Time]
     attr_reader :uptime
 
     # @param payload [Hash]
@@ -35,7 +35,7 @@ module Calliope
       @free_memory = payload['memory']['free']
       @used_memory = payload['memory']['used']
       @cpu_cores = payload['cpu']['cores']
-      @uptime = payload['uptime']
+      @uptime = Time.at(payload['uptime'])
     end
   end
 end

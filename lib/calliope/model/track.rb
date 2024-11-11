@@ -20,7 +20,7 @@ module Calliope
     # @return [String]
     attr_reader :playback
 
-    # @return [String]
+    # @return [Time]
     attr_reader :duration
 
     # @return [String]
@@ -36,7 +36,7 @@ module Calliope
       @source = payload['info']['uri']
       @encoded = payload['encoded']
       @playback = resolve_source unless payload['info']['sourceName'] == 'youtube'
-      @duration = Time.at(payload['info']['length'] / 1000.0).utc.strftime('%M:%S')
+      @duration = Time.at(payload['info']['length'])
     end
 
     # @return [String]
