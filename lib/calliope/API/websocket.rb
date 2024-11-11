@@ -28,15 +28,15 @@ module Calliope
       # Prepare the headers used for connecting to the WS.
       def prepare_headers
         {
-          :"Authorization" => @password,
-          :"User-Id" => @user_id,
-          :"Client-Name" => @client_name
+          Authorization: @password,
+          'User-Id': @user_id,
+          'Client-Name': @client_name
         }
       end
 
       # Handle every dispatch reccived over the WS.
       def handle_dispatch(dispatch)
-        case dispatch["op"]&.to_sym
+        case dispatch['op'].to_sym
         when :playerUpdate
           handle_update(dispatch)
         when :ready

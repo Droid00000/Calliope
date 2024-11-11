@@ -49,7 +49,7 @@ module Calliope
       # @param session_id [String] Lavalink session ID.
       # @param resuming [Boolean] If resuming is enabled for this session or not.
       # @param timeout [Integer] The timeout in seconds.
-      def update_session(session_id, guild_id, resuming: :undef, timeout: :undef)
+      def update_session(session_id, _guild_id, resuming: :undef, timeout: :undef)
         request :DELETE, "/sessions/#{session_id}",
                 body: filter_undef({ resuming: resuming, timeout: timeout })
       end
@@ -131,17 +131,17 @@ module Calliope
 
       # Returns information about a Lavalink player.
       def info
-        request :GET, "/info"
+        request :GET, '/info'
       end
 
       # Returns the version of a Lavalink player.
       def version
-        request :GET, "/version"
+        request :GET, '/version'
       end
 
       # Returns the version of a Lavalink player.
       def stats
-        request :GET, "/stats"
+        request :GET, '/stats'
       end
     end
   end
