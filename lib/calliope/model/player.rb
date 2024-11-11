@@ -24,9 +24,7 @@ module Calliope
     attr_reader :guild
 
     # @param payload [Hash]
-    # @param search [object]
-    def initialize(payload, client)
-      @client = client
+    def initialize(payload)
       @state = payload['state']
       @voice = payload['voice']
       @volume = payload['volume']

@@ -48,8 +48,23 @@ module Calliope
         end
       end
 
+      # https://lavalink.dev/api/websocket.html#player-update-op
+      def handle_update(dispatch)
+        Calliope::State.new(dispatch)
+      end
+
+      # https://lavalink.dev/api/websocket.html#ready-op
+      def handle_ready(dispatch)
+        Calliope::Ready.new(dispatch)
+      end
+
+      # https://lavalink.dev/api/websocket.html#stats-op
+      def handle_stats(dispatch)
+        Calliope::Stats.new(dispatch)
+      end
+
       # Starts the Web-socket thread used for connecting to the Lavalink servers.
-      def spawn_ws
+      def start
         Thread.new do
           websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 
