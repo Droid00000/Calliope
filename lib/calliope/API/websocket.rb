@@ -58,7 +58,7 @@ module Calliope
           end
 
           loop do
-            websocket.send(STDIN.gets.strip)
+            websocket.send($stdin.gets.strip)
           end
         end
       end

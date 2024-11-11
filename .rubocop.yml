@@ -1,2 +1,36 @@
-  AllCops:
-    NewCops: enable
+# Ensure we're using the most up-to-date version of Ruby.
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+
+# Most of these metrics are useless.
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/MethodLength:
+  Enabled: false
+
+# I don't really use modules normally.
+Style/Documentation:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/BlockLength:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/AbcSize:
+  Enabled: false
+
+# Can't really avoid this one.
+Metrics/ParameterLists:
+  Enabled: false
+
+# Kinda need to have this for URLs.
+Lint/DuplicateBranch:
+  Enabled: false
