@@ -1,6 +1,6 @@
 ## Introduction
 
-Calliope is a work in progress Lavalink library for Ruby. It aims to be compatible with Discordrb and provide support for Lavalink V4.
+Calliope is a work in progress Lavalink V4 library for Ruby.
 
 ## Installation
 
