@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
-  # Custom errors raised in various places
+  # Custom errors raised in various places.
   module Errors
     # Raised when the request body to the lavalink server was malformed.
     class BadBody < RuntimeError; end

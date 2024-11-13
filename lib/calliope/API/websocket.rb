@@ -17,20 +17,25 @@ module Calliope
       # @return [String]
       attr_reader :password
 
-      def initialize(user_id, address, password)
-        @user_id = user_id.to_s
+      # @return [String]
+      attr_reader :client_name
+
+      def initialize(user_id:, address:, password:, session_id: nil, client_name: nil)
+        @user_id = user_id
         @address = "ws#{address.delete_prefix('http')}/websocket"
-        @password = password.to_s
-        @client_name = "Calliope/#{Calliope::VERSION}"
-        @headers = prepare_headers
+        @password = password
+        @session_id = session_id
+        @client_name = client_name ? client_name : "Calliope/#{Calliope::VERSION}"
+        @headers = prepare_headers.compact
       end
 
       # Prepare the headers used for connecting to the WS.
       def prepare_headers
         {
-          Authorization: @password,
+          'Authorization': @password,
           'User-Id': @user_id,
-          'Client-Name': @client_name
+          'Client-Name': @client_name,
+          'Session-Id': @session_id
         }
       end
 
@@ -45,25 +50,37 @@ module Calliope
           handle_stats(dispatch)
         when event
           handle_event(dispatch)
+        else
+          handle_unknown(dispatch)
         end
       end
 
       # https://lavalink.dev/api/websocket.html#player-update-op
       def handle_update(dispatch)
-        Calliope::State.new(dispatch)
+        State.new(dispatch)
       end
 
       # https://lavalink.dev/api/websocket.html#ready-op
       def handle_ready(dispatch)
-        Calliope::Ready.new(dispatch)
+        Ready.new(dispatch)
       end
 
       # https://lavalink.dev/api/websocket.html#stats-op
       def handle_stats(dispatch)
-        Calliope::Stats.new(dispatch)
+        Stats.new(dispatch)
       end
 
-      # Starts the Web-socket thread used for connecting to the Lavalink servers.
+      # https://lavalink.dev/api/websocket.html#event-op
+      def handle_event(dispatch)
+        raise_event(dispatch)
+      end
+
+      # Handles an unknown message reccived over the WS.
+      def handle_unknown(dispatch)
+        Unknown.new(dispatch)
+      end
+
+      # Starts the WS thread used for connecting to the Lavalink servers.
       def start
         Thread.new do
           websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
