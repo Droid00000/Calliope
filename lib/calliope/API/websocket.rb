@@ -39,22 +39,6 @@ module Calliope
         }
       end
 
-      # Handle every dispatch reccived over the WS.
-      def handle_dispatch(dispatch)
-        case dispatch['op'].to_sym
-        when :playerUpdate
-          handle_update(dispatch)
-        when :ready
-          handle_ready(dispatch)
-        when :stats
-          handle_stats(dispatch)
-        when event
-          handle_event(dispatch)
-        else
-          handle_unknown(dispatch)
-        end
-      end
-
       # https://lavalink.dev/api/websocket.html#player-update-op
       def handle_update(dispatch)
         State.new(dispatch)
@@ -75,23 +59,35 @@ module Calliope
         raise_event(dispatch)
       end
 
-      # Handles an unknown message reccived over the WS.
+      # Handles an unknown dispatch. Won't ever really be used.
       def handle_unknown(dispatch)
         Unknown.new(dispatch)
       end
 
-      # Starts the WS thread used for connecting to the Lavalink servers.
+      # Handle every dispatch reccived over the WS.
+      def handle_dispatch(dispatch)
+        case dispatch['op'].to_sym
+        when :playerUpdate
+          handle_update(dispatch)
+        when :ready
+          handle_ready(dispatch)
+        when :stats
+          handle_stats(dispatch)
+        when :event
+          handle_event(dispatch)
+        else
+          handle_unknown(dispatch)
+        end
+      end
+
+      # Starts the WS thread used for connecting to the Lavalink node.
       def start
         Thread.new do
           websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 
-          websocket.on(:message) do |payload|
-            handle_dispatch(JSON.parse(payload.data))
-          end
+          websocket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
-          loop do
-            websocket.send($stdin.gets.strip)
-          end
+          loop { websocket.send($stdin.gets.strip) }
         end
       end
     end

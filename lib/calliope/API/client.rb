@@ -20,10 +20,10 @@ module Calliope
       # @return [String]
       attr_reader :connection
 
-      # @param address [String]
-      # @param password [String]
+      # @param address [String] URL for connecting to the Lavalink node.
+      # @param password [String] Password for connecting to the Lavalink node.
       def initialize(address, password)
-        @address = "#{address.delete_prefix('/')}/v4"
+        @address = "#{address.chomp('/')}/v4"
         @password = password
         @connection = Faraday.new(@address) do |builder|
           builder.headers['Authorization'] = @password
@@ -31,64 +31,35 @@ module Calliope
         end
       end
 
-      # @param verb [Symbol]
-      # @param endpoint [String]
-      # @param body [Hash]
-      # @return [Hash, Calliope::Errors]
+      # @param verb [Symbol] The HTTP verb. E.g. GET, POST, PATCH.
+      # @param endpoint [String] The endpoint to make the request to.
+      # @param body [Hash, nil] Optional JSON body of the HTTP request.
+      # @return [Hash, Calliope::Errors, Faraday::Response]
       def request(verb, endpoint, body: nil)
         raw_request(verb.downcase, URI::Parser.new.escape(endpoint), body)
       end
 
-      # @param verb [Symbol]
-      # @param endpoint [String]
-      # @param body [Hash]
-      # @return [Hash, Calliope::Errors]
-      def raw_request(verb, endpoint, body: nil)
+      # @param verb [Symbol] The HTTP verb. E.g. GET, POST, PATCH.
+      # @param endpoint [String] The endpoint to make the request to.
+      # @param body [Hash, nil] Optional JSON body of the HTTP request.
+      # @return [Hash, Calliope::Errors, Faraday::Response]
+      def raw_request(verb, endpoint, body)
         handle_response(@connection.run_request(verb, endpoint, body, nil))
       end
 
-      # @param song [String] Song URL or search term to resolve by.
-      def resolve(track)
-        case track
-        when %r{^(?:https?://)?(?:www\.)?(?:youtu\.be|youtube\.com)}
-          youtube(track)
-        when %r{^https?://(www\.)?music\.youtube\.com}i
-          youtube(track)
-        when %r{(?i)https?://open\.spotify\.com}
-          youtube(track)
-        when %r{(?i)https?://music\.apple\.com}
-          youtube(track)
-        else
-          spotify(track)
-        end
-      end
-
-      # @param hash [Hash<Object, Object>]
-      # @return [Hash]
+      # Removes an K/V pairs with an :undef value.
+      # @param hash [Hash] The hash to filter from.
+      # @return [Hash] The new filtered hash.
       def filter_undef(hash)
         hash.reject { |_, v| v == :undef }
       end
 
-      # @param payload [Hash]
-      # @param client [Object]
-      def handle_tracks(payload, client)
-        if payload['data'].is_a?(Array)
-          Calliope::Track.new(payload['data'][0], client)
-        elsif !payload.dig('data', 'tracks').nil?
-          payload['data']['tracks'].map { |track| Calliope::Track.new(track, self) }
-        else
-          Calliope::Track.new(payload['data'], client)
-        end
-      end
-
-      # @param response [Faraday::Response]
-      # @return [Hash, Calliope::Errors]
+      # @param response [Faraday::Response] Faraday request object.
+      # @return [Hash, Calliope::Errors, Faraday::Response]
       def handle_response(response)
         case response.status
         when 200
           response.body
-        when 204
-          nil
         when 400
           raise Calliope::Errors::BadBody
         when 401

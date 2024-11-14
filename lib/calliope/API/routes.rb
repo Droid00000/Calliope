@@ -62,52 +62,52 @@ module Calliope
       end
 
       # Searches YouTube Music for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def youtube_music(track)
-        request :GET, "/loadtracks?identifier=ymsearch:#{track}"
+      def youtube_music(query)
+        request :GET, "/loadtracks?identifier=ymsearch:#{query}"
       end
 
       # Searches VK Music for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def vk_music(track)
-        request :GET, "/loadtracks?identifier=vksearch:#{track}"
+      def vk_music(query)
+        request :GET, "/loadtracks?identifier=vksearch:#{query}"
       end
 
       # Searches YouTube for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def youtube(track)
-        request :GET, "/loadtracks?identifier=ytsearch:#{track}"
+      def youtube(query)
+        request :GET, "/loadtracks?identifier=ytsearch:#{query}"
       end
 
       # Searches Deezer for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def deezer(track)
-        request :GET, "/loadtracks?identifier=dzsearch:#{track}"
+      def deezer(query)
+        request :GET, "/loadtracks?identifier=dzsearch:#{query}"
       end
 
       # Searches Spotify for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def spotify(track)
-        request :GET, "/loadtracks?identifier=spsearch:#{track}"
+      def spotify(query)
+        request :GET, "/loadtracks?identifier=spsearch:#{query}"
       end
 
       # Searches Apple Music for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def apple_music(track)
-        request :GET, "/loadtracks?identifier=amsearch:#{track}"
+      def apple_music(query)
+        request :GET, "/loadtracks?identifier=amsearch:#{query}"
       end
 
       # Searches SoundCloud for a track.
-      # @param track [String] Song URL or search term to resolve by.
+      # @param query [String] Song URL or search term to resolve by.
       # @return [Hash] Hash containing matched tracks.
-      def soundcloud(track)
-        request :GET, "/loadtracks?identifier=scsearch:#{track}"
+      def soundcloud(query)
+        request :GET, "/loadtracks?identifier=scsearch:#{query}"
       end
 
       # Decode a Base64 track into a track object.
