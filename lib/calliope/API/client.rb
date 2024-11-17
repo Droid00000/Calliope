@@ -47,7 +47,7 @@ module Calliope
         handle_response(@connection.run_request(verb, endpoint, body, nil))
       end
 
-      # Removes an K/V pairs with an :undef value.
+      # Removes a K/V pairs with an :undef value.
       # @param hash [Hash] The hash to filter from.
       # @return [Hash] The new filtered hash.
       def filter_undef(hash)
