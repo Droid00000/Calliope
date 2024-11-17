@@ -3,6 +3,9 @@
 module Calliope
   class Track
     # @return [String]
+    attr_reader :isrc
+
+    # @return [String]
     attr_reader :name
 
     # @return [String]
@@ -14,34 +17,37 @@ module Calliope
     # @return [String]
     attr_reader :source
 
-    # @return [Object]
-    attr_reader :search
-
     # @return [String]
-    attr_reader :playback
+    attr_reader :encoded
 
     # @return [Time]
     attr_reader :duration
 
+    # @return [Integer]
+    attr_reader :position
+
     # @return [String]
-    attr_reader :encoded
+    attr_reader :is_stream
+
+    # @return [String]
+    attr_reader :identifier
+
+    # @return [String]
+    attr_reader :source_name
 
     # @param payload [Hash]
-    # @param search [object]
-    def initialize(payload, client)
-      @client = client
+    def initialize(payload)
+      @isrc = payload['info']['isrc']
       @name = payload['info']['title']
       @cover = payload['info']['artworkUrl']
       @artist = payload['info']['author']
       @source = payload['info']['uri']
       @encoded = payload['encoded']
-      @playback = resolve_source unless payload['info']['sourceName'] == 'youtube'
       @duration = Time.at(payload['info']['length'])
-    end
-
-    # @return [String]
-    def resolve_source
-      @client.youtube("#{@name} #{@artist}").source
+      @position = payload['info']['position']
+      @is_stream = payload['info']['isStream']
+      @identifier = payload['info']['identifier']
+      @source_name = payload['info']['sourceName']
     end
   end
 end
