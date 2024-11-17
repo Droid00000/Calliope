@@ -23,7 +23,8 @@ module Calliope
       # @param voice [Hash] A hash representing a voice state object.
       def modifiy_player(session_id, guild_id, replace: :undef, track: :undef,
                          position: :undef, end_time: :undef, volume: :undef,
-                         paused: :undef, filters: :undef, voice: :undef, state: :undef)
+                         paused: :undef, filters: :undef, voice: :undef,
+                         state: :undef)
         body = {
           track: track,
           position: position,

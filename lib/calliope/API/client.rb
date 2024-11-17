@@ -4,7 +4,7 @@ require 'errors'
 require 'faraday'
 require 'API/routes'
 
-# Used to access the Lavaplayer API.
+# Used to access the Lavalink API.
 module Calliope
   # @!Calliope Private
   module API
