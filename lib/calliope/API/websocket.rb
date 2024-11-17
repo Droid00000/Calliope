@@ -25,14 +25,14 @@ module Calliope
         @address = "ws#{address.delete_prefix('http')}/websocket"
         @password = password
         @session_id = session_id
-        @client_name = client_name ? client_name : "Calliope/#{Calliope::VERSION}"
+        @client_name = client_name || "Calliope/#{Calliope::VERSION}"
         @headers = prepare_headers.compact
       end
 
       # Prepare the headers used for connecting to the WS.
       def prepare_headers
         {
-          'Authorization': @password,
+          Authorization: @password,
           'User-Id': @user_id,
           'Client-Name': @client_name,
           'Session-Id': @session_id

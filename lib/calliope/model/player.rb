@@ -30,7 +30,7 @@ module Calliope
       @volume = payload['volume']
       @paused = payload['paused']
       @guild = payload['guildId']
-      @filters = payload['filters']
+      @filters = Filters.new(payload['filters'])
     end
   end
 end
