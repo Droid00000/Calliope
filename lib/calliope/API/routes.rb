@@ -21,10 +21,10 @@ module Calliope
       # @param paused [Boolean] Whether the player should be paused.
       # @param filters [Hash] A hash representing filters to apply.
       # @param voice [Hash] A hash representing a voice state object.
-      def modifiy_player(session_id, guild_id, replace: :undef, track: :undef, position: :undef,
-                         end_time: :undef, volume: :undef, paused: :undef, filters: :undef,
-                         voice: :undef, state: :undef)
-        payload = {
+      def modifiy_player(session_id, guild_id, replace: :undef, track: :undef,
+                         position: :undef, end_time: :undef, volume: :undef,
+                         paused: :undef, filters: :undef, voice: :undef, state: :undef)
+        body = {
           track: track,
           position: position,
           endTime: end_time,
@@ -36,7 +36,7 @@ module Calliope
         }
 
         request :PATCH, "/sessions/#{session_id}/players/#{guild_id}?noReplace=#{replace}",
-                body: filter_undef(payload)
+                body: filter_undef(body)
       end
 
       # Deletes and disconnects a voice player, stopping all further playback.
