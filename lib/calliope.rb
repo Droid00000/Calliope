@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-require 'calliope/API/client'
-require 'calliope/API/routes'
-require 'calliope/model/info'
-require 'calliope/model/stats'
-require 'calliope/model/track'
-require 'calliope/model/player'
+# Loads all of our files for us automatically.
+Dir["./calliope/**/*.rb"].each { |file| require file }
 
 # Calliope and all of its functionality.
 module Calliope
