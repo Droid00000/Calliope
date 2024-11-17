@@ -20,8 +20,13 @@ module Calliope
       # @return [String]
       attr_reader :client_name
 
+      # @param user_id [Integer]
+      # @param address [String]
+      # @param password [String]
+      # @param session_id [String, nil]
+      # @param client_name [String, nil]
       def initialize(user_id:, address:, password:, session_id: nil, client_name: nil)
-        @user_id = user_id
+        @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix('http')}/websocket"
         @password = password
         @session_id = session_id
@@ -59,12 +64,7 @@ module Calliope
         raise_event(dispatch)
       end
 
-      # Handles an unknown dispatch. Won't ever really be used.
-      def handle_unknown(dispatch)
-        Unknown.new(dispatch)
-      end
-
-      # Handle every dispatch reccived over the WS.
+      # Handles every dispatch reccived over the WS.
       def handle_dispatch(dispatch)
         case dispatch['op'].to_sym
         when :playerUpdate
@@ -75,8 +75,6 @@ module Calliope
           handle_stats(dispatch)
         when :event
           handle_event(dispatch)
-        else
-          handle_unknown(dispatch)
         end
       end
 
