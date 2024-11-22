@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'errors'
-require 'faraday'
 require 'API/routes'
 
 # Used to access the Lavalink API.
@@ -26,7 +25,7 @@ module Calliope
         @address = "#{address.chomp('/')}/v4"
         @password = password
         @connection = Faraday.new(@address) do |builder|
-          builder.headers['Authorization'] = @password
+          builder.headers[:Authorization] = @password
           builder.response :json
         end
       end
@@ -47,11 +46,11 @@ module Calliope
         handle_response(@connection.run_request(verb, endpoint, body, nil))
       end
 
-      # Removes a K/V pairs with an :undef value.
+      # Removes a K/V pair with an :undef value.
       # @param hash [Hash] The hash to filter from.
       # @return [Hash] The new filtered hash.
       def filter_undef(hash)
-        hash.reject { |_, v| v == :undef }
+        hash.reject { |_, value| value == :undef }
       end
 
       # @param response [Faraday::Response] Faraday request object.

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'websocket-client-simple'
-
 module Calliope
   module API
     class Websocket
@@ -31,13 +29,13 @@ module Calliope
         @password = password
         @session_id = session_id
         @client_name = client_name || "Calliope/#{Calliope::VERSION}"
-        @headers = prepare_headers.compact
+        @headers = headers.compact
       end
 
-      # Prepare the headers used for connecting to the WS.
-      def prepare_headers
+      # Set the headers used for connecting to the WS.
+      def headers
         {
-          Authorization: @password,
+          'Authorization': @password,
           'User-Id': @user_id,
           'Client-Name': @client_name,
           'Session-Id': @session_id
@@ -64,7 +62,7 @@ module Calliope
         raise_event(dispatch)
       end
 
-      # Handles every dispatch reccived over the WS.
+      # Handles a dispatch reccived over the Websocket.
       def handle_dispatch(dispatch)
         case dispatch['op'].to_sym
         when :playerUpdate
