@@ -18,11 +18,11 @@ module Calliope
       # @return [String]
       attr_reader :client_name
 
-      # @param user_id [Integer]
-      # @param address [String]
-      # @param password [String]
-      # @param session_id [String, nil]
-      # @param client_name [String, nil]
+      # @param user_id [Integer] Snowflake ID of the bot that uses the lavalink node.
+      # @param address [String] wss:// address used for connecting to the lavalink node.
+      # @param password [String] Password used for connecting to the lavalink node.
+      # @param session_id [String, nil] ID of the previous session to resume.
+      # @param client_name [String, nil] Name of the client connecting to the lavalink node.
       def initialize(user_id:, address:, password:, session_id: nil, client_name: nil)
         @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix('http')}/websocket"
@@ -32,7 +32,7 @@ module Calliope
         @headers = headers.compact
       end
 
-      # Set the headers used for connecting to the WS.
+      # Creates the headers hash.
       def headers
         {
           'Authorization': @password,
@@ -42,37 +42,17 @@ module Calliope
         }
       end
 
-      # https://lavalink.dev/api/websocket.html#player-update-op
-      def handle_update(dispatch)
-        State.new(dispatch)
-      end
-
-      # https://lavalink.dev/api/websocket.html#ready-op
-      def handle_ready(dispatch)
-        Ready.new(dispatch)
-      end
-
-      # https://lavalink.dev/api/websocket.html#stats-op
-      def handle_stats(dispatch)
-        Stats.new(dispatch)
-      end
-
-      # https://lavalink.dev/api/websocket.html#event-op
-      def handle_event(dispatch)
-        raise_event(dispatch)
-      end
-
-      # Handles a dispatch reccived over the Websocket.
+      # Handles a dispatch from the Websocket.
       def handle_dispatch(dispatch)
         case dispatch['op'].to_sym
         when :playerUpdate
-          handle_update(dispatch)
+          State.new(dispatch)
         when :ready
-          handle_ready(dispatch)
+          Ready.new(dispatch)
         when :stats
-          handle_stats(dispatch)
+          Stats.new(dispatch)
         when :event
-          handle_event(dispatch)
+          Event.new(dispatch)
         end
       end
 
