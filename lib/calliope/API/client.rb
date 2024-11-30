@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'errors'
-require 'API/routes'
+require_relative 'routes'
 
 # Used to access the Lavalink API.
 module Calliope
@@ -50,7 +49,7 @@ module Calliope
       # @param hash [Hash] The hash to filter from.
       # @return [Hash] The new filtered hash.
       def filter_undef(hash)
-        hash.reject { |_, value| value == :undef }
+        hash.reject { |_, v| v == :undef }
       end
 
       # @param response [Faraday::Response] Faraday request object.
