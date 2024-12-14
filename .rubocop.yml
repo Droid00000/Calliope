@@ -15,10 +15,6 @@ Metrics/CyclomaticComplexity:
 Metrics/MethodLength:
   Enabled: false
 
-# I don't really use modules normally.
-Style/Documentation:
-  Enabled: false
-
 # Most of these metrics are useless.
 Metrics/BlockLength:
   Enabled: false
