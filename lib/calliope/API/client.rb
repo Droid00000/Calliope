@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'routes'
-
 # Used to access the Lavalink API.
 module Calliope
   # @!Calliope Private
   module API
-    class Client
+    class Rest
       include Routes
 
       # @return [String]

@@ -2,7 +2,7 @@
 
 module Calliope
   module API
-    class Websocket
+    class Socket
       # @return [String]
       attr_reader :name
 
@@ -22,13 +22,12 @@ module Calliope
       # @param address [String] wss:// address used for connecting to the lavalink node.
       # @param password [String] Password used for connecting to the lavalink node.
       # @param session_id [String, nil] ID of the previous session to resume.
-      # @param client_name [String, nil] Name of the client connecting to the lavalink node.
-      def initialize(user_id:, address:, password:, session_id: nil, client_name: nil)
+      def initialize(user_id, address, password, session_id: nil, client_name: nil)
         @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix('http')}/websocket"
         @password = password
         @session_id = session_id
-        @client_name = client_name || "Calliope/#{Calliope::VERSION}"
+        @client_name = "Calliope/#{Calliope::VERSION}"
         @headers = headers.compact
       end
 
