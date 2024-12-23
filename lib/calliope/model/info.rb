@@ -48,7 +48,7 @@ module Calliope
 
     private
 
-    # Transforms the sources Array into a single hash.
+    # Transforms the plugins array into a single hash.
     def transform_plugins(plugins)
       plugins.each_with_object({}) do |plugin, result|
         result[plugin['name']] = plugin['version']
