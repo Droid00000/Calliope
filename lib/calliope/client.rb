@@ -81,7 +81,7 @@ module Calliope
 
       puts("Attempting to create a player. — #{@states[guild]} —— #{@session}")
 
-      player = @http.modify_player(@session, guild.to_s, state: @states[guild])
+      player = @http.produce_player(@session, guild.to_s, state: @states[guild])
 
       puts("Successfully made a player — #{player}")
 
