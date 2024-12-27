@@ -28,7 +28,6 @@ module Calliope
       # @param session_id [String, nil] ID of the previous session to resume.
       def initialize(address, password, user_id, session_id, client)
         @@client = client
-        puts @client.class
         @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix("http")}/websocket"
         @password = password
@@ -64,16 +63,12 @@ module Calliope
 
       # Starts the WS thread used for connecting to the Lavalink node.
       def start
-        begin
-          thread = Thread.new do
-            websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
+        thread = Thread.new do
+          websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 
-            websocket.on(:message) { |frame| @@client.handle_dispatch(JSON.parse(frame.data)) }
+          websocket.on(:message) { |frame| @@client.handle_dispatch(JSON.parse(frame.data)) }
 
-            loop { websocket.send($stdin.gets.chomp) }
-          rescue StandardEror
-            puts error.message
-          end
+          loop { websocket.send($stdin.gets.chomp) }
         end
       end
     end
