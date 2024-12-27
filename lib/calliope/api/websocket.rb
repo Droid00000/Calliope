@@ -34,7 +34,8 @@ module Calliope
         @driver.set_header('User-Id', user_id&.to_i)
         @driver.set_header('Authorization', password)
         @driver.on(:message, &method(:handle_dispatch))
-        @address = URI.parse(uri.to_s).tap { |u| u.scheme = 'ws' }
+        @address = uri.is_a?(URI::Generic) ? uri : URI.parse(uri)
+        @address.scheme = 'ws'
         @driver.set_header('Session-Id', session_id) if session_id
         @driver.set_header('Client-Name', "Calliope/#{Calliope::VERSION}")
       end
