@@ -94,29 +94,29 @@ module Calliope
     # @param query [String] The item to search for.
     # @return [Playlist, Track, Hash, Nil] The search object.
     def search(query)
-      case query
-      when %r{(https?://(?:www\.)?soundcloud\.com/[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_-]+)*)}
-        puts("Running a Soundcloud query for — #{query}")
-        map_results(@http.soundcloud(query))
-      when %r{(https?://)?(www\.)?spotify\.(com)/(track|album|playlist)/([a-zA-Z0-9]{22})}
-        puts("Running a Spotify query for — #{query}")
-        map_results(@http.spotify(query))
-      when %r{(https?://)?(www\.)?deezer\.com/(us|[a-z]{2})/(track|album|playlist)/([a-zA-Z0-9-]{2,})}
-        puts("Running a Deezer query for — #{query}")
-        map_results(@http.deezer(query))
-      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
-        puts("Running a YouTube query for — #{query}")
-        map_results(@http.youtube(query))
-      when %r{(https?://)?(www\.)?music\.apple\.com/(us|[a-z]{2})/(album|playlist|song)/([a-zA-Z0-9]{8,})}
-        puts("Running an Apple Music query for — #{query}")
-        map_results(@http.apple_music(query))
-      when %r{(https?://)?(music\.)?youtube\.com/(watch\?v=|playlist\?list=|(?:album|track|song)/)([a-zA-Z0-9_-]{11})}
-        puts("Running a YouTube Music query for — #{query}")
-        map_results(@http.youtube_music(query))
-      else
+      # case query
+      #when %r{(https?://(?:www\.)?soundcloud\.com/[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_-]+)*)}
+      #  puts("Running a Soundcloud query for — #{query}")
+      #  map_results(@http.soundcloud(query))
+      #when %r{(https?://)?(www\.)?spotify\.(com)/(track|album|playlist)/([a-zA-Z0-9]{22})}
+      #  puts("Running a Spotify query for — #{query}")
+      #  map_results(@http.spotify(query))
+      # when %r{(https?://)?(www\.)?deezer\.com/(us|[a-z]{2})/(track|album|playlist)/([a-zA-Z0-9-]{2,})}
+      #  puts("Running a Deezer query for — #{query}")
+      #  map_results(@http.deezer(query))
+      # when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
+      #  puts("Running a YouTube query for — #{query}")
+      #  map_results(@http.youtube(query))
+      # when %r{(https?://)?(www\.)?music\.apple\.com/(us|[a-z]{2})/(album|playlist|song)/([a-zA-Z0-9]{8,})}
+      #  puts("Running an Apple Music query for — #{query}")
+      #  map_results(@http.apple_music(query))
+      # when %r{(https?://)?(music\.)?youtube\.com/(watch\?v=|playlist\?list=|(?:album|track|song)/)([a-zA-Z0-9_-]{11})}
+       # puts("Running a YouTube Music query for — #{query}")
+       # map_results(@http.youtube_music(query))
+      # else
         puts("Running a raw query for — #{query}")
         map_results(@http.youtube(query))
-      end
+     # end
     end
 
     # Handles a dispatch from the Websocket.
