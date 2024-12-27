@@ -30,8 +30,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
 
-  spec.add_dependency "faraday", ">= 2.0.0"
-  spec.add_dependency 'websocket-driver', '~> 0.7.3'
+  spec.add_dependency "faraday"
+  spec.add_dependency 'faye-websocket'
 
   spec.add_development_dependency "rubocop", "~> 1.0"
   spec.add_development_dependency "yard", "~> 0.9"
