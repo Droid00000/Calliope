@@ -43,7 +43,7 @@ module Calliope
     # @param application_id [Integer] The snowflake of the application using the node.
     # @param session_id [String] ID of a previous lavalink session to resume if there's one.
     def initialize(address, password, application_id, session_id: nil)
-      @address = "#{address}/v4"
+      @address = "#{address}/v4/"
       @password = password
       @players = {}
       @states = {}

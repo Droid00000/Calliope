@@ -36,7 +36,7 @@ module Calliope
           state: state
         }
 
-        request :PATCH, "/v4/sessions/#{session_id}/players/#{guild_id}?noReplace=#{replace}",
+        request :PATCH, "/sessions/#{session_id}/players/#{guild_id}?noReplace=#{replace}",
                 body: filter_undef(body)
       end
 
@@ -44,14 +44,14 @@ module Calliope
       # @param session_id [String] Lavalink session ID.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       def destory_player(session_id, guild_id)
-        request :DELETE, "/v4/sessions/#{session_id}/players/#{guild_id}"
+        request :DELETE, "/sessions/#{session_id}/players/#{guild_id}"
       end
 
       # @param session_id [String] Lavalink session ID.
       # @param resuming [Boolean] If resuming is enabled for this session or not.
       # @param timeout [Integer] The timeout in seconds.
       def update_session(session_id, resuming: :undef, timeout: :undef)
-        request :DELETE, "/v4/sessions/#{session_id}",
+        request :DELETE, "/sessions/#{session_id}",
                 body: filter_undef({ resuming: resuming, timeout: timeout })
       end
 
