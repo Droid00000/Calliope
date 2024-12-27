@@ -66,7 +66,14 @@ module Calliope
         Thread.new do
           websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 
-          websocket.on(:message) { |frame| puts frame.data }
+          websocket.on(:message) do |message|
+          begin
+            d = JSON.parse(message.data)
+            handle_dispatch(d)
+          rescue StandardError => e
+            puts e.message
+          end
+        end
 
           loop { websocket.send($stdin.gets.chomp) }
         end
