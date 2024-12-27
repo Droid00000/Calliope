@@ -27,7 +27,7 @@ module Calliope
       # @param password [String] Password used for connecting to the lavalink node.
       # @param session_id [String, nil] ID of the previous session to resume.
       def initialize(address, password, user_id, session_id, client)
-        @@client = client
+        @client = client
         @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix("http")}/websocket"
         @password = password
