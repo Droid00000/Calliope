@@ -63,11 +63,15 @@ module Calliope
       # Starts the WS thread used for connecting to the Lavalink node.
       def start
         Thread.new do
-          socket = Faye::WebSocket::Client.new(@address, nil, headers => @headers)
+          begin
+            socket = Faye::WebSocket::Client.new(@address, nil, headers => @headers)
 
-          socket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
+            socket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
-          socket.on(:close) { puts "The websocket loop has ended." }
+            socket.on(:close) { puts "The websocket loop has ended." }
+          rescue StandardError => e
+            puts e.meessage
+          end
         end
       end
     end
