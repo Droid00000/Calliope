@@ -27,6 +27,9 @@ module Calliope
     attr_reader :http
 
     # @return [String]
+    attr_reader :session
+
+    # @return [String]
     attr_reader :address
 
     # @return [Hash<Integer => Player>]
