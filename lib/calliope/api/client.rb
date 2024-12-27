@@ -22,6 +22,7 @@ module Calliope
       # @param password [String] Password for connecting to the Lavalink node.
       def initialize(address, password)
         @address = address
+        puts address
         @password = password
         @connection = Faraday.new(@address) do |builder|
           builder.request :json
