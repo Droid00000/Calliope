@@ -1,0 +1,40 @@
+# Use the latest version of Ruby.
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+
+# Double quotes are preferable for me.
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# Double quotes are preferable for me.
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+# Most of these metrics are useless.
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/ParameterLists:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/MethodLength:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/BlockLength:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/AbcSize:
+  Enabled: false
+
+# I don't like the extra end it introduces.
+Style/IfUnlessModifier:
+  Enabled: false
