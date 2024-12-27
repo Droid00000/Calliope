@@ -59,6 +59,11 @@ module Calliope
         @tcp.readpartial(4096)
       end
 
+      # Used internally by the websocket driver.
+      def url
+        @address.to_s
+      end
+
       # Starts the WS thread used for connecting to the Lavalink node.
       def start
         Thread.new do
