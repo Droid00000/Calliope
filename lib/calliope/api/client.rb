@@ -41,7 +41,7 @@ module Calliope
       def produce_player(guild_id, session_id, voice)
         puts "#{@address}/sessions/#{session_id}/players/#{guild_id}?noReplace=false"
         handle_response(Faraday.patch("#{@address}/sessions/#{session_id}/players/#{guild_id}?noReplace=false",
-                                      { voice: voice }.to_json, { Autorization: @password }))
+                                      { voice: voice }.to_json, { Authorization: @password }))
       end
 
       # @param verb [Symbol] The HTTP verb. E.g. GET, POST, PATCH.
