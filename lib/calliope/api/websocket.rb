@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'eventmachine'
 require "faye/websocket"
 
 # The websocket client internally used by calliope.
@@ -62,13 +63,13 @@ module Calliope
 
       # Starts the WS thread used for connecting to the Lavalink node.
       def start
-        Thread.new do
+        EM.run do
           begin
             socket = Faye::WebSocket::Client.new(@address, nil, headers => @headers)
 
             socket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
-            socket.on(:close) { puts "The websocket loop has ended." }
+            socket.on(:close) { puts "The websocket loop has ended."; EM.stop }
           rescue StandardError => e
             puts e.meessage
           end
