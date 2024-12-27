@@ -66,8 +66,6 @@ module Calliope
           socket = Faye::WebSocket::Client.new(@address, headers: @headers)
 
           socket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
-
-          loop { socket.send($stdin.gets.chomp) }
         end
       end
     end
