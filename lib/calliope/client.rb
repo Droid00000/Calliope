@@ -119,6 +119,21 @@ module Calliope
       end
     end
 
+          # Handles a dispatch from the Websocket.
+          def handle_dispatch(dispatch)
+            puts dispatch
+            case dispatch['op'].to_sym
+            when :playerUpdate
+              notify_update(dispatch)
+            when :ready
+              notify_ready(dispatch)
+            when :stats
+              notify_stats(dispatch)
+            when :event
+              notify_event(dispatch)
+            end
+          end
+
     private
 
     # Maps the results of tracks.

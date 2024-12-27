@@ -47,7 +47,7 @@ module Calliope
       end
 
       # Handles a dispatch from the Websocket.
-      def self.dispatch(dispatch)
+      def handle_dispatch(dispatch)
         puts dispatch
         case dispatch['op'].to_sym
         when :playerUpdate
@@ -69,7 +69,7 @@ module Calliope
           websocket.on(:message) do |message|
           begin
             d = JSON.parse(message.data)
-            handle_dispatch(d)
+            @client.handle_dispatch(d)
           rescue StandardError => e
             puts e.message
           end
