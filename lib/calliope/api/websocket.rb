@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-require "json"
-require "websocket-client-simple"
+require 'uri'
+require 'json'
+require 'socket'
+require 'websocket/driver'
 
 # The websocket client internally used by calliope.
 module Calliope
@@ -28,54 +30,43 @@ module Calliope
       # @param session_id [String, nil] ID of the previous session to resume.
       def initialize(address, password, user_id, session_id, client)
         @client = client
-        @user_id = user_id&.to_i
-        @address = "ws#{address.delete_prefix("http")}/websocket"
-        @password = password
-        @session_id = session_id
-        @client_name = "Calliope/#{Calliope::VERSION}"
-        @headers = headers.compact
-      end
-
-      # Creates the headers hash.
-      def headers
-        {
-          Authorization: @password,
-          "User-Id": @user_id,
-          "Client-Name": @client_name,
-          "Session-Id": @session_id
-        }
+        @driver = ::WebSocket::Driver.client(self)
+        @driver.set_header('User-Id', user_id&.to_i)
+        @driver.set_header('Authorization', password)
+        @driver.on(:message, &method(:handle_dispatch))
+        @address = URI.parse(uri.to_s).tap { |u| u.scheme = 'ws' }
+        @driver.set_header('Session-Id', session_id) if session_id
+        @driver.set_header('Client-Name', "Calliope/#{Calliope::VERSION}")
       end
 
       # Handles a dispatch from the Websocket.
       def handle_dispatch(dispatch)
-        puts dispatch
-        case dispatch['op'].to_sym
+        case JSON.parse(dispatch)['op'].to_sym
         when :playerUpdate
-          @@client.__send__(:notify_update, dispatch)
+          @client.__send__(:notify_update, JSON.parse(dispatch))
         when :ready
-          @@client.__send__(:notify_ready, dispatch)
+          @client.__send__(:notify_ready, JSON.parse(dispatch))
         when :stats
-          @@client.__send__(:notify_stats, dispatch)
+          @client.__send__(:notify_stats, JSON.parse(dispatch))
         when :event
-          @@client.__send__(:notify_event, dispatch)
+          @client.__send__(:notify_event, JSON.parse(dispatch))
         end
+      end
+
+      # Read data from the TCP socket.
+      # @param [Integer] length The maximum length to read at once.
+      def parse_data
+        @tcp.readpartial(4096)
       end
 
       # Starts the WS thread used for connecting to the Lavalink node.
       def start
         Thread.new do
-          websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
+          @socket = TCPSocket.new(@address.host || localhost, @address.port)
 
-          websocket.on(:message) do |message|
-          begin
-            d = JSON.parse(message.data)
-            @client.handle_dispatch(d)
-          rescue StandardError => e
-            puts e.message
-          end
-        end
+          @driver.parse(parse_data) until false
 
-          loop { websocket.send($stdin.gets.chomp) }
+          @driver.start
         end
       end
     end
