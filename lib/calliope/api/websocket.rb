@@ -28,6 +28,7 @@ module Calliope
       # @param session_id [String, nil] ID of the previous session to resume.
       def initialize(address, password, user_id, session_id, client)
         @client = client
+        puts @client.class
         @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix("http")}/websocket"
         @password = password
@@ -65,14 +66,7 @@ module Calliope
       def start
         websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 
-        websocket.on(:message) do |message|
-          begin
-            d = JSON.parse(message.data)
-            handle_dispatch(d)
-          rescue StandardError => e
-            puts e.message
-          end
-        end
+        websocket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data))}
 
         loop { websocket.send($stdin.gets.chomp) }
       end
