@@ -139,7 +139,7 @@ module Calliope
     # Maps the results of tracks.
     # @param result [Hash]
     def map_results(result)
-      case result[:loadType]
+      case result['loadType']
       when "playlist"
         Playable.new(result, :playlist, self)
       when "search"
