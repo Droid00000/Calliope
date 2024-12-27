@@ -24,9 +24,10 @@ module Calliope
         @address = address
         @password = password
         @connection = Faraday.new(@address) do |builder|
-          builder.headers[:Authorization] = @password
-          builder.response :json
           builder.request :json
+          builder.response :json
+          builder.headers['Authorization'] = @password
+          builder.headers['Content-Type'] = 'application/json'
         end
       end
 
@@ -36,12 +37,6 @@ module Calliope
       # @return [Hash, Calliope::Errors, Faraday::Response]
       def request(verb, endpoint, body: nil)
         raw_request(verb.downcase, URI::Parser.new.escape(endpoint), body)
-      end
-
-      def produce_player(guild_id, session_id, voice)
-        puts "#{@address}/sessions/#{session_id}/players/#{guild_id}?noReplace=false"
-        handle_response(Faraday.patch("#{@address}/sessions/#{session_id}/players/#{guild_id}?noReplace=false",
-                                      { voice: voice }.to_json, { Authorization: @password }))
       end
 
       # @param verb [Symbol] The HTTP verb. E.g. GET, POST, PATCH.
