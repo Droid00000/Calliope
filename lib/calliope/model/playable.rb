@@ -28,8 +28,8 @@ module Calliope
 
       return unless type == :playlist
 
-      @playlist_name = payload["info"]["name"]
-      @selected_track = payload["info"]["SelectedTrack"] == -1 ? nil : payload["info"]["SelectedTrack"]
+      @playlist_name = payload["data"]["info"]["name"]
+      @selected_track = payload["data"]["info"]["SelectedTrack"] == -1 ? nil : payload["info"]["SelectedTrack"]
     end
 
     # Whether this is a playlist.
