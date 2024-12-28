@@ -82,59 +82,16 @@ module Calliope
 
       return unless @states[guild][:sessionId] && @states[guild][:token]
 
-      puts("Attempting to create a player. — #{@states[guild]} —— #{@session}")
-
       player = @http.modify_player(@session, guild.to_s, voice: @states[guild])
-
-      puts("Successfully made a player — #{player}")
-
       @players[guild] = Player.new(player, self)
-
       @states.delete(guild)
     end
 
     # Performs a search on a given query.
     # @param query [String] The item to search for.
-    # @return [Playlist, Track, Hash, Nil] The search object.
+    # @return [Playable, Nil] The playable object or nil.
     def search(query)
-      # case query
-      #when %r{(https?://(?:www\.)?soundcloud\.com/[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_-]+)*)}
-      #  puts("Running a Soundcloud query for — #{query}")
-      #  map_results(@http.soundcloud(query))
-      #when %r{(https?://)?(www\.)?spotify\.(com)/(track|album|playlist)/([a-zA-Z0-9]{22})}
-      #  puts("Running a Spotify query for — #{query}")
-      #  map_results(@http.spotify(query))
-      # when %r{(https?://)?(www\.)?deezer\.com/(us|[a-z]{2})/(track|album|playlist)/([a-zA-Z0-9-]{2,})}
-      #  puts("Running a Deezer query for — #{query}")
-      #  map_results(@http.deezer(query))
-      # when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
-      #  puts("Running a YouTube query for — #{query}")
-      #  map_results(@http.youtube(query))
-      # when %r{(https?://)?(www\.)?music\.apple\.com/(us|[a-z]{2})/(album|playlist|song)/([a-zA-Z0-9]{8,})}
-      #  puts("Running an Apple Music query for — #{query}")
-      #  map_results(@http.apple_music(query))
-      # when %r{(https?://)?(music\.)?youtube\.com/(watch\?v=|playlist\?list=|(?:album|track|song)/)([a-zA-Z0-9_-]{11})}
-       # puts("Running a YouTube Music query for — #{query}")
-       # map_results(@http.youtube_music(query))
-      # else
-        puts("Running a raw query for — #{query}")
-        map_results(@http.youtube(query))
-     # end
-    end
-
-    # Handles a dispatch from the Websocket.
-    def handle_dispatch(dispatch)
-      puts dispatch
-      case dispatch['op'].to_sym
-      when :playerUpdate
-        notify_update(dispatch)
-      when :ready
-        notify_ready(dispatch)
-      when :stats
-        notify_stats(dispatch)
-      when :event
-        notify_event(dispatch)
-      end
+      map_results(@http.youtube(query))
     end
 
     private
@@ -150,7 +107,7 @@ module Calliope
       when "track"
         Playable.new(result, :single, self)
       when "error"
-        result[:data]
+        nil
       when "empty"
         nil
       end
@@ -158,24 +115,23 @@ module Calliope
 
     # Internal handler for the event dispatch event.
     def notify_event(data)
-      case data[:type]
-      when "TrackEndEvent"
-        puts data # track_end(data)
-      when "TrackStuckEvent"
-        puts data # track_stuck(data)
-      when "TrackStartEvent"
-        puts data # track_start(data)
-      when "TrackExceptionEvent"
-        puts data # track_exception(data)
-      when "WebsocketClosedEvent"
-        puts data # websocket_close(data)
+      case data[:type].to_sym
+      when :TrackEndEvent
+        track_end(data)
+      when :TrackStuckEvent
+        track_stuck(data)
+      when :TrackStartEvent
+        track_start(data)
+      when :TrackExceptionEvent
+        track_exception(data)
+      when :WebsocketClosedEvent
+        websocket_close(data)
       end
     end
 
     # Internal handler for the ready event.
     def notify_ready(data)
       @session = data['sessionId']
-      puts data['sessionId']
     end
 
     # Internal handler for the update event.

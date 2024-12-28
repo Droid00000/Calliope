@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "calliope/logger"
 require_relative "calliope/client"
 require_relative "calliope/version"
 

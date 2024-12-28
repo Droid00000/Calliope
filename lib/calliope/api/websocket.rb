@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "json"
-require "websocket-client-simple"
-
 # The websocket client internally used by calliope.
 module Calliope
   module API
@@ -27,7 +24,7 @@ module Calliope
       # @param password [String] Password used for connecting to the lavalink node.
       # @param session_id [String, nil] ID of the previous session to resume.
       def initialize(address, password, user_id, session_id, client)
-        @@client = client
+        @client = client
         @user_id = user_id&.to_i
         @address = "ws#{address.delete_prefix("http")}/websocket"
         @password = password
@@ -48,16 +45,15 @@ module Calliope
 
       # Handles a dispatch from the Websocket.
       def handle_dispatch(dispatch)
-        puts dispatch
         case dispatch['op'].to_sym
         when :playerUpdate
-          @@client.__send__(:notify_update, dispatch)
+          @client.__send__(:notify_update, dispatch)
         when :ready
-          @@client.__send__(:notify_ready, dispatch)
+          @client.__send__(:notify_ready, dispatch)
         when :stats
-          @@client.__send__(:notify_stats, dispatch)
+          @client.__send__(:notify_stats, dispatch)
         when :event
-          @@client.__send__(:notify_event, dispatch)
+          @client.__send__(:notify_event, dispatch)
         end
       end
 
@@ -66,7 +62,7 @@ module Calliope
         thread = Thread.new do
           websocket = WebSocket::Client::Simple.connect(@address, headers: @headers)
 
-          websocket.on(:message) { |frame| @@client.handle_dispatch(JSON.parse(frame.data)) }
+          websocket.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
           loop { websocket.send($stdin.gets.chomp) }
         end
