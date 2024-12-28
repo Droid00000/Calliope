@@ -58,7 +58,7 @@ module Calliope
       return unless @client.player?(guild)
 
       @tracks.each do |track|
-        @client.http.modifiy_player(@client.session, guild.to_s, track: track.to_p)
+        @client.http.modify_player(@client.session, guild.to_s, track: track.to_p)
       end
     end
 
