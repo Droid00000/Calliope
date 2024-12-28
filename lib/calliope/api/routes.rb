@@ -21,7 +21,7 @@ module Calliope
       # @param paused [Boolean] Whether the player should be paused.
       # @param filters [Hash] A hash representing filters to apply.
       # @param voice [Hash] A hash representing a voice state object.
-      def modify_player(session_id, guild_id, replace: false, track: :undef,
+      def modify_player(session_id, guild_id, replace: true, track: :undef,
                         position: :undef, end_time: :undef, volume: :undef,
                         paused: :undef, filters: :undef, voice: :undef,
                         state: :undef)
