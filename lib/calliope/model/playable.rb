@@ -32,7 +32,7 @@ module Calliope
                 when :track
                   [Track.new(payload["data"])]
                 end
-
+      puts payload
       if type == :playlist
         @playlist_name = payload["data"]["info"]["name"]
         @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
