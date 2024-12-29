@@ -12,6 +12,9 @@ module Calliope
     # @return [Array<Tracks>]
     attr_reader :tracks
 
+    # @retrn [Track, nil]
+    attr_reader :first_track
+
     # @return [String, nil]
     attr_reader :playlist_name
     alias_method :name, :playlist_name
@@ -33,7 +36,9 @@ module Calliope
                 when :track
                   [Track.new(payload["data"])]
                 end
-
+      
+      @first_track = tracks.first
+      
       if type == :playlist
         @playlist_name = payload["data"]["info"]["name"]
         @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
@@ -44,7 +49,7 @@ module Calliope
       end
 
       if tracks && tracks.size == 1 && selected_track.nil?
-        delegate :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration, to: :tracks.first
+        delegate :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration, to: :first_track
       end
     end
 
