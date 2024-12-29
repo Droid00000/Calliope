@@ -1,22 +1,24 @@
 # frozen_string_literal: true
 
-require "faraday"
-
 # Used to access the Lavalink API.
 module Calliope
   # @!Calliope Private
   module API
+    # The HTTP client that makes REST requests.
     class HTTP
       include Routes
 
       # @return [String]
-      attr_reader :address
+      attr_accessor :session
 
       # @return [String]
-      attr_reader :password
+      attr_accessor :address
 
       # @return [String]
-      attr_reader :connection
+      attr_accessor :password
+
+      # @return [String]
+      attr_accessor :connection
 
       # @param address [String] URL for connecting to the Lavalink node.
       # @param password [String] Password for connecting to the Lavalink node.

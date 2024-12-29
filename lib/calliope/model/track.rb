@@ -50,7 +50,8 @@ module Calliope
       @source_name = payload["info"]["sourceName"]
     end
 
-    def to_p
+    # Converts this track into a hash that can be sent to Lavalink for playback.
+    def to_h
       { encoded: @encoded }
     end
   end

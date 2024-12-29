@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require "json"
+require "socket"
+require "faraday"
+require "websocket/driver"
+
 require_relative "version"
 require_relative "model/info"
 require_relative "api/routes"
@@ -26,6 +31,9 @@ module Calliope
     # @return [Object]
     attr_reader :http
 
+    # @return [Object]
+    attr_reader :socket
+
     # @return [String]
     attr_reader :session
 
@@ -37,9 +45,6 @@ module Calliope
 
     # @return [String]
     attr_reader :password
-
-    # @return [Object]
-    attr_reader :websocket
 
     # @param address [String] URL for connecting to the Lavalink node.
     # @param password [String] Password for connecting to the Lavalink node.
@@ -53,12 +58,7 @@ module Calliope
       @session = nil
       @mutex = Mutex.new
       @http = API::HTTP.new(@address, @password)
-      @websocket = API::Socket.new(@address, @password, application_id, session_id, self)
-    end
-
-    # Connects this player to the websocket.
-    def login
-      @websocket.start
+      @socket = API::Socket.new(@address, @password, application_id, session_id, self)
     end
 
     # Checks if there's an active player.
@@ -82,7 +82,7 @@ module Calliope
 
       return unless @states[guild][:sessionId] && @states[guild][:token]
 
-      player = @http.modify_player(@session, guild.to_s, voice: @states[guild])
+      player = @http.modify_player(guild, voice: @states[guild])
       @players[guild] = Player.new(player, self)
       @states.delete(guild)
     end
@@ -91,31 +91,14 @@ module Calliope
     # @param query [String] The item to search for.
     # @return [Playable, Nil] The playable object or nil.
     def search(query)
-      map_results(@http.youtube(query))
+      Playable.new(@http.youtube(query), self)
     end
 
     private
 
-    # Maps the results of tracks.
-    # @param result [Hash]
-    def map_results(result)
-      case result['loadType']
-      when "playlist"
-        Playable.new(result, :playlist, self)
-      when "search"
-        Playable.new(result, :search, self)
-      when "track"
-        Playable.new(result, :single, self)
-      when "error"
-        nil
-      when "empty"
-        nil
-      end
-    end
-
     # Internal handler for the event dispatch event.
     def notify_event(data)
-      case data[:type].to_sym
+      case data["type"].to_sym
       when :TrackEndEvent
         track_end(data)
       when :TrackStuckEvent
@@ -131,7 +114,8 @@ module Calliope
 
     # Internal handler for the ready event.
     def notify_ready(data)
-      @session = data['sessionId']
+      @session = data["sessionId"]
+      @http.session = data["sessionId"]
     end
 
     # Internal handler for the update event.

@@ -1,10 +1,16 @@
-# frozen_string_litral: true
+# frozen_string_literal: true
 
 module Calliope
   # Generic class for events.
   module Events
     # Raised whenever a track begins playing.
     class TrackStart
+      # @return [Object]
+      attr_reader :client
+
+      # @return [Integer]
+      attr_reader :guild
+
       # @return [Object]
       attr_reader :track
 
@@ -14,7 +20,8 @@ module Calliope
       # @param client [Hash]
       def initialize(payload, client)
         @client = client
-        @track = Track.new(payload['track'], client)
+        @guild = payload["guildId"]&.to_i
+        @track = Track.new(payload["track"], client)
       end
     end
 
@@ -28,7 +35,7 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @reason = payload['reason']
+        @reason = payload["reason"]
       end
     end
 
@@ -42,7 +49,7 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @threshold = payload['thresholdMs']
+        @threshold = payload["thresholdMs"]
       end
     end
 
@@ -62,9 +69,9 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @cause = payload['exception']['cause']
-        @message = payload['exception']['message']
-        @severitiy = payload['exception']['severity']
+        @cause = payload["exception"]["cause"]
+        @message = payload["exception"]["message"]
+        @severitiy = payload["exception"]["severity"]
       end
     end
   end

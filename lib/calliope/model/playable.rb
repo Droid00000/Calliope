@@ -1,35 +1,42 @@
 # frozen_string_literal: true
 
 module Calliope
-  # A generic class representing playable data.
+  # A generic class representing playable tracks.
   class Playable
     # @return [Symbol]
     attr_reader :type
 
-    # @return [Array<Tracks>]
-    attr_reader :tracks
-
     # @return [Object]
     attr_reader :client
+
+    # @return [Array<Tracks>]
+    attr_reader :tracks
 
     # @return [String, nil]
     attr_reader :playlist_name
 
-    # @return [Integer, nil]
+    # @return [Track, nil]
     attr_reader :selected_track
 
     # @param payload [Hash]
-    # @param type [Symbol]
     # @param client [Object]
-    def initialize(payload, type, client)
-      @type = type
+    def initialize(payload, client)
       @client = client
-      @tracks = resolve_tracks(payload)
+      @type = result["loadType"].to_sym
+
+      @tracks = case @type
+                when :playlist
+                  payload["data"]["tracks"].map { |track| Track.new(track) }
+                when :search
+                  payload["data"].map { |track| Track.new(track) }
+                when :track
+                  [Track.new(payload["data"])]
+                end
 
       return unless type == :playlist
 
       @playlist_name = payload["data"]["info"]["name"]
-      @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : payload["info"]["SelectedTrack"]
+      @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
     end
 
     # Whether this is a playlist.
@@ -40,45 +47,35 @@ module Calliope
 
     # Whether this is a single track.
     # @return [Boolean]
-    def track?
-      @type == :single
+    def single_track?
+      @type == :track
     end
-
-    alias single_track track?
 
     # Whether this is a search result.
     # @return [Boolean]
-    def search?
-      @type == search
+    def search_result?
+      @type == :search
     end
 
-    alias search_result? search?
+    # Play the tracks for this playable object.
+    # @param guild [Integer] ID of the guild to play for.
+    # @param track [Integer] Index of a specific track to play.
+    # @param selected [Boolean] Whether the selected track should be played.
+    def play(guild, track: nil, selected: false)
+      return unless @client.player(guild) && @tracks
 
-    def play_all(guild)
-      return unless @client.player?(guild)
+      if @selected_track && selected
+        @client.http.modifiy_player(guild, track: @selected_track.to_h)
+        return
+      end
+
+      if track && @tracks[track]
+        @client.http.modify_player(guild, track: @tracks[track].to_h)
+        return
+      end
 
       @tracks.each do |track|
-        @client.http.modify_player(@client.session, guild.to_s, track: track.to_p)
-      end
-    end
-
-    def play_selected(guild)
-      return unless @client.player?(guild) && @selected_track
-
-      @client.http.modifiy_player(@client.session, guild, track: @tracks[@selected_track].to_p)
-    end
-
-    private
-
-    # Converts the track data into track objects.
-    def resolve_tracks(payload)
-      case type
-      when :playlist
-        payload["data"]["tracks"].map { |track| Track.new(track) }
-      when :search
-        payload["data"].map { |track| Track.new(track) }
-      when :single
-        [Track.new(payload["data"])]
+        @client.http.modify_player(guild, track: track.to_h)
       end
     end
   end

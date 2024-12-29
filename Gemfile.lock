@@ -3,13 +3,12 @@ PATH
   specs:
     calliope (0.1.0)
       faraday
-      websocket-client-simple
+      websocket-driver
 
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    event_emitter (0.2.6)
     faraday (2.12.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -46,10 +45,9 @@ GEM
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
     uri (1.0.2)
-    websocket (1.2.11)
-    websocket-client-simple (0.8.0)
-      event_emitter
-      websocket
+    websocket-driver (0.7.6)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.5)
     yard (0.9.37)
 
 PLATFORMS

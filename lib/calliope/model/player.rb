@@ -36,7 +36,7 @@ module Calliope
       @guild = payload["guildId"]
       @ping = payload["state"]["ping"]
       @connected = payload["state"]["connected"]
-      @filters = Filters.new(payload["filters"]) unless payload['filters'].empty?
+      @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
     end
   end
 end
