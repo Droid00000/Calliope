@@ -49,6 +49,12 @@ module Calliope
           instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
         end
       end
+
+      if tracks && type == :playlist
+        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
+          instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
+        end
+      end
     end
 
     def name
@@ -62,6 +68,10 @@ module Calliope
 
       if @type == :playlist && @selected_track.nil?
         return @playlist_name
+      end
+
+      if @type == :search
+        return @tracks.first.name
       end
     end
 
@@ -80,6 +90,10 @@ module Calliope
 
       if @type == :playlist? && @selected_track.nil?
        return proccess_length(@playlist.sum(:duration))
+      end
+
+      if @type == :search
+        return proccess_length(@tracks.first.duration)
       end
     end
 
