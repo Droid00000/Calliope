@@ -41,15 +41,15 @@ module Calliope
 
       if tracks && tracks.size == 1 && @selected_track
         [:isrc, :name, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
-          instance_variable_set("@#{method}", @selected_track.send(method))
+          instance_variable_set("@#{method}".to_sym, @selected_track.send(method))
         end
       end
-      
+
       if tracks && tracks.size == 1 && selected_track.nil?
         [:isrc, :name, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
-          instance_variable_set("@#{method}", @tracks.first.send(method))
+          instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
         end
-      end      
+      end
     end
 
     # Whether this is a playlist.
@@ -68,6 +68,13 @@ module Calliope
     # @return [Boolean]
     def search_result?
       @type == :search
+    end
+
+    # This is a sneaky way to delegation without actually using it.
+    def method_missing(method_name, *args, &block)
+      if instance_variable_defined?("@#{method_name}".to_sym)
+        instance_variable_get("@#{method_name}".to_sym)
+      end
     end
 
     # Play the tracks for this playable object.
