@@ -24,8 +24,6 @@ module Calliope
       @client = client
       @type = payload["loadType"].to_sym
 
-      puts payload
-
       @tracks = case @type
                 when :playlist
                   payload["data"]["tracks"].map { |track| Track.new(track) }
@@ -38,9 +36,6 @@ module Calliope
       if type == :playlist
         @playlist_name = payload["data"]["info"]["name"]
         @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
-      else
-        @playlist_name = nil
-        @selected_track = nil
       end
 
       if tracks && tracks.count == 1 && @selected_track
@@ -59,17 +54,14 @@ module Calliope
     def name
       if tracks && tracks.count == 1 && selected_track.nil?
         @tracks.first.name
-        return
       end
 
       if @tracks && @tracks.count == 1 && @selected_track
         @selected_track.name
-        return
       end
 
       if playlist? && @selected_track.nil?
         @playlist_name
-        return
       end
     end
 
@@ -80,17 +72,14 @@ module Calliope
     def strftime
       if tracks && tracks.count == 1 && selected_track.nil?
         proccess_length(@tracks.first.duration)
-        return
       end
 
       if @tracks && @tracks.count == 1 && @selected_track
         proccess_length(@selected_track.duration)
-        return
       end
 
       if @type == :playlist? && @selected_track.nil?
         proccess_length(@playlist.sum(:duration))
-        return
       end
     end
 
