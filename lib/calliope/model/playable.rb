@@ -38,13 +38,13 @@ module Calliope
         @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
       end
 
-      if tracks && tracks.size == 1 && @selected_track
+      if tracks && tracks.count == 1 && @selected_track
         [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
           instance_variable_set("@#{method}".to_sym, @selected_track.send(method))
         end
       end
 
-      if tracks && tracks.size == 1 && selected_track.nil?
+      if tracks && tracks.count == 1 && selected_track.nil?
         [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
           instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
         end
@@ -52,12 +52,12 @@ module Calliope
     end
 
     def name
-      if tracks && tracks.size == 1 && selected_track.nil?
+      if tracks && tracks.count == 1 && selected_track.nil?
         @tracks.first.name
         return
       end
 
-      if @tracks && @tracks.size == 1 && @selected_track
+      if @tracks && @tracks.count == 1 && @selected_track
         @selected_track.name
         return
       end
@@ -66,6 +66,10 @@ module Calliope
         @playlist_name
         return
       end
+    end
+
+    def proccess_length(milliseconds)
+      Time.at(milliseconds / 1000.0).utc.strftime('%M:%S')
     end
 
     def strftime
@@ -79,14 +83,10 @@ module Calliope
         return
       end
 
-      if playlist? && @selected_track.nil?
+      if @type == :playlist? && @selected_track.nil?
         proccess_length(@playlist.sum(:duration))
         return
       end
-    end
-
-    def proccess_length(milliseconds)
-      Time.at(milliseconds / 1000.0).utc.strftime('%M:%S')
     end
 
     # Whether this is a playlist.
