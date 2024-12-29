@@ -38,5 +38,11 @@ module Calliope
       @connected = payload["state"]["connected"]
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
     end
+
+    # Pause or unpause playback.
+    # @param paused [Boolean] Whether this player should be currently paused.
+    def paused=(paused)
+      @client.http.modify_player(@guild, paused: paused)
+    end
   end
 end
