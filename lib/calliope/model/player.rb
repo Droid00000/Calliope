@@ -13,6 +13,7 @@ module Calliope
 
     # @return [String]
     attr_reader :paused
+    alias paused? paused
 
     # @return [Hash]
     attr_reader :voice
