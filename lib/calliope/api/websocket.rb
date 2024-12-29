@@ -27,7 +27,7 @@ module Calliope
         @driver.set_header("User-Id", user_id&.to_i)
         @driver.set_header("Authorization", password)
         @driver.set_header("Session-Id", session_id) if session_id
-        @driver.set_header("Client-Name", "Calliope/#{CALLIOPE::VERSION}")
+        @driver.set_header("Client-Name", "Calliope/#{Calliope::VERSION}")
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
