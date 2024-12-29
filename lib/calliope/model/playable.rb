@@ -54,7 +54,7 @@ module Calliope
     # Return the duration formatted as: Minutes:Seconds.
     # @return [String]
     def strftime
-      if @tracks && (@type == :search || @type == :track || (@type == :playlist? && @tracks.count == 1))
+      if @tracks && (@type == :search || @type == :track || (@type == :playlist && @tracks.count == 1))
         return Time.at(@tracks.first.duration / 1000.0).utc.strftime('%M:%S')
       end
 
@@ -62,7 +62,7 @@ module Calliope
         return Time.at(@selected_track.duration / 1000.0).utc.strftime('%M:%S')
       end
 
-      if @type == :playlist? && @selected_track.nil?
+      if @type == :playlist && @selected_track.nil?
        return Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime('%M:%S')
       end
     end
