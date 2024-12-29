@@ -91,7 +91,7 @@ module Calliope
     # @param query [String] The item to search for.
     # @return [Playable] The playable object.
     def search(query)
-      Playable.new(@http.youtube(query), self)
+      Playable.new(@http.youtube(query.to_s), self)
     end
 
     def play_track(guild, track)
