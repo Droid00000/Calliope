@@ -14,7 +14,7 @@ module Calliope
 
     # @return [String, nil]
     attr_reader :playlist_name
-    alias_method :name, playlist_name
+    alias_method :name, :playlist_name
 
     # @return [Track, nil]
     attr_reader :selected_track
