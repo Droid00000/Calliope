@@ -32,11 +32,10 @@ module Calliope
                 when :track
                   [Track.new(payload["data"])]
                 end
-      puts payload
-      if type == :playlist
-        @playlist_name = payload["data"]["info"]["name"]
-        @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
-      end
+
+      @playlist_name = payload.dig("data", "info", "name")
+      @selected_track = payload.dig("data", "info",
+                                    "selectedTrack") == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
 
       if tracks && tracks.count == 1 && @selected_track
         [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
@@ -73,12 +72,12 @@ module Calliope
     end
 
     def strftime
-      if tracks && tracks.size == 1 && selected_track.nil?
+      if tracks && tracks.count == 1 && selected_track.nil?
         proccess_length(@tracks.first.duration)
         return
       end
 
-      if @tracks && @tracks.size == 1 && @selected_track
+      if @tracks && @tracks.count == 1 && @selected_track
         proccess_length(@selected_track.duration)
         return
       end
@@ -118,7 +117,7 @@ module Calliope
     # @param guild [Integer] ID of the guild to play for.
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
-    def play(guild, track: nil, selected: false)
+    def play(guild, track: nil, first: true, selected: false)
       raise ArgumentError unless @tracks
 
       if @selected_track && selected
@@ -128,6 +127,11 @@ module Calliope
 
       if track && @tracks[track]
         @client.http.modify_player(guild, track: @tracks[track].to_h)
+        return
+      end
+
+      if search_result? && first
+        @client.http.modify_player(guild, track: @tracks.first.to_h)
         return
       end
 
