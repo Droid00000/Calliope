@@ -24,6 +24,8 @@ module Calliope
       @client = client
       @type = payload["loadType"].to_sym
 
+      puts payload
+
       @tracks = case @type
                 when :playlist
                   payload["data"]["tracks"].map { |track| Track.new(track) }
@@ -62,7 +64,7 @@ module Calliope
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
     def play(guild, track: nil, selected: false)
-      raise ArgumentError unless @tracks
+      raise ArgumentError unless @tracks && @client.player?(guild)
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)
