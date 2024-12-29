@@ -22,6 +22,7 @@ module Calliope
       def initialize(url, password, user_id, session_id, client)
         @dead = false
         @client = client
+        @url = URI.parse(create_url(url))
         @driver = WebSocket::Driver.client(self)
         @driver.set_header("User-Id", user_id&.to_i)
         @driver.set_header("Authorization", password)
@@ -29,7 +30,6 @@ module Calliope
         @driver.set_header("Client-Name", "Calliope/#{CALLIOPE::VERSION}")
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
-        @url = URI.parse(create_url(url))
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
         @thread = Thread.new { @driver.parse(@tcp.read(1)) until @dead }
 
