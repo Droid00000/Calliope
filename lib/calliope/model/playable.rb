@@ -24,6 +24,8 @@ module Calliope
       @client = client
       @type = payload["loadType"].to_sym
 
+      puts payload
+
       @tracks = case @type
                 when :playlist
                   payload["data"]["tracks"].map { |track| Track.new(track) }
