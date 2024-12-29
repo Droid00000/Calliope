@@ -22,7 +22,7 @@ module Calliope
     # @param client [Object]
     def initialize(payload, client)
       @client = client
-      @type = result["loadType"].to_sym
+      @type = payload["loadType"].to_sym
 
       @tracks = case @type
                 when :playlist
