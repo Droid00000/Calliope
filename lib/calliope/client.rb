@@ -94,6 +94,12 @@ module Calliope
       Playable.new(@http.youtube(query), self)
     end
 
+    def play_track(guild, track)
+      return unless player?(guild) && track.is_a?(Playable)
+
+      track.play(guild)
+    end
+
     private
 
     # Internal handler for the event dispatch event.
