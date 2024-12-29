@@ -14,6 +14,7 @@ module Calliope
 
     # @return [String, nil]
     attr_reader :playlist_name
+    alias_method :name, playlist_name
 
     # @return [Track, nil]
     attr_reader :selected_track
@@ -33,10 +34,18 @@ module Calliope
                   [Track.new(payload["data"])]
                 end
 
-      return unless type == :playlist
+      if type == :playlist
+        @playlist_name = payload["data"]["info"]["name"]
+        @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
+      end
 
-      @playlist_name = payload["data"]["info"]["name"]
-      @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
+      if tracks && tracks.size == 1 && @selected_track
+        delegate :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration, to: :selected_track
+      end
+
+      if tracks && tracks.size == 1 && selected_track.nil?
+        delegate :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration, to: :tracks.first
+      end
     end
 
     # Whether this is a playlist.
@@ -62,7 +71,7 @@ module Calliope
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
     def play(guild, track: nil, selected: false)
-      raise ArgumentError unless @tracks && @client.player?(guild)
+      raise ArgumentError unless @tracks
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)
