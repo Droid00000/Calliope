@@ -53,15 +53,15 @@ module Calliope
 
     def name
       if tracks && tracks.count == 1 && selected_track.nil?
-        tracks.first.name
+        return @tracks.first.name
       end
 
       if @tracks && @tracks.count == 1 && @selected_track
-        @selected_track.name
+        return @selected_track.name
       end
 
       if @type == :playlist && @selected_track.nil?
-        @playlist_name
+        return @playlist_name
       end
     end
 
@@ -71,15 +71,15 @@ module Calliope
 
     def strftime
       if tracks && tracks.count == 1 && selected_track.nil?
-        proccess_length(@tracks.first.duration)
+        return proccess_length(@tracks.first.duration)
       end
 
       if @tracks && @tracks.count == 1 && @selected_track
-        proccess_length(@selected_track.duration)
+        return proccess_length(@selected_track.duration)
       end
 
       if @type == :playlist? && @selected_track.nil?
-        proccess_length(@playlist.sum(:duration))
+       return proccess_length(@playlist.sum(:duration))
       end
     end
 
