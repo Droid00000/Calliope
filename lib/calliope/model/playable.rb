@@ -53,14 +53,14 @@ module Calliope
 
     def name
       if tracks && tracks.count == 1 && selected_track.nil?
-        @tracks.first.name
+        tracks.first.name
       end
 
       if @tracks && @tracks.count == 1 && @selected_track
         @selected_track.name
       end
 
-      if playlist? && @selected_track.nil?
+      if @type == :playlist && @selected_track.nil?
         @playlist_name
       end
     end
@@ -101,7 +101,7 @@ module Calliope
       @type == :search
     end
 
-    # This is a sneaky way to delegation without actually using it.
+    # This is a sneaky way to use delegation without actually using it.
     def method_missing(method_name, *args, &block)
       if instance_variable_defined?("@#{method_name}".to_sym)
         instance_variable_get("@#{method_name}".to_sym)
@@ -112,7 +112,7 @@ module Calliope
     # @param guild [Integer] ID of the guild to play for.
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
-    def play(guild, track: nil, first: true, selected: false)
+    def play(guild, track: nil, first: true, selected: false, queue: true)
       raise ArgumentError unless @tracks
 
       if @selected_track && selected
