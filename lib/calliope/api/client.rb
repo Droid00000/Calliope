@@ -62,7 +62,6 @@ module Calliope
       def handle_response(response)
         case response.status
         when 200
-          puts response.body
           response.body
         when 400
           raise Calliope::BadBody

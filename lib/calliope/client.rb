@@ -89,7 +89,7 @@ module Calliope
 
     # Performs a search on a given query.
     # @param query [String] The item to search for.
-    # @return [Playable, Nil] The playable object or nil.
+    # @return [Playable] The playable object.
     def search(query)
       Playable.new(@http.youtube(query), self)
     end
