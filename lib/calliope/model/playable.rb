@@ -62,7 +62,7 @@ module Calliope
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
     def play(guild, track: nil, selected: false)
-      raise ArgumentError unless @tracks && @client.player?(guild)
+      raise ArgumentError unless @tracks
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)
