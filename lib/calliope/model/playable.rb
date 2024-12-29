@@ -14,7 +14,6 @@ module Calliope
 
     # @return [String, nil]
     attr_reader :playlist_name
-    alias_method :name, :playlist_name
 
     # @return [Track, nil]
     attr_reader :selected_track
@@ -40,16 +39,54 @@ module Calliope
       end
 
       if tracks && tracks.size == 1 && @selected_track
-        [:isrc, :name, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
+        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
           instance_variable_set("@#{method}".to_sym, @selected_track.send(method))
         end
       end
 
       if tracks && tracks.size == 1 && selected_track.nil?
-        [:isrc, :name, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
+        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
           instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
         end
       end
+    end
+
+    def name
+      if tracks && tracks.size == 1 && selected_track.nil?
+        @tracks.first.name
+        return
+      end
+
+      if @tracks && @tracks.size == 1 && @selected_track
+        @selected_track.name
+        return
+      end
+
+      if playlist? && @selected_track.nil?
+        @playlist_name
+        return
+      end
+    end
+
+    def strftime
+      if tracks && tracks.size == 1 && selected_track.nil?
+        proccess_length(@tracks.first.duration)
+        return
+      end
+
+      if @tracks && @tracks.size == 1 && @selected_track
+        proccess_length(@selected_track.duration)
+        return
+      end
+
+      if playlist? && @selected_track.nil?
+        proccess_length(@playlist.sum(:duration))
+        return
+      end
+    end
+
+    def proccess_length(milliseconds)
+      Time.at(milliseconds / 1000.0).utc.strftime('%M:%S')
     end
 
     # Whether this is a playlist.

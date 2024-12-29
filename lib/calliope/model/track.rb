@@ -43,7 +43,7 @@ module Calliope
       @artist = payload["info"]["author"]
       @source = payload["info"]["uri"]
       @encoded = payload["encoded"]
-      @duration = Time.at(payload["info"]["length"])
+      @duration = payload["info"]["length"]
       @position = payload["info"]["position"]
       @is_stream = payload["info"]["isStream"]
       @identifier = payload["info"]["identifier"]
