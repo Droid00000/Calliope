@@ -38,62 +38,52 @@ module Calliope
         @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
       end
 
-      if tracks && tracks.count == 1 && @selected_track
+      if @tracks && (type == :search || type == :track || (type == :playlist && selected_track.nil?))
+        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
+          instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
+        end
+      end
+
+      if @tracks && @selected_track
         [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
           instance_variable_set("@#{method}".to_sym, @selected_track.send(method))
         end
       end
+    end
 
-      if tracks && tracks.count == 1 && selected_track.nil?
-        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
-          instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
-        end
+    # Return the duration formatted as: Minutes:Seconds.
+    # @return [String]
+    def strftime
+      if @tracks && @type == :playlist && @selected_track
+        return Time.at(@selected_track.duration / 1000.0).utc.strftime('%M:%S')
       end
 
-      if tracks && type == :playlist
-        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
-          instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
-        end
+      if @type == :playlist? && @selected_track.nil?
+       return Time.at(@playlist.sum(:duration) / 1000.0).utc.strftime('%M:%S')
+      end
+
+      if @tracks && (@type == :search || @type == :track)
+        return Time.at(@tracks.first.duration / 1000.0).utc.strftime('%M:%S')
       end
     end
 
+    # Gets the name of a track.
+    # @return [String]
     def name
-      if tracks && tracks.count == 1 && selected_track.nil?
-        return @tracks.first.name
-      end
-
-      if @tracks && @tracks.count == 1 && @selected_track
-        return @selected_track.name
-      end
-
       if @type == :playlist && @selected_track.nil?
         return @playlist_name
       end
 
-      if @type == :search
+      if @tracks && @type == :track 
         return @tracks.first.name
       end
-    end
 
-    def proccess_length(milliseconds)
-      Time.at(milliseconds / 1000.0).utc.strftime('%M:%S')
-    end
-
-    def strftime
-      if tracks && tracks.count == 1 && selected_track.nil?
-        return proccess_length(@tracks.first.duration)
-      end
-
-      if @tracks && @tracks.count == 1 && @selected_track
-        return proccess_length(@selected_track.duration)
-      end
-
-      if @type == :playlist? && @selected_track.nil?
-       return proccess_length(@playlist.sum(:duration))
+      if @tracks && @selected_track
+        return @selected_track.name
       end
 
       if @type == :search
-        return proccess_length(@tracks.first.duration)
+        return @tracks.first.name
       end
     end
 
