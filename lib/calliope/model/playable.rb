@@ -33,9 +33,13 @@ module Calliope
                   [Track.new(payload["data"])]
                 end
 
-      @playlist_name = payload.dig("data", "info", "name")
-      @selected_track = payload.dig("data", "info",
-                                    "selectedTrack") == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
+      if type == :playlist
+        @playlist_name = payload["data"]["info"]["name"]
+        @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
+      else
+        @playlist_name = nil
+        @selected_track = nil
+      end
 
       if tracks && tracks.count == 1 && @selected_track
         [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
