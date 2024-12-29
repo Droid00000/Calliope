@@ -59,7 +59,7 @@ module Calliope
       end
 
       if @type == :playlist? && @selected_track.nil?
-       return Time.at(@playlist.sum(:duration) / 1000.0).utc.strftime('%M:%S')
+       return Time.at(@playlist.map(&:duration).sum / 1000.0).utc.strftime('%M:%S')
       end
 
       if @tracks && (@type == :search || @type == :track)
