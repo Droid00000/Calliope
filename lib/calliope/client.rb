@@ -108,7 +108,7 @@ module Calliope
       when :TrackStuckEvent
         track_stuck(data)
       when :TrackStartEvent
-        track_start(data)
+        puts data #track_start(data)
       when :TrackExceptionEvent
         track_exception(data)
       when :WebsocketClosedEvent
