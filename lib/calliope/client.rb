@@ -115,7 +115,7 @@ module Calliope
     def track_end(data)
       @players[data["guildId"].to_i].send(:update_data, data)
       @players[data["guildId"].to_i].next
-      TrackEnd.new(data, self)
+      ::Events::TrackEnd.new(data, self)
     end
 
     # Internal handler for the ready event.
@@ -126,12 +126,12 @@ module Calliope
 
     # Internal handler for the update event.
     def notify_update(data)
-      State.new(data)
+      ::Events::State.new(data)
     end
 
     # Internal handler for the stats event.
     def notify_stats(data)
-      Stats.new(data)
+      ::Events::Stats.new(data)
     end
   end
 end
