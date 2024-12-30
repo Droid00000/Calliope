@@ -26,7 +26,7 @@ module Calliope
       def initialize(payload, client)
         @client = client
         @guild = payload["guildId"]&.to_i
-        @track = Track.new(payload["track"], client)
+        @track = Track.new(payload["track"])
       end
     end
 

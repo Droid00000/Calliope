@@ -103,7 +103,7 @@ module Calliope
       @volume = payload["volume"] if payload["volume"]
       @paused = payload["paused"] if payload["paused"]
       @guild = payload["guildId"]&.to_i if payload["guildId"]
-      @track = Playable.new(payload, @client) if payload["track"]
+      @track = Track.new(payload) if payload["track"]
       @ping = payload["state"]["ping"] if payload.dig("state", "ping")
       @connected = payload["state"]["connected"] if payload.dig("state", "connected")
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
