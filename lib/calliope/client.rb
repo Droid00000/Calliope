@@ -99,7 +99,7 @@ module Calliope
 
     private
 
-    # Internal handler for the event dispatch event.
+    # Generic handler for the event dispatch event.
     def notify_event(data)
       puts data
       case data["type"].to_sym
@@ -116,12 +116,14 @@ module Calliope
       end
     end
 
+    # Internal handler for the track end event.
     def track_end(data)
       event = Calliope::Events::TrackEnd.new(data, self)
       event.player.playing = false
       event.player.next
     end
 
+    # Internal handler for the track start event.
     def track_start(data)
       event = Calliope::Events::TrackStart.new(data, self)
       event.player.playing = true
