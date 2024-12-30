@@ -28,13 +28,16 @@ module Calliope
     attr_reader :position
 
     # @return [Boolean]
+    attr_accessor :playing
+    
+    # @return [Boolean]
     attr_reader :connected
 
     # @param payload [Hash]
     # @param client [Object]
     def initialize(payload, client)
       @client = client
-      @loaded = false
+      @playing = false
       @queue = Queue.new
       @voice = payload["voice"]
       @volume = payload["volume"]
@@ -76,17 +79,16 @@ module Calliope
     def next
       return if @queue.empty?
 
-      @client.http.modify_player(@guild, track: @queue.pop, replace: true)
-
-      @loaded = false if @queue.empty?
+      @track = @queue.pop
+      @client.http.modify_player(@guild, track: track.to_h, replace: false)
+      return @track
     end
 
     # Adds a track to the queue.
     # @param queue [Track]
     def add_track(track)
-      if @queue.empty? && @loaded == false
-        @client.http.modify_player(@guild, track: track, replace: true)
-        @loaded = true
+      if @playing == false
+        @client.http.modify_player(@guild, track: track.to_h, replace: true)
         return
       end
 
@@ -100,13 +102,14 @@ module Calliope
     # Updates the player data with new data.
     def update_data(payload)
       @voice = payload["voice"] if payload["voice"]
+      @track = Track.new(payload) if payload["track"]
       @volume = payload["volume"] if payload["volume"]
       @paused = payload["paused"] if payload["paused"]
+      @playing = payload["playing"] if payload["playing"]
       @guild = payload["guildId"]&.to_i if payload["guildId"]
-      @track = Track.new(payload) if payload["track"]
       @ping = payload["state"]["ping"] if payload.dig("state", "ping")
-      @connected = payload["state"]["connected"] if payload.dig("state", "connected")
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
+      @connected = payload["state"]["connected"] if payload.dig("state", "connected")
     end
   end
 end

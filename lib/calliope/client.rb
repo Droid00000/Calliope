@@ -117,9 +117,10 @@ module Calliope
     end
 
     def track_end(data)
-      #@players[data["guildId"].to_i].send(:update_data, data)
-      @players[data["guildId"].to_i].next
-      Calliope::Events::TrackEnd.new(data, self)
+      event = Calliope::Events::TrackEnd.new(data, self)
+      event.player.playing = false
+      raise_event(event)
+      event.player.next
     end
 
     # Internal handler for the ready event.

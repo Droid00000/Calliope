@@ -120,22 +120,22 @@ module Calliope
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
-        @client.players[guild].add_track(@selected_track.to_h)
+        @client.players[guild].add_track(@selected_track)
         return
       end
 
       if track && @tracks[track]
-        @client.players[guild].add_track(@tracks[track].to_h)
+        @client.players[guild].add_track(@tracks[track])
         return
       end
 
       if search_result? && first
-        @client.players[guild].add_track(@tracks.first.to_h)
+        @client.players[guild].add_track(@tracks.first)
         return
       end
 
       @tracks.each do |track|
-        @client.players[guild].add_track(track.to_h)
+        @client.players[guild].add_track(track)
       end
     end
 

@@ -16,6 +16,9 @@ module Calliope
       # @return [Object]
       attr_reader :track
 
+      # @return [Object]
+      attr_reader :player
+
       def_delegator :@track, :isrc, :name
       def_delegator :@track, :cover, :artist
       def_delegator :@track, :source, :encoded
@@ -26,6 +29,7 @@ module Calliope
       def initialize(payload, client)
         @client = client
         @guild = payload["guildId"]&.to_i
+        @player = @client.players[@guild]
         @track = Track.new(payload["track"])
       end
     end
@@ -41,6 +45,7 @@ module Calliope
         super
 
         @reason = payload["reason"]
+        payload["playing"] = false
       end
     end
 
