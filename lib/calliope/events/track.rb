@@ -5,6 +5,8 @@ module Calliope
   module Events
     # Raised whenever a track begins playing.
     class TrackStart
+      extend Forwardable
+
       # @return [Object]
       attr_reader :client
 
@@ -14,7 +16,7 @@ module Calliope
       # @return [Object]
       attr_reader :track
 
-      delegate :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration, to: :track
+      def_delegator :@track, :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration
 
       # @param payload [Hash]
       # @param client [Hash]
