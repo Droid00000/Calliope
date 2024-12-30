@@ -18,6 +18,9 @@ module Calliope
     # @return [Hash]
     attr_reader :voice
 
+    # @return [Queue]
+    attr_reader :queue
+
     # @return [String]
     attr_reader :flters
 
@@ -29,7 +32,7 @@ module Calliope
 
     # @return [Boolean]
     attr_accessor :playing
-    
+
     # @return [Boolean]
     attr_reader :connected
 
