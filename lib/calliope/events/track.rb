@@ -45,7 +45,6 @@ module Calliope
         super
 
         @reason = payload["reason"]
-        payload["playing"] = false
       end
     end
 

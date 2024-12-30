@@ -119,8 +119,12 @@ module Calliope
     def track_end(data)
       event = Calliope::Events::TrackEnd.new(data, self)
       event.player.playing = false
-      raise_event(event)
       event.player.next
+    end
+
+    def track_start(data)
+      event = Calliope::Events::TrackStart.new(data, self)
+      event.player.playing = true
     end
 
     # Internal handler for the ready event.
