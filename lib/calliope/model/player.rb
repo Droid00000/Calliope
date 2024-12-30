@@ -34,6 +34,7 @@ module Calliope
     # @param client [Object]
     def initialize(payload, client)
       @client = client
+      @loaded = false
       @queue = Queue.new
       @voice = payload["voice"]
       @volume = payload["volume"]
@@ -81,6 +82,12 @@ module Calliope
     # Adds a track to the queue.
     # @param queue [Track]
     def add_track(track)
+      if queue.empty? && @loaded == false
+        @client.http.modify_player(@guild, track: @queue.pop, replace: true)
+        @loaded = true
+        return
+      end
+
       @queue << track
     end
 
