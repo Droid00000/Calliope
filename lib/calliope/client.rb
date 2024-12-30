@@ -14,6 +14,8 @@ require_relative "model/player"
 require_relative "events/ready"
 require_relative "events/state"
 require_relative "events/stats"
+require_relative "events/track"
+require_relative "events/voice"
 require_relative "api/websocket"
 require_relative "model/tremolo"
 require_relative "model/vibrato"
@@ -115,7 +117,7 @@ module Calliope
     def track_end(data)
       @players[data["guildId"].to_i].send(:update_data, data)
       @players[data["guildId"].to_i].next
-      ::Events::TrackEnd.new(data, self)
+      Calliope::Events::TrackEnd.new(data, self)
     end
 
     # Internal handler for the ready event.
@@ -126,12 +128,12 @@ module Calliope
 
     # Internal handler for the update event.
     def notify_update(data)
-      ::Events::State.new(data)
+      Calliope::Events::State.new(data)
     end
 
     # Internal handler for the stats event.
     def notify_stats(data)
-      ::Events::Stats.new(data)
+      Calliope::Events::Stats.new(data)
     end
   end
 end
