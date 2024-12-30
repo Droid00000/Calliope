@@ -1,53 +1,65 @@
 # frozen_string_literal: true
 
 module Calliope
-  class Stats
-    # @return [Array<String>]
-    attr_reader :allocated_memory
+  # Generic class for events.
+  module Events
+    # Raised whenever we get the stats OP.
+    class Stats
+      # @return [Integer]
+      attr_reader :allocated_memory
 
-    # @return [String]
-    attr_reader :reserved_memory
+      # @return [Integer]
+      attr_reader :reserved_memory
 
-    # @return [String]
-    attr_reader :playing_players
+      # @return [Integer]
+      attr_reader :playing_players
 
-    # @return [String]
-    attr_reader :total_players
+      # @return [Integer]
+      attr_reader :deficit_frames
 
-    # @return [Integer]
-    attr_reader :deficit_frames
+      # @return [Integer]
+      attr_reader :nulled_frames
 
-    # @return [Integer]
-    attr_reader :nulled_frames
+      # @return [Integer]
+      attr_reader :total_players
 
-    # @return [Integer]
-    attr_reader :free_memory
+      # @return [Integer]
+      attr_reader :lavalink_load
 
-    # @return [Integer]
-    attr_reader :used_memory
+      # @return [Integer]
+      attr_reader :free_memory
 
-    # @return [Integer]
-    attr_reader :sent_frames
+      # @return [Integer]
+      attr_reader :used_memory
 
-    # @return [Integer]
-    attr_reader :cpu_cores
+      # @return [Integer]
+      attr_reader :sent_frames
 
-    # @return [Time]
-    attr_reader :uptime
+      # @return [Integer]
+      attr_reader :system_load
 
-    # @param payload [Hash]
-    def initialize(payload)
-      # @allocated_memory = payload["memory"]["allocated"]
-      # @reserved_memory = payload["memory"]["reservable"]
-      # @playing_players = payload["playingPlayers"]
-      # @total_players = payload["players"]
-      # @deficit_frames = payload["frameStats"]["deficit"]
-      # @nulled_frames = payload["frameStats"]["nulled"]
-      # @free_memory = payload["memory"]["free"]
-      # @used_memory = payload["memory"]["used"]
-      # @cpu_cores = payload["cpu"]["cores"]
-      # @sent_frames = payload["frameStats"]["sent"]
-      # @uptime = Time.at(payload["uptime"])
+      # @return [Integer]
+      attr_reader :cpu_cores
+
+      # @return [Time]
+      attr_reader :uptime
+
+      # @param payload [Hash]
+      def initialize(payload)
+        @total_players = payload["players"]
+        @cpu_cores = payload["cpu"]["cores"]
+        @free_memory = payload["memory"]["free"]
+        @used_memory = payload["memory"]["used"]
+        @system_load = payload["cpu"]["systemLoad"]
+        @playing_players = payload["playingPlayers"]
+        @sent_frames = payload["frameStats"]["sent"]
+        @uptime = Time.at(payload["uptime"] / 1000.0)
+        @lavalink_load = payload["cpu"]["lavalinkLoad"]
+        @nulled_frames = payload["frameStats"]["nulled"]
+        @deficit_frames = payload["frameStats"]["deficit"]
+        @allocated_memory = payload["memory"]["allocated"]
+        @reserved_memory = payload["memory"]["reservable"]
+      end
     end
   end
 end

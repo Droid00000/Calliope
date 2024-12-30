@@ -94,12 +94,6 @@ module Calliope
       Playable.new(@http.youtube(query), self)
     end
 
-    def play_track(guild, track)
-      return unless player?(guild) && track.is_a?(Playable)
-
-      track.play(guild)
-    end
-
     private
 
     # Internal handler for the event dispatch event.
@@ -116,6 +110,12 @@ module Calliope
       when :WebsocketClosedEvent
         websocket_close(data)
       end
+    end
+
+    def track_end(data)
+      @players[data["guildId"].to_i].send(:update_data, data)
+      @players[data["guildId"].to_i].next
+      TrackEnd.new(data, self)
     end
 
     # Internal handler for the ready event.

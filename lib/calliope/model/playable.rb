@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
-  # A generic class representing playable tracks.
+  # A generic class representing playable results.
   class Playable
     # @return [Symbol]
     attr_reader :type
@@ -63,7 +63,7 @@ module Calliope
       end
 
       if @type == :playlist && @selected_track.nil?
-       return Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime('%M:%S')
+        return Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime('%M:%S')
       end
     end
 
@@ -74,7 +74,7 @@ module Calliope
         return @playlist_name
       end
 
-      if @tracks && @type == :track 
+      if @tracks && @type == :track
         return @tracks.first.name
       end
 
@@ -112,12 +112,39 @@ module Calliope
       end
     end
 
+    # Queue the tracks for this playable object.
+    # @param guild [Integer] ID of the guild to queue for.
+    # @param track [Integer] Index of a specific track to queue.
+    # @param selected [Boolean] Whether the selected track should be queued.
+    def queue(guild, track: nil, first: true, selected: false)
+      raise ArgumentError unless @tracks && @client.player(guild)
+
+      if @selected_track && selected
+        @client.players[guild].add_track(@selected_track.to_h)
+        return
+      end
+
+      if track && @tracks[track]
+        @client.players[guild].add_track(@tracks[track].to_h)
+        return
+      end
+
+      if search_result? && first
+        @client.players[guild].add_track(@tracks.first.to_h)
+        return
+      end
+
+      @tracks.each do |track|
+        @client.players[guild].add_track(track.to_h)
+      end
+    end
+
     # Play the tracks for this playable object.
     # @param guild [Integer] ID of the guild to play for.
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
-    def play(guild, track: nil, first: true, selected: false, queue: true)
-      raise ArgumentError unless @tracks
+    def play(guild, track: nil, first: true, selected: false)
+      raise ArgumentError unless @tracks && @client.player(guild)
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)
