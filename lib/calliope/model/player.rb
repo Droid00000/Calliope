@@ -81,11 +81,6 @@ module Calliope
     # Adds a track to the queue.
     # @param queue [Track]
     def add_track(track)
-      unless @track
-        @client.http.modify_player(@guild, track: track&.to_h)
-        return
-      end
-
       @queue << track
     end
 
