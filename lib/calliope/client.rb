@@ -101,6 +101,7 @@ module Calliope
 
     # Internal handler for the event dispatch event.
     def notify_event(data)
+      puts data
       case data["type"].to_sym
       when :TrackEndEvent
         track_end(data)
@@ -116,7 +117,6 @@ module Calliope
     end
 
     def track_end(data)
-      puts "Raising a track end!"
       @players[data["guildId"].to_i].send(:update_data, data)
       puts data["guildId"]
       @players[data["guildId"].to_i].next

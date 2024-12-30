@@ -31,7 +31,7 @@ module Calliope
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
-        @thread = Thread.new { @driver.parse(@tcp.read(1)) until @dead }
+        @thread = Thread.new { @driver.parse(read_data) until @dead }
 
         @driver.start
       end
@@ -66,6 +66,10 @@ module Calliope
       # Write data to the socket.
       def write(data)
         @tcp.write(data)
+      end
+
+      def read
+        @tcp.readpartial(length)
       end
 
       # Close the websocket driver.
