@@ -50,9 +50,14 @@ module Calliope
       @source_name = payload["info"]["sourceName"]
     end
 
-    # Converts this track into a hash that can be sent to Lavalink for playback.
+    # Converts this track into a hash that can used for playback.
     def to_h
       { encoded: @encoded }
+    end
+
+    # A string representation of the track time.
+    def strftime
+      Time.at(@duration / 1000.0).utc.strftime('%M:%S')
     end
   end
 end
