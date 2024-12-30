@@ -3,6 +3,7 @@
 require "json"
 require "socket"
 require "faraday"
+require "delegate"
 require "websocket/driver"
 
 require_relative "version"
