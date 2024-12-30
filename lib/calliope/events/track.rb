@@ -16,7 +16,10 @@ module Calliope
       # @return [Object]
       attr_reader :track
 
-      def_delegator :@track, :isrc, :name, :cover, :artist, :source, :encoded, :position, :duration
+      def_delegator :@track, :isrc, :name
+      def_delegator :@track, :cover, :artist
+      def_delegator :@track, :source, :encoded
+      def_delegator :@track, :position, :duration
 
       # @param payload [Hash]
       # @param client [Hash]
