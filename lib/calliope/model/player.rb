@@ -77,6 +77,8 @@ module Calliope
       return if @queue.empty?
 
       @client.http.modify_player(@guild, track: @queue.pop, replace: true)
+
+      @loaded = false if @queue.empty?
     end
 
     # Adds a track to the queue.
