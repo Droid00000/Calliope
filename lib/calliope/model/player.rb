@@ -82,7 +82,7 @@ module Calliope
     # Adds a track to the queue.
     # @param queue [Track]
     def add_track(track)
-      if queue.empty? && @loaded == false
+      if @queue.empty? && @loaded == false
         @client.http.modify_player(@guild, track: @queue.pop, replace: true)
         @loaded = true
         return
