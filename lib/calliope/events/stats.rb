@@ -46,6 +46,7 @@ module Calliope
 
       # @param payload [Hash]
       def initialize(payload)
+        puts payload
         @total_players = payload["players"]
         @cpu_cores = payload["cpu"]["cores"]
         @free_memory = payload["memory"]["free"]

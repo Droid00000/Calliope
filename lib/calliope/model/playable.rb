@@ -117,7 +117,7 @@ module Calliope
     # @param track [Integer] Index of a specific track to queue.
     # @param selected [Boolean] Whether the selected track should be queued.
     def queue(guild, track: nil, first: true, selected: false)
-      raise ArgumentError unless @tracks && @client.player(guild)
+      raise ArgumentError unless @tracks && @client.player[guild]
 
       if @selected_track && selected
         @client.players[guild].add_track(@selected_track.to_h)
@@ -144,7 +144,7 @@ module Calliope
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
     def play(guild, track: nil, first: true, selected: false)
-      raise ArgumentError unless @tracks && @client.player(guild)
+      raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)
