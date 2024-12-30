@@ -117,8 +117,7 @@ module Calliope
     end
 
     def track_end(data)
-      @players[data["guildId"].to_i].send(:update_data, data)
-      puts data["guildId"]
+      #@players[data["guildId"].to_i].send(:update_data, data)
       @players[data["guildId"].to_i].next
       Calliope::Events::TrackEnd.new(data, self)
     end
