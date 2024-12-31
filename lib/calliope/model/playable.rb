@@ -64,6 +64,10 @@ module Calliope
 
       return unless @type == :playlist && @selected_track.nil?
 
+      if Time.at(@tracks.map(&:duration).sum / 1000.0).utc >= 3600
+        return Time.at(@tracks.map(&:duration).sum / 1000.0)strftime("%H:%M:%S")
+      end
+
       Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime("%M:%S")
     end
 
