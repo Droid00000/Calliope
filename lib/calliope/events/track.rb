@@ -3,8 +3,8 @@
 module Calliope
   # Generic class for events.
   module Events
+    # Base class for track events.
     class TrackEvent
-      # Base class for track events
       extend Forwardable
 
       # @return [Object]
