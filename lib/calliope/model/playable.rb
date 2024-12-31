@@ -119,34 +119,32 @@ module Calliope
     # Utility method to get the status of a player.
     # @param guild [Integer] The ID of the guild playing.
     def status(guild)
-      @client.players[guild].first_playing? ? "Now Playing" : "Queued"
+      @client.players[guild].playing? ? "Now Playing" : "Queued"
     end
 
     # Queue the tracks for this playable object.
     # @param guild [Integer] ID of the guild to queue for.
     # @param track [Integer] Index of a specific track to queue.
     # @param selected [Boolean] Whether the selected track should be queued.
-    def queue(guild, track: nil, first: true, selected: false)
+    def produce_queue(guild, track: nil, first: true, selected: false)
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
-        @client.players[guild].add_track(@selected_track)
+        @client.players[guild].queue = @selected_track.to_h
         return
       end
 
       if track && @tracks[track]
-        @client.players[guild].add_track(@tracks[track])
+        @client.players[guild].queue = @tracks[track].to_h
         return
       end
 
       if search_result? && first
-        @client.players[guild].add_track(@tracks.first)
+        @client.players[guild].queue = @tracks.first.to_h
         return
       end
 
-      @tracks.each do |track|
-        @client.players[guild].add_track(track)
-      end
+      @client.players[guild].queue = @tracks.map(&:to_h)
     end
 
     # Play the tracks for this playable object.

@@ -18,9 +18,6 @@ module Calliope
     # @return [Hash]
     attr_reader :voice
 
-    # @return [Queue]
-    attr_reader :queue
-
     # @return [String]
     attr_reader :flters
 
@@ -36,17 +33,11 @@ module Calliope
     # @return [Boolean]
     attr_reader :connected
 
-    # @return [Boolean]
-    attr_reader :first_playing
-    alias first_playing? first_playing
-
     # @param payload [Hash]
     # @param client [Object]
     def initialize(payload, client)
       @client = client
       @playing = false
-      @queue = Queue.new
-      @first_playing = nil
       @voice = payload["voice"]
       @volume = payload["volume"]
       @paused = payload["paused"]
@@ -80,29 +71,12 @@ module Calliope
 
     # Set the track that this player is playing.
     def track=(track)
-      @client.http.modify_player(@guild, track: track&.to_h)
+      @client.http.modify_player(@guild, track: track.to_h)
     end
 
-    # Plays the next track in the queue.
-    def next
-      return if @queue.empty?
-
-      @track = @queue.pop
-      @client.http.modify_player(@guild, track: track.to_h, replace: false)
-      @track
-    end
-
-    # Adds a track to the queue.
-    # @param queue [Track]
-    def add_track(track)
-      if @playing == false
-        @client.http.modify_player(@guild, track: track.to_h, replace: true)
-        @first_playing = true
-        return
-      end
-
-      @queue << track
-      @first_playing = false
+    # Set the queue used by the Lavalink player.
+    def queue=(queue)
+      @client.http.update_queue(@guild, type: "normal", tracks: queue)
     end
 
     private

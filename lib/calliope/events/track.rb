@@ -28,13 +28,11 @@ module Calliope
       # @param client [Hash]
       def initialize(payload, client)
         @client = client
-        @guild = payload["guildId"]&.to_i
+        @guild = payload["guildId"].to_i
         @player = @client.players[@guild]
         @track = Track.new(payload["track"])
 
-        return if self.class.superclass != Object
-
-        @player.playing = true
+        @player.playing = true if self.class.superclass == Object
       end
     end
 
@@ -48,7 +46,6 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @player.next
         @player.playing = false
         @reason = payload["reason"]
       end
