@@ -80,6 +80,10 @@ module Calliope
       @client.http.update_queue(@guild, type: "normal", tracks: queue)
     end
 
+    def next
+      puts @client.http.get_queue(@guild)
+    end
+
     private
 
     # @!visibility private
