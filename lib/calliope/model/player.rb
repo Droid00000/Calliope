@@ -37,7 +37,8 @@ module Calliope
     attr_reader :connected
 
     # @return [Boolean]
-    attr_reader :first_playing?
+    attr_reader :first_playing
+    alias first_playing? first_playing
     
     # @param payload [Hash]
     # @param client [Object]
@@ -45,7 +46,7 @@ module Calliope
       @client = client
       @playing = false
       @queue = Queue.new
-      @playing_first = nil
+      @first_playing = nil
       @voice = payload["voice"]
       @volume = payload["volume"]
       @paused = payload["paused"]
@@ -96,7 +97,7 @@ module Calliope
     def add_track(track)
       if @playing == false
         @client.http.modify_player(@guild, track: track.to_h, replace: true)
-        @playing_first = true
+        @first_playing = true
         return
       end
 
