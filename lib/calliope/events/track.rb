@@ -3,8 +3,8 @@
 module Calliope
   # Generic class for events.
   module Events
-    # Raised whenever a track begins playing.
-    class TrackStart
+    class TrackEvent
+      # Base class for track events
       extend Forwardable
 
       # @return [Object]
@@ -31,13 +31,25 @@ module Calliope
         @guild = payload["guildId"].to_i
         @player = @client.players[@guild]
         @track = Track.new(payload["track"])
+      end
+    end
+  
+    # Raised whenever a track begins playing.
+    class TrackStart < TrackEvent
+      # @return [Boolean]
+      attr_reader :playing
 
-        @player.playing = true if self.class.superclass == Object
+      # @param payload [Hash]
+      # @param client [Hash]
+      def initialize(payload, client)
+        super
+
+        @playing = (@player.playing = true)
       end
     end
 
     # Raised when a track stops playing.
-    class TrackEnd < TrackStart
+    class TrackEnd < TrackEvent
       # @return [String]
       attr_reader :reason
 
@@ -52,7 +64,7 @@ module Calliope
     end
 
     # Raised when a track gets stuck playing.
-    class TrackStuck < TrackStart
+    class TrackStuck < TrackEvent
       # @return [Integer]
       attr_reader :threshold
 
@@ -66,7 +78,7 @@ module Calliope
     end
 
     # Raised when a track throws an error.
-    class TrackError < TrackStart
+    class TrackError < TrackEvent
       # @return [String]
       attr_reader :cause
 
