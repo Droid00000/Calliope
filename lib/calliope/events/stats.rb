@@ -44,8 +44,12 @@ module Calliope
       # @return [Time]
       attr_reader :uptime
 
+      # @return [Object]
+      attr_reader :client
+
       # @param payload [Hash]
-      def initialize(payload)
+      def initialize(payload, client)
+        @client = client
         @total_players = payload["players"]
         @cpu_cores = payload["cpu"]["cores"]
         @free_memory = payload["memory"]["free"]

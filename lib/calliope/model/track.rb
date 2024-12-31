@@ -57,7 +57,7 @@ module Calliope
 
     # A string representation of the track time.
     def strftime
-      Time.at(@duration / 1000.0).utc.strftime('%M:%S')
+      Time.at(@duration / 1000.0).utc.strftime("%M:%S")
     end
   end
 end

@@ -5,6 +5,9 @@ module Calliope
   module Events
     # Raised when the ready event is reccived.
     class Ready
+      # @return [Object]
+      attr_reader :client
+
       # @return [Boolean]
       attr_reader :resumed
 
@@ -12,9 +15,12 @@ module Calliope
       attr_reader :session_id
 
       # @param payload [Hash]
-      def initialize(payload)
+      def initialize(payload, client)
+        @client = client
         @resumed = payload["resumed"]
         @session_id = payload["sessionId"]
+        @client.session = payload["sessionId"]
+        @client.http.session = payload["sessionId"]
       end
     end
   end

@@ -39,15 +39,15 @@ module Calliope
       end
 
       if @tracks && (type == :search || type == :track || (type == :playlist && selected_track.nil?))
-        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
-          instance_variable_set("@#{method}".to_sym, @tracks.first.send(method))
+        %i[isrc cover artist source encoded position duration].each do |method|
+          instance_variable_set(:"@#{method}", @tracks.first.send(method))
         end
       end
 
-      if @tracks && @selected_track
-        [:isrc, :cover, :artist, :source, :encoded, :position, :duration].each do |method|
-          instance_variable_set("@#{method}".to_sym, @selected_track.send(method))
-        end
+      return unless @tracks && @selected_track
+
+      %i[isrc cover artist source encoded position duration].each do |method|
+        instance_variable_set(:"@#{method}", @selected_track.send(method))
       end
     end
 
@@ -55,16 +55,16 @@ module Calliope
     # @return [String]
     def strftime
       if @tracks && (@type == :search || @type == :track || (@type == :playlist && @tracks.count == 1))
-        return Time.at(@tracks.first.duration / 1000.0).utc.strftime('%M:%S')
+        return Time.at(@tracks.first.duration / 1000.0).utc.strftime("%M:%S")
       end
 
       if @tracks && @type == :playlist && @selected_track
-        return Time.at(@selected_track.duration / 1000.0).utc.strftime('%M:%S')
+        return Time.at(@selected_track.duration / 1000.0).utc.strftime("%M:%S")
       end
 
-      if @type == :playlist && @selected_track.nil?
-        return Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime('%M:%S')
-      end
+      return unless @type == :playlist && @selected_track.nil?
+
+      Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime("%M:%S")
     end
 
     # Gets the name of a track.
@@ -82,9 +82,9 @@ module Calliope
         return @selected_track.name
       end
 
-      if @type == :search
-        return @tracks.first.name
-      end
+      return unless @type == :search
+
+      @tracks.first.name
     end
 
     # Whether this is a playlist.
@@ -106,14 +106,14 @@ module Calliope
     end
 
     # This is a sneaky way to use delegation without actually using it.
-    def method_missing(method_name, *args, &block)
-      if instance_variable_defined?("@#{method_name}".to_sym)
-        instance_variable_get("@#{method_name}".to_sym)
-      end
+    def method_missing(method_name, *_args)
+      return unless instance_variable_defined?(:"@#{method_name}")
+
+      instance_variable_get(:"@#{method_name}")
     end
 
     # Utility method to get the status of a player.
-    # @param guild [Integer] The ID of the guild playing. 
+    # @param guild [Integer] The ID of the guild playing.
     def status(guild)
       @client.players[guild].first_playing? ? "Now Playing" : "Queued"
     end

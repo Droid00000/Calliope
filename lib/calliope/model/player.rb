@@ -39,7 +39,7 @@ module Calliope
     # @return [Boolean]
     attr_reader :first_playing
     alias first_playing? first_playing
-    
+
     # @param payload [Hash]
     # @param client [Object]
     def initialize(payload, client)
@@ -89,7 +89,7 @@ module Calliope
 
       @track = @queue.pop
       @client.http.modify_player(@guild, track: track.to_h, replace: false)
-      return @track
+      @track
     end
 
     # Adds a track to the queue.

@@ -3,7 +3,7 @@
 require "json"
 require "socket"
 require "faraday"
-require 'forwardable'
+require "forwardable"
 require "websocket/driver"
 
 require_relative "version"
@@ -32,22 +32,22 @@ module Calliope
   # Used to access the Lavalink API.
   class Client
     # @return [Object]
-    attr_reader :http
+    attr_accessor :http
 
     # @return [Object]
-    attr_reader :socket
+    attr_accessor :socket
 
     # @return [String]
-    attr_reader :session
+    attr_accessor :session
 
     # @return [String]
-    attr_reader :address
+    attr_accessor :address
 
     # @return [Hash<Integer => Player>]
-    attr_reader :players
+    attr_accessor :players
 
     # @return [String]
-    attr_reader :password
+    attr_accessor :password
 
     # @param address [String] URL for connecting to the Lavalink node.
     # @param password [String] Password for connecting to the Lavalink node.
@@ -115,14 +115,34 @@ module Calliope
       end
     end
 
-    # Internal handler for the track stuck event.
-    def track_stuck(data)
-      event = Calliope::Events::TrackStuck.new(data, self)
+    # Internal handler for the update event.
+    def notify_update(data)
+      Calliope::Events::State.new(data, self)
     end
 
-    # Internal handler for the track excepction event.
-    def track_exception(data)
-      event = Calliope::Events::TrackException.new(data, self)
+    # Internal handler for the stats event.
+    def notify_stats(data)
+      Calliope::Events::Stats.new(data, self)
+    end
+
+    # Internal handler for the ready event.
+    def notify_ready(data)
+      Calliope::Events::Ready.new(data, self)
+    end
+
+    # Internal handler for the track end event.
+    def track_end(data)
+      Calliope::Events::TrackEnd.new(data, self)
+    end
+
+    # Internal handler for the track start event.
+    def track_start(data)
+      Calliope::Events::TrackStart.new(data, self)
+    end
+
+    # Internal handler for the track stuck event.
+    def track_stuck(data)
+      Calliope::Events::TrackStuck.new(data, self)
     end
 
     # Internal handler for the socket closed event.
@@ -130,34 +150,9 @@ module Calliope
       Calliope::Events::SocketClosed.new(data, self)
     end
 
-    # Internal handler for the track end event.
-    def track_end(data)
-      event = Calliope::Events::TrackEnd.new(data, self)
-      event.player.playing = false
-      event.player.next
-    end
-
-    # Internal handler for the track start event.
-    def track_start(data)
-      event = Calliope::Events::TrackStart.new(data, self)
-      event.player.playing = true
-    end
-
-    # Internal handler for the ready event.
-    def notify_ready(data)
-      @session = data["sessionId"]
-      @http.session = data["sessionId"]
-      Calliope::Events::Ready.new(data, self)
-    end
-
-    # Internal handler for the update event.
-    def notify_update(data)
-      Calliope::Events::State.new(data)
-    end
-
-    # Internal handler for the stats event.
-    def notify_stats(data)
-      Calliope::Events::Stats.new(data)
+    # Internal handler for the track excepction event.
+    def track_exception(data)
+      Calliope::Events::TrackException.new(data, self)
     end
   end
 end
