@@ -112,6 +112,12 @@ module Calliope
       end
     end
 
+    # Utility method to get the status of a player.
+    # @param guild [Integer] The ID of the guild playing. 
+    def status(guild)
+      @client.players[guild].first_playing? ? "Now Playing" : "Queued"
+    end
+
     # Queue the tracks for this playable object.
     # @param guild [Integer] ID of the guild to queue for.
     # @param track [Integer] Index of a specific track to queue.

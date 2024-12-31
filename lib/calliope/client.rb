@@ -101,7 +101,6 @@ module Calliope
 
     # Generic handler for the event dispatch event.
     def notify_event(data)
-      puts data
       case data["type"].to_sym
       when :TrackEndEvent
         track_end(data)
@@ -114,6 +113,21 @@ module Calliope
       when :WebsocketClosedEvent
         websocket_close(data)
       end
+    end
+
+    # Internal handler for the track stuck event.
+    def track_stuck(data)
+      event = Calliope::Events::TrackStuck.new(data, self)
+    end
+
+    # Internal handler for the track excepction event.
+    def track_exception(data)
+      event = Calliope::Events::TrackException.new(data, self)
+    end
+
+    # Internal handler for the socket closed event.
+    def websocket_close(data)
+      Calliope::Events::SocketClosed.new(data, self)
     end
 
     # Internal handler for the track end event.
@@ -133,6 +147,7 @@ module Calliope
     def notify_ready(data)
       @session = data["sessionId"]
       @http.session = data["sessionId"]
+      Calliope::Events::Ready.new(data, self)
     end
 
     # Internal handler for the update event.
