@@ -29,6 +29,7 @@ module Calliope
 
     # @return [Boolean]
     attr_accessor :playing
+    alias playing? playing
 
     # @return [Boolean]
     attr_reader :connected
