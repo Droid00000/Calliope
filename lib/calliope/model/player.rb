@@ -102,6 +102,7 @@ module Calliope
       end
 
       @queue << track
+      @first_playing = false
     end
 
     private
