@@ -67,6 +67,13 @@ module Calliope
                 body: filter_undef({ tracks: tracks, type: type })
       end
 
+      # @param guild_id [Integer, String] ID of the guild to add tracks for.
+      # @param tracks [Array<Hash>] An array of encoded track objects.
+      def update_queue_tracks(guild_id, tracks: :undef)
+        request :POST, "sessions/#{session}/players/#{guild_id}/queue/tracks",
+                body: filter_undef({ tracks: tracks })
+      end
+
       # @param guild_id [Integer, String] ID of the guild to retrive the queue for.
       def get_queue(guild_id)
         request :GET, "sessions/#{session}/players/#{guild_id}/queue"
