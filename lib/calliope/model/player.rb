@@ -96,12 +96,12 @@ module Calliope
 
       @client.http.delete_queue(@guild)
 
-      @client.http.modify_player(@guild, paused: true)
+      @client.http.modify_player(@guild, paused: true, replace: false)
 
-      @client.http.modify_player(@guild, track: { encoded: nil })
+      @client.http.modify_player(@guild, track: { encoded: nil }, replace: false)
 
-      @client.http.modify_player(@guild, paused: false)
-      
+      @client.http.modify_player(@guild, paused: false, replace: false)
+
       @client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)].flatten)
 
       old_queue.first
