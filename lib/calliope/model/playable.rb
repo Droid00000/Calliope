@@ -147,7 +147,7 @@ module Calliope
         return
       end
 
-      @client.players[guild].queue = @tracks.map(&:encoded)
+      @client.players[guild].queue = @tracks.map(&:to_h)
     end
 
     # Play the tracks for this playable object.
