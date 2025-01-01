@@ -5,9 +5,6 @@ module Calliope
     # @return [Integer]
     attr_reader :ping
 
-    # @return [Object]
-    attr_reader :track
-
     # @return [String]
     attr_reader :volume
 
@@ -75,6 +72,12 @@ module Calliope
       @client.http.modify_player(@guild, track: track.to_h)
     end
 
+    # Get the currently playing track.
+    def track
+      update_data(@client.http.get_player(@guild))
+      @track
+    end
+
     # Fetches the queue for this current player.
     def lava_queue
       response = @client.http.get_queue(@guild)["tracks"]
@@ -121,8 +124,8 @@ module Calliope
     # @note For internal use only.
     # Updates the player data with new data.
     def update_data(payload)
+      @track = payload["track"] if payload["track"]
       @voice = payload["voice"] if payload["voice"]
-      @track = Track.new(payload) if payload["track"]
       @volume = payload["volume"] if payload["volume"]
       @paused = payload["paused"] if payload["paused"]
       @playing = payload["playing"] if payload["playing"]
