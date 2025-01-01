@@ -98,7 +98,7 @@ module Calliope
 
       @client.http.modify_player(@guild, track: { encoded: nil })
 
-      @client.http.modify_queue(@guild, tracks: [old_queue.map(&:to_h)])
+      @client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)])
 
       old_queue.first
     end
