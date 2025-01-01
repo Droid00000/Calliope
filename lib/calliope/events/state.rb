@@ -5,7 +5,7 @@ module Calliope
   module Events
     # Raised when the player state is dispatched.
     class State
-      # @return [Object]
+      # @return [Client]
       attr_reader :client
 
       # @return [Integer]
@@ -23,7 +23,9 @@ module Calliope
       # @return [Boolean]
       attr_reader :connected
 
+      # @!visibility private
       # @param payload [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         @client = client
         @guild = payload["GuildId"]

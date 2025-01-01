@@ -14,7 +14,9 @@ module Calliope
       # @return [String]
       attr_reader :session_id
 
+      # @!visibility private
       # @param payload [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         @client = client
         @resumed = payload["resumed"]

@@ -31,6 +31,7 @@ module Calliope
     # @return [Boolean]
     attr_reader :connected
 
+    # @!visibility private
     # @param payload [Hash]
     # @param client [Object]
     def initialize(payload, client)

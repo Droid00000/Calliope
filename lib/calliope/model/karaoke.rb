@@ -14,6 +14,7 @@ module Calliope
     # @return [Integer]
     attr_reader :filter_width
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @level = payload["level"]

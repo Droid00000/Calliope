@@ -6,7 +6,7 @@ module Calliope
     # @return [Symbol]
     attr_reader :type
 
-    # @return [Object]
+    # @return [Client]
     attr_reader :client
 
     # @return [Array<Tracks>]
@@ -18,17 +18,20 @@ module Calliope
     # @return [Track, nil]
     attr_reader :selected_track
 
+    # @!visibility private
     # @param payload [Hash]
     # @param client [Object]
     def initialize(payload, client)
       @client = client
-      @type = payload["loadType"].to_sym
+      @type = payload["loadType"]&.to_sym || :decode
 
       @tracks = case @type
                 when :playlist
                   payload["data"]["tracks"].map { |track| Track.new(track) }
                 when :search
                   payload["data"].map { |track| Track.new(track) }
+                when :decode
+                  payload.map { |track| Track.new(track) }
                 when :track
                   [Track.new(payload["data"])]
                 end
@@ -38,21 +41,21 @@ module Calliope
         @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
       end
 
-      if @tracks && (type == :search || type == :track || (type == :playlist && selected_track.nil?))
+      if @tracks && (type == :search || type == :track || type == :decode || (type == :playlist && selected_track.nil?))
         %i[isrc cover artist source encoded position duration].each do |method|
           instance_variable_set(:"@#{method}", @tracks.first.send(method))
         end
       end
 
-      return unless @tracks && @selected_track
+      return unless @selected_track
 
       %i[isrc cover artist source encoded position duration].each do |method|
         instance_variable_set(:"@#{method}", @selected_track.send(method))
       end
     end
 
-    # Return the duration formatted as: Minutes:Seconds.
-    # @return [String]
+    # Return the duration formatted as: M:S or H:M:S.
+    # @return [String] The formatted time string.
     def strftime
       if @tracks && (@type == :search || @type == :track || (@type == :playlist && @tracks.count == 1))
         return Time.at(@tracks.first.duration / 1000.0).utc.strftime("%M:%S")
@@ -62,7 +65,7 @@ module Calliope
         return Time.at(@selected_track.duration / 1000.0).utc.strftime("%M:%S")
       end
 
-      return unless @type == :playlist && @selected_track.nil?
+      return unless (@type == :playlist && @selected_track.nil?) || @type == :decode
 
       if @tracks.map(&:duration).sum / 1000.0 >= 3600
         return Time.at(@tracks.map(&:duration).sum / 1000.0).utc.strftime("%H:%M:%S")
@@ -72,7 +75,7 @@ module Calliope
     end
 
     # Gets the name of a track.
-    # @return [String]
+    # @return [String] The name of the track.
     def name
       if @type == :playlist && @selected_track.nil?
         return @playlist_name
@@ -86,29 +89,27 @@ module Calliope
         return @selected_track.name
       end
 
-      return unless @type == :search
+      return unless @type == :search || @type == :decode
 
       @tracks.first.name
     end
 
-    # Whether this is a playlist.
-    # @return [Boolean]
-    def playlist?
-      @type == :playlist
+    # @!method search?
+    # @return [Boolean] whether this is a search result.
+    # @!method decode?
+    # @return [Boolean] whether these are decoded tracks.
+    # @!method playlist?
+    # @return [Boolean] whether this is a playlist.
+    # @!method track?
+    # @return [Boolean] whether this is a track.
+    %i[playlist track search decode].each do |type|
+      define_method("#{type}?") do
+        @type == type
+      end
     end
 
-    # Whether this is a single track.
-    # @return [Boolean]
-    def single_track?
-      @type == :track
-    end
-
-    # Whether this is a search result.
-    # @return [Boolean]
-    def search_result?
-      @type == :search
-    end
-
+    # @!visibility private
+    # @note For internal use only.
     # This is a sneaky way to use delegation without actually using it.
     def method_missing(method_name, *_args)
       return unless instance_variable_defined?(:"@#{method_name}")
@@ -118,6 +119,7 @@ module Calliope
 
     # Utility method to get the status of a player.
     # @param guild [Integer] The ID of the guild playing.
+    # @return [String] If the player is currently playing or it's operating in queue mode.
     def status(guild)
       @client.players[guild]&.playing? ? "Queued" : "Now Playing"
     end
@@ -126,7 +128,8 @@ module Calliope
     # @param guild [Integer] ID of the guild to queue for.
     # @param track [Integer] Index of a specific track to queue.
     # @param selected [Boolean] Whether the selected track should be queued.
-    def produce_queue(guild, track: nil, first: true, selected: false)
+    # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
+    def produce_queue(guild, track: nil, selected: false, first: true)
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
@@ -151,7 +154,8 @@ module Calliope
     # @param guild [Integer] ID of the guild to play for.
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
-    def play(guild, track: nil, first: true, selected: false)
+    # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
+    def play(guild, track: nil, selected: false, first: true)
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected

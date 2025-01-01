@@ -14,6 +14,7 @@ module Calliope
     # @return [Integer]
     attr_reader :right_to_right
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @left_to_left = payload["leftToLeft"]

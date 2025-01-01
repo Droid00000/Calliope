@@ -7,7 +7,7 @@ module Calliope
     class TrackEvent
       extend Forwardable
 
-      # @return [Object]
+      # @return [Client]
       attr_reader :client
 
       # @return [Integer]
@@ -24,8 +24,9 @@ module Calliope
       def_delegator :@track, :source, :encoded
       def_delegator :@track, :position, :duration
 
+      # @!visibility private
       # @param payload [Hash]
-      # @param client [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         @client = client
         @guild = payload["guildId"].to_i
@@ -39,8 +40,9 @@ module Calliope
       # @return [Boolean]
       attr_reader :playing
 
+      # @!visibility private
       # @param payload [Hash]
-      # @param client [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         super
 
@@ -53,27 +55,36 @@ module Calliope
       # @return [String]
       attr_reader :reason
 
+      # @return [Boolean]
+      attr_reader :playing
+
+      # @!visibility private
       # @param payload [Hash]
-      # @param client [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         super
 
-        @player.playing = false
         @reason = payload["reason"]
+        @playing = (@player.playing = false)
       end
     end
 
     # Raised when a track gets stuck playing.
     class TrackStuck < TrackEvent
+      # @return [Boolean]
+      attr_reader :playing
+
       # @return [Integer]
       attr_reader :threshold
 
+      # @!visibility private
       # @param payload [Hash]
-      # @param client [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         super
 
         @threshold = payload["thresholdMs"]
+        @playing = (@player.playing = false)
       end
     end
 
@@ -85,14 +96,19 @@ module Calliope
       # @return [String]
       attr_reader :message
 
+      # @return [Boolean]
+      attr_reader :playing
+
       # @return [String]
       attr_reader :severity
 
+      # @!visibility private
       # @param payload [Hash]
-      # @param client [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         super
 
+        @playing = (@player.playing = false)
         @cause = payload["exception"]["cause"]
         @message = payload["exception"]["message"]
         @severitiy = payload["exception"]["severity"]

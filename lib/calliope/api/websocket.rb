@@ -36,6 +36,7 @@ module Calliope
         @driver.start
       end
 
+      # @!visibility private
       # Handles a dispatch from the Websocket.
       def handle_dispatch(dispatch)
         case dispatch["op"]
@@ -50,24 +51,26 @@ module Calliope
         end
       end
 
-      # Create a new WS URL.
+      # @!visibility private
       # @param address [String]
       # @return [String] The URL to use.
       def create_url(address)
         "ws#{address.delete_prefix("http")}/websocket"
       end
 
-      # Send data to the socket.
+      # @!visibility private
       # @param data [String]
       def send(data)
         @driver.text(data)
       end
 
+      # @!visibility private
       # Write data to the socket.
       def write(data)
         @tcp.write(data)
       end
 
+      # @!visibility private
       # Close the websocket driver.
       def close
         @driver.close

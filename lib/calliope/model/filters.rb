@@ -35,6 +35,7 @@ module Calliope
     # @return [Object]
     attr_reader :channel_mix
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @volume = payload["volume"]

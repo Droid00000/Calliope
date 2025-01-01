@@ -26,6 +26,7 @@ module Calliope
     # @return [Integer]
     attr_reader :scale
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @sin_offset = payload["sinOffset"]

@@ -8,6 +8,7 @@ module Calliope
     # @return [Integer]
     attr_reader :gain
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @band = payload["band"]

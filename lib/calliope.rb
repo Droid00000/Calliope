@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require_relative "calliope/client"
-require_relative "calliope/version"
 
 # Calliope and all its functionality.
 module Calliope
+  # The current version of calliope.
+  VERSION = "0.1.0"
+
   # Raised when the request body to the lavalink server was malformed.
   class BadBody < RuntimeError; end
 

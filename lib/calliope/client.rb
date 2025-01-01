@@ -6,7 +6,6 @@ require "faraday"
 require "forwardable"
 require "websocket/driver"
 
-require_relative "version"
 require_relative "model/info"
 require_relative "api/routes"
 require_relative "api/client"
@@ -31,10 +30,10 @@ require_relative "model/channel_mix"
 module Calliope
   # Used to access the Lavalink API.
   class Client
-    # @return [Object]
+    # @return [API::Client]
     attr_accessor :http
 
-    # @return [Object]
+    # @return [API::Socket]
     attr_accessor :socket
 
     # @return [String]
@@ -97,6 +96,17 @@ module Calliope
       Playable.new(@http.youtube(query), self)
     end
 
+    # Decodes a bunch of encoded tracks into a playable object.
+    # @param tracks [Array<String>, String] The encoded tracks to deocde.
+    # @return [Playable] The playable object resulting from these tracks.
+    def decode(*tracks)
+      if tracks.flatten.size == 1
+        Track.new(@http.decode_track(tracks.flatten), self)
+      else
+        Playable.new(@http.decode_tracks(tracks.flatten), self)
+      end
+    end
+
     # Delete a player.
     # @param guild [Integer, String] ID of the guild to delete the player for.
     def delete_player(guild)
@@ -106,6 +116,7 @@ module Calliope
 
     private
 
+    # @!visibility private
     # Generic handler for the event dispatch event.
     def notify_event(data)
       case data["type"].to_sym
@@ -122,41 +133,49 @@ module Calliope
       end
     end
 
+    # @!visibility private
     # Internal handler for the update event.
     def notify_update(data)
       Calliope::Events::State.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the stats event.
     def notify_stats(data)
       Calliope::Events::Stats.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the ready event.
     def notify_ready(data)
       Calliope::Events::Ready.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the track end event.
     def track_end(data)
       Calliope::Events::TrackEnd.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the track start event.
     def track_start(data)
       Calliope::Events::TrackStart.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the track stuck event.
     def track_stuck(data)
       Calliope::Events::TrackStuck.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the socket closed event.
     def websocket_close(data)
       Calliope::Events::SocketClosed.new(data, self)
     end
 
+    # @!visibility private
     # Internal handler for the track excepction event.
     def track_exception(data)
       Calliope::Events::TrackException.new(data, self)

@@ -8,6 +8,7 @@ module Calliope
     # @return [Integer]
     attr_reader :frequency
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @depth = payload["depth"]

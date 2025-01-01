@@ -48,7 +48,6 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    yard (0.9.37)
 
 PLATFORMS
   arm64-darwin-24
@@ -58,7 +57,6 @@ DEPENDENCIES
   calliope!
   rake (~> 13.0)
   rubocop (~> 1.21)
-  yard (~> 0.9)
 
 BUNDLED WITH
    2.5.23

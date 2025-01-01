@@ -47,7 +47,9 @@ module Calliope
       # @return [Object]
       attr_reader :client
 
+      # @!visibility private
       # @param payload [Hash]
+      # @param client [Client]
       def initialize(payload, client)
         @client = client
         @total_players = payload["players"]

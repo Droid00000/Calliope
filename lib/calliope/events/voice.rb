@@ -21,8 +21,9 @@ module Calliope
       attr_reader :remote
       alias remote? remote
 
+      # @!visibility private
       # @param payload [Hash]
-      # @param client [Object]
+      # @param client [Client]
       def initialize(payload, client)
         @client = client
         @code = payload["code"]

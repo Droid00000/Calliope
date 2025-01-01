@@ -63,6 +63,8 @@ module Calliope
         case response.status
         when 200
           response.body
+        when 204
+          response.body
         when 400
           raise Calliope::BadBody
         when 401

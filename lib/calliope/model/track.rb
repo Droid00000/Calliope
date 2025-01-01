@@ -35,6 +35,7 @@ module Calliope
     # @return [String]
     attr_reader :source_name
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @isrc = payload["info"]["isrc"]

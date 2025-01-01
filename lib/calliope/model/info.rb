@@ -32,6 +32,7 @@ module Calliope
     # @return [String]
     attr_reader :branch
 
+    # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
       @jvm_version = payload["jvm"]
@@ -48,6 +49,7 @@ module Calliope
 
     private
 
+    # @!visibility private
     # Transforms the plugins array into a single hash.
     def transform_plugins(plugins)
       plugins.each_with_object({}) do |plugin, result|

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/calliope/version"
+require_relative "lib/calliope"
 
 Gem::Specification.new do |spec|
   spec.name = "calliope"
@@ -8,11 +8,10 @@ Gem::Specification.new do |spec|
   spec.authors = ["DroidDevelopment"]
   spec.email = ["johnship2876@gmail.com"]
 
-  spec.summary = "Lavalink API in Ruby."
-  spec.description = "A wrapper for the audio sending node, Lavalink in Ruby."
-  spec.homepage = "https://github.com/droid00000/calliope"
-  spec.required_ruby_version = ">= 3.3"
   spec.license = "Apache-2.0"
+  spec.summary = "Lavalink API in Ruby."
+  spec.homepage = "https://github.com/droid00000/calliope"
+  spec.description = "Wrapper for the Lavalink API in Ruby."
 
   spec.metadata = {
     "bug_tracker_uri" => "https://github.com/droid00000/calliope/issues",
@@ -28,6 +27,7 @@ Gem::Specification.new do |spec|
 
   spec.bindir = "exe"
   spec.require_paths = ["lib"]
+  spec.required_ruby_version = ">= 3.3"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
 
   spec.add_dependency "faraday"
