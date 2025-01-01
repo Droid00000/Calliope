@@ -33,7 +33,7 @@ module Calliope
         @track = Track.new(payload["track"])
       end
     end
-  
+
     # Raised whenever a track begins playing.
     class TrackStart < TrackEvent
       # @return [Boolean]

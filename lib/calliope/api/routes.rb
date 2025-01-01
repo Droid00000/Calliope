@@ -51,11 +51,6 @@ module Calliope
                 body: filter_undef({ resuming: resuming, timeout: timeout })
       end
 
-      # @param guild_id [Integer, String] ID of the guild to retrive the queue for.
-      def get_queue(guild_id)
-        request :GET, "sessions/#{session}/players/#{guild_id}/queue"
-      end
-
       # @param guild_id [Integer, String] ID of the guild to create a queue for.
       # @param type [String] The type of queue to create. NORMAL, REPEAT, TRACK.
       # @param tracks [Array<Hash>] An array of encoded track objects.
@@ -67,10 +62,19 @@ module Calliope
       # @param guild_id [Integer, String] ID of the guild to update a queue for.
       # @param type [String] The type of queue to update. NORMAL, REPEAT, TRACK.
       # @param tracks [Array<Hash>] An array of encoded track objects.
-      def update_queue(guild_id, tracks: :undef, type: :undef, index: :undef)
+      def update_queue(guild_id, tracks: :undef, index: :undef, type: "normal")
+        request :PATCH, "sessions/#{session}/players/#{guild_id}/queue",
+                body: filter_undef({ tracks: tracks, type: type })
+      end
 
-      request :PATCH, "sessions/#{session}/players/#{guild_id}/queue",
-              body: filter_undef({ tracks: tracks, type: type })
+      # @param guild_id [Integer, String] ID of the guild to retrive the queue for.
+      def get_queue(guild_id)
+        request :GET, "sessions/#{session}/players/#{guild_id}/queue"
+      end
+
+      # @param guild_id [Integer, String] ID of the guild to delete a queue for.
+      def delete_queue(guild_id)
+        request :DELETE, "sessions/#{session}/players/#{guild_id}/tracks/queue"
       end
 
       # Perform a search using the lavasearch extension.
