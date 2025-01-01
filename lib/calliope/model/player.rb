@@ -96,7 +96,7 @@ module Calliope
 
       @client.http.delete_queue(@guild)
 
-      @client.http.modifiy_player(@guild, track: { encoded: nil })
+      @client.http.modify_player(@guild, track: { encoded: nil })
 
       @client.http.modify_queue(@guild, tracks: [old_queue.map(&:to_h)])
 
