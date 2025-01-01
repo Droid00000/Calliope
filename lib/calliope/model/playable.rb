@@ -168,7 +168,7 @@ module Calliope
         return
       end
 
-      if search_result? && first
+      if search? && first
         @client.http.modify_player(guild, track: @tracks.first.to_h)
         return
       end
