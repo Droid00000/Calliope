@@ -70,7 +70,7 @@ module Calliope
       # @param guild_id [Integer, String] ID of the guild to update a queue for.
       # @param tracks [Array<Hash>] An array of encoded track objects.
       def send_queue(guild_id, tracks)
-        request :PUT "sessions/#{session}/players/#{guild_id}/queue",
+        request :PUT, "sessions/#{session}/players/#{guild_id}/queue",
                 body: filter_undef({ tracks: tracks })
       end
 
