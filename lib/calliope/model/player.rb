@@ -85,11 +85,9 @@ module Calliope
     # Set the queue used by the Lavalink player.
     # By default this won't override the current queue.
     def queue=(queue)
-      #@client.http.send_queue(@guild, queue) if queue
-
       @client.http.update_queue(@guild, tracks: queue) unless queue
 
-      #@client.http.update_queue(@guild, tracks: [queue.map(&:to_h), queue].flatten) if queue
+      @client.http.update_queue(@guild, tracks: [queue.map(&:to_h), queue].flatten) if queue
     end
 
     # Skip to the next track in the queue.
@@ -98,9 +96,13 @@ module Calliope
 
       @client.http.delete_queue(@guild)
 
+      paused = true
+
       @client.http.modify_player(@guild, track: { encoded: nil })
 
       @client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)].flatten)
+
+      paused = false
 
       old_queue.first
     end
