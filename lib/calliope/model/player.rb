@@ -87,7 +87,11 @@ module Calliope
     def queue=(queue)
       @client.http.update_queue(@guild, tracks: queue) unless queue
 
-      @client.http.update_queue(@guild, tracks: [queue.map(&:to_h), queue].flatten) if queue
+      if queue && queue.is_a?(Array)
+        queue.map do |track|
+          @client.create_queue_index(@guild, queue[-1] + 1, track.to_h)
+        end
+      end
     end
 
     # Skip to the next track in the queue.
