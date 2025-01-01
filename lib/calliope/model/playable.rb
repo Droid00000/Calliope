@@ -142,7 +142,7 @@ module Calliope
         return
       end
 
-      if search_result? && first
+      if search? && first
         @client.players[guild].queue = [@tracks.first.to_h]
         return
       end

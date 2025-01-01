@@ -89,8 +89,8 @@ module Calliope
     # Set the queue used by the Lavalink player.
     # By default this won't override the current queue.
     def queue=(tracks)
-      @client.http.add_queue_tracks(@guild, [tracks]) if queue
-      
+      @client.http.add_queue_tracks(@guild, tracks) if queue
+
       @client.http.update_queue(@guild, tracks: tracks) unless queue
     end
 
