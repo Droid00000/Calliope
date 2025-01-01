@@ -91,6 +91,7 @@ module Calliope
     end
 
     # Skip to the next track in the queue.
+    # @return [Track] The track that's currently playing.
     def next_track
       old_queue = lava_queue
 
@@ -101,6 +102,17 @@ module Calliope
       @client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)].flatten)
 
       old_queue.first
+    end
+
+    # Shuffles the current queue.
+    def shuffle_queue
+      @client.http.update_queue(@guild, tracks: lava_queue.shuffle.map(&:to_h))
+      lava_queue.first
+    end
+
+    # Deletes the current queue.
+    def destroy_queue
+      @client.http.delete_queue(@guild)
     end
 
     private

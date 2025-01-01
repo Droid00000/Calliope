@@ -97,6 +97,13 @@ module Calliope
       Playable.new(@http.youtube(query), self)
     end
 
+    # Delete a player.
+    # @param guild [Integer, String] ID of the guild to delete the player for.
+    def delete_player(guild)
+      @players.delete(guild)
+      @http.destroy_player(guild)
+    end
+
     private
 
     # Generic handler for the event dispatch event.

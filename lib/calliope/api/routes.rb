@@ -40,7 +40,7 @@ module Calliope
 
       # Deletes and disconnects a voice player, stopping all further playback.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
-      def destory_player(guild_id)
+      def destroy_player(guild_id)
         request :DELETE, "sessions/#{session}/players/#{guild_id}"
       end
 
