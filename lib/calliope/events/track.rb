@@ -46,7 +46,7 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @playing = (@player.playing = true)
+        @playing = (@player&.playing = true)
       end
     end
 
@@ -65,7 +65,7 @@ module Calliope
         super
 
         @reason = payload["reason"]
-        @playing = (@player.playing = false)
+        @playing = (@player&.playing = false)
       end
     end
 
@@ -84,7 +84,7 @@ module Calliope
         super
 
         @threshold = payload["thresholdMs"]
-        @playing = (@player.playing = false)
+        @playing = (@player&.playing = false)
       end
     end
 
@@ -108,7 +108,7 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @playing = (@player.playing = false)
+        @playing = (@player&.playing = false)
         @cause = payload["exception"]["cause"]
         @message = payload["exception"]["message"]
         @severitiy = payload["exception"]["severity"]
