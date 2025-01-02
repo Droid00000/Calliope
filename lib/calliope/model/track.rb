@@ -16,6 +16,7 @@ module Calliope
 
     # @return [String]
     attr_reader :source
+    alias url source
 
     # @return [String]
     attr_reader :encoded
@@ -53,7 +54,7 @@ module Calliope
 
     # Converts this track into a hash that can used for playback.
     def to_h
-      { "encoded": @encoded }
+      { encoded: @encoded }
     end
 
     # A string representation of the track time.
