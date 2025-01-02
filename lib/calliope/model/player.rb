@@ -50,27 +50,28 @@ module Calliope
     # Pause or unpause playback.
     # @param paused [Boolean] Whether this player should be currently paused.
     def paused=(paused)
-      @client.http.modify_player(@guild, paused: paused)
-      @paused = paused
+      update_data(@client.http.modify_player(@guild, paused: paused))
+      @paused
     end
 
     # Set the volume of this player.
     # @param volume [Integer] Number between 0-1000.
     def volume=(volume)
-      @client.http.modify_player(@guild, volume: volume)
-      @volume = volume
+      update_data(@client.http.modify_player(@guild, volume: volume))
+      @volume
     end
 
     # Set the position of the currently playing track.
     # @param position [Integer] The track position in milliseconds.
     def position=(position)
-      @client.http.modify_player(@guild, position: position)
-      @position = position
+      update_data(@client.http.modify_player(@guild, position: position))
+      @position
     end
 
     # Set the track that this player is playing.
     def track=(track)
-      @client.http.modify_player(@guild, track: track.to_h)
+      update_data(@client.http.modify_player(@guild, track: track.to_h))
+      @track
     end
 
     # Get the currently playing track.
