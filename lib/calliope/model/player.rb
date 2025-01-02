@@ -95,7 +95,7 @@ module Calliope
     end
 
     # Stops the currently playing track.
-    def stop
+    def stop_playing
       @client.http.modify_player(@guild, track: Track.null, replace: false)
       @track = nil
     end
@@ -103,16 +103,22 @@ module Calliope
     # Skip to the next track in the queue.
     # @return [Track] The track that's currently playing.
     def next_track
-      #old_queue = queue
-
-      #@client.http.delete_queue(@guild)
-
-      stop
-
-      #@client.http.modify_player(@guild, track: Track.null, replace: false)
-
+      stop_playing
       @track = Track.new(@client.http.next_queue_track(@guild))
-      #@client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)].flatten)
+    end
+
+    # Go back to the previous track in the queue.
+    # @return [Track, nil] The Track that was previously playing or nil.
+    def previous_track
+      begin
+        track = Track.new(@client.http.previous_queue_track(@guild))
+      rescue Calliope::NotFound
+        raise "There isn't a queue to play from!"
+      end
+
+      stop_playing
+      @track = track
+      @client.http.previous_queue_track(@guild)
     end
 
     # Shuffles the current queue.
