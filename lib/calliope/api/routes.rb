@@ -74,6 +74,11 @@ module Calliope
                 body: tracks
       end
 
+      # @param guild_id [Integer, String] ID of the guild to add tracks for.
+      def next_queue_track(guild_id)
+        request :POST, "sessions/#{sesison}/players/#{guild_id}/queue/next"
+      end
+
       # @param guild_id [Integer, String] ID of the guild to retrive the queue for.
       def get_queue(guild_id)
         request :GET, "sessions/#{session}/players/#{guild_id}/queue"

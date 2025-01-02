@@ -94,18 +94,25 @@ module Calliope
       @client.http.update_queue(@guild, tracks: tracks) unless queue
     end
 
+    # Stops the currently playing track.
+    def stop
+      @client.http.modify_player(@guild, track: Track.null, replace: false)
+      @track = nil
+    end
+
     # Skip to the next track in the queue.
     # @return [Track] The track that's currently playing.
     def next_track
-      old_queue = queue
+      #old_queue = queue
 
-      @client.http.delete_queue(@guild)
+      #@client.http.delete_queue(@guild)
 
-      @client.http.modify_player(@guild, track: Track.null, replace: false)
+      stop
 
-      @client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)].flatten)
+      #@client.http.modify_player(@guild, track: Track.null, replace: false)
 
-      old_queue.first
+      @track = Track.new(@client.http.next_queue_track(@guild))
+      #@client.http.update_queue(@guild, tracks: [old_queue.map(&:to_h)].flatten)
     end
 
     # Shuffles the current queue.
@@ -125,12 +132,12 @@ module Calliope
     # @note For internal use only.
     # Updates the player data with new data.
     def update_data(payload)
-      @track = payload["track"] if payload["track"]
       @voice = payload["voice"] if payload["voice"]
       @volume = payload["volume"] if payload["volume"]
       @paused = payload["paused"] if payload["paused"]
       @playing = payload["playing"] if payload["playing"]
       @guild = payload["guildId"]&.to_i if payload["guildId"]
+      @track = Track.new(payload["track"]) if payload["track"]
       @ping = payload["state"]["ping"] if payload.dig("state", "ping")
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
       @connected = payload["state"]["connected"] if payload.dig("state", "connected")
