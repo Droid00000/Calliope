@@ -111,14 +111,14 @@ module Calliope
     # @return [Track, nil] The Track that was previously playing or nil.
     def previous_track
       begin
-        track = Track.new(@client.http.previous_queue_track(@guild))
+        @client.http.previous_queue_track(@guild)
       rescue Calliope::NotFound
         raise "There isn't a queue to play from!"
       end
 
       stop_playing
-      @track = track
       @client.http.previous_queue_track(@guild)
+      track
     end
 
     # Shuffles the current queue.
