@@ -12,23 +12,15 @@ module Calliope
       attr_accessor :session
 
       # @return [String]
-      attr_accessor :address
-
-      # @return [String]
-      attr_accessor :password
-
-      # @return [String]
       attr_accessor :connection
 
       # @param address [String] URL for connecting to the Lavalink node.
       # @param password [String] Password for connecting to the Lavalink node.
       def initialize(address, password)
-        @address = address
-        @password = password
-        @connection = Faraday.new(@address) do |builder|
+        @connection = Faraday.new(address) do |builder|
           builder.request :json
           builder.response :json
-          builder.headers["Authorization"] = @password
+          builder.headers["Authorization"] = password
           builder.headers["Content-Type"] = "application/json"
         end
       end

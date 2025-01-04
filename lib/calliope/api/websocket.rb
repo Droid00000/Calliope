@@ -30,6 +30,8 @@ module Calliope
         @driver.set_header("Session-Id", session_id) if session_id
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
+        sleep(5)
+
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
         @thread = Thread.new { @driver.parse(@tcp.readpartial(4096)) until @dead }
 
