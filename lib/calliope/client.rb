@@ -6,6 +6,7 @@ require "faraday"
 require "forwardable"
 require "websocket/driver"
 
+require_relative "version"
 require_relative "model/info"
 require_relative "api/routes"
 require_relative "api/client"
