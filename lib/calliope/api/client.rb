@@ -28,7 +28,6 @@ module Calliope
         @connection = Faraday.new(@address) do |builder|
           builder.request :json
           builder.response :json
-          builder.response :logger
           builder.headers["Authorization"] = @password
           builder.headers["Content-Type"] = "application/json"
         end
