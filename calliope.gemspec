@@ -3,7 +3,7 @@
 require_relative "lib/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "calliope-link"
+  spec.name = "calliope"
   spec.authors = ["Droid00000"]
   spec.version = Calliope::VERSION
 
