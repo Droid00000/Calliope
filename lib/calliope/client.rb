@@ -89,11 +89,21 @@ module Calliope
       @states.delete(guild)
     end
 
+    def encode_query(query)
+      return query unless query.match?(/^(?:http(s)?:\/\/)?(?:www\.)?(?:youtu.be\/)?([a-zA-Z0-9\-_])+/)
+    
+      query = query.sub("?feature=shared", "").strip
+    
+      query.insert(query.index("e") + 2, "watch?v=")
+    
+      query.sub("youtu.be", "youtube.com")
+    end
+
     # Performs a search on a given query.
     # @param query [String] The item to search for.
     # @return [Playable] The playable object.
     def search(query)
-      Playable.new(@http.youtube(query), self)
+      Playable.new(@http.youtube(encode_query(query)), self)
     end
 
     # Decodes a bunch of encoded tracks into a playable object.
