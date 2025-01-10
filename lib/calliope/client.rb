@@ -90,7 +90,7 @@ module Calliope
     end
 
     def encode_query(query)
-      return query unless query.match?(/^(?:http(s)?:\/\/)?(?:www\.)?(?:youtu.be\/)?([a-zA-Z0-9\-_])+/)
+      return query unless query.match?(/^(?:https?:\/\/)?(?:www\.)?youtu.be\/([a-zA-Z0-9\-_]+)$/)
     
       query = query.sub("?feature=shared", "").strip
     
