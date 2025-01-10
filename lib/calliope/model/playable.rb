@@ -48,10 +48,9 @@ module Calliope
       end
 
       if @tracks && (type == :playlist && selected_track.nil?)
-        print payload
-        @cover = payload.dig("pluginInfo", "artworkUrl")
-        @artist = payload.dig("pluginInfo", "author")
-        @source = payload.dig("pluginInfo", "url")
+        @cover = payload["pluginInfo"].dig("artworkUrl") || @cover
+        @artist = payload["pluginInfo"].dig("author") || @artist
+        @source = payload["pluginInfo"].dig("url") || @source
       end
 
       return unless @selected_track
