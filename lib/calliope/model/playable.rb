@@ -47,6 +47,12 @@ module Calliope
         end
       end
 
+      if @tracks && (type == :playlist && (data.dig("pluginInfo", "type") == "playlist") && selected_track.nil?)
+        @cover = data.dig("pluginInfo", "artworkUrl") || @cover
+        @artist = data.dig("pluginInfo", "author") || @artist
+        @source = data.dig("pluginInfo", "url") || @source
+      end
+
       return unless @selected_track
 
       %i[isrc cover artist source encoded position duration].each do |method|

@@ -51,27 +51,23 @@ module Calliope
     # @param paused [Boolean] Whether this player should be currently paused.
     def paused=(paused)
       update_data(@client.http.modify_player(@guild, paused: paused))
-      @paused
     end
 
     # Set the volume of this player.
     # @param volume [Integer] Number between 0-1000.
     def volume=(volume)
       update_data(@client.http.modify_player(@guild, volume: volume))
-      @volume
     end
 
     # Set the position of the currently playing track.
     # @param position [Integer] The track position in milliseconds.
     def position=(position)
       update_data(@client.http.modify_player(@guild, position: position))
-      @position
     end
 
     # Set the track that this player is playing.
     def track=(track)
       update_data(@client.http.modify_player(@guild, track: track.to_h))
-      @track
     end
 
     # Get the currently playing track.
@@ -144,9 +140,9 @@ module Calliope
       @paused = payload["paused"] if payload["paused"]
       @playing = payload["playing"] if payload["playing"]
       @guild = payload["guildId"]&.to_i if payload["guildId"]
-      @track = Track.new(payload["track"]) if payload["track"]
       @ping = payload["state"]["ping"] if payload.dig("state", "ping")
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
+      @track = payload["track"].nil? ? nil : Track.new(payload["track"])
       @connected = payload["state"]["connected"] if payload.dig("state", "connected")
     end
   end
