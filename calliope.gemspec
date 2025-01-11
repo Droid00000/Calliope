@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "lib/version"
-
 Gem::Specification.new do |spec|
   spec.name = "calliope"
   spec.authors = ["Droid00000"]
