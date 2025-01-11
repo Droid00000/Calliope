@@ -5,7 +5,7 @@ require_relative "lib/version"
 Gem::Specification.new do |spec|
   spec.name = "calliope"
   spec.authors = ["Droid00000"]
-  spec.version = Calliope::VERSION
+  spec.version = "1.0.0"
 
   spec.license = "Apache-2.0"
   spec.summary = "Lavalink API in Ruby."

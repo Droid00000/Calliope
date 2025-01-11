@@ -26,7 +26,7 @@ module Calliope
         @driver = WebSocket::Driver.client(self)
         @driver.set_header("User-Id", user_id&.to_i)
         @driver.set_header("Authorization", password)
-        @driver.set_header("Client-Name", "Calliope/1.0.2")
+        @driver.set_header("Client-Name", "Calliope/1.0.0")
         @driver.set_header("Session-Id", session_id) if session_id
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
