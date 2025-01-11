@@ -7,9 +7,21 @@ AllCops:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
+# API methods should have get as a prefix.
+Naming/AccessorMethodName:
+  Enabled: false
+
 # Double quotes are preferable for me.
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
+
+# No reason for me to have this here.
+Style/MissingRespondToMissing:
+  Enabled: false
+
+# Most of these metrics are useless.
+Metrics/ClassLength:
+  Enabled: false
 
 # Most of these metrics are useless.
 Metrics/PerceivedComplexity:

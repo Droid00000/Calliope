@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The vibrato filter.
   class Vibrato
     # @return [Integer]
     attr_reader :depth

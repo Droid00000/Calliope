@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # Main filter class.
   class Filters
     # @return [Integer]
     attr_reader :volume

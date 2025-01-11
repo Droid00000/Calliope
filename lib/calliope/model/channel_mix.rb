@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The channel mix filter.
   class ChannelMix
     # @return [Integer]
     attr_reader :left_to_left

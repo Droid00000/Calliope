@@ -38,7 +38,11 @@ module Calliope
 
       if type == :playlist
         @playlist_name = payload["data"]["info"]["name"]
-        @selected_track = payload["data"]["info"]["selectedTrack"] == -1 ? nil : @tracks[payload["info"]["SelectedTrack"]]
+        @selected_track = if payload["data"]["info"]["selectedTrack"] == -1
+                            nil
+                          else
+                            @tracks[payload["info"]["SelectedTrack"]]
+                          end
       end
 
       if @tracks && (type == :search || type == :track || type == :decode || (type == :playlist && selected_track.nil?))
@@ -48,9 +52,9 @@ module Calliope
       end
 
       if @tracks && (type == :playlist && selected_track.nil?)
-        @cover = payload["data"]["pluginInfo"].dig("artworkUrl") || @cover
-        @artist = payload["data"]["pluginInfo"].dig("author") || @artist
-        @source = payload["data"]["pluginInfo"].dig("url") || @source
+        @cover = payload["data"]["pluginInfo"]["artworkUrl"] || @cover
+        @artist = payload["data"]["pluginInfo"]["author"] || @artist
+        @source = payload["data"]["pluginInfo"]["url"] || @source
       end
 
       return unless @selected_track
@@ -136,7 +140,7 @@ module Calliope
     # @param selected [Boolean] Whether the selected track should be queued.
     # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
     def produce_queue(guild, track: nil, selected: false, first: true)
-      raise ArgumentError unless @tracks && @client.players[guild]
+      raise ArgumentError unless @tracks || track
 
       if @selected_track && selected
         @client.players[guild].queue = [@selected_track.to_h]
@@ -162,7 +166,7 @@ module Calliope
     # @param selected [Boolean] Whether the selected track should be played.
     # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
     def play(guild, track: nil, selected: false, first: true)
-      raise ArgumentError unless @tracks && @client.players[guild]
+      raise ArgumentError unless @tracks || track
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)
@@ -179,8 +183,8 @@ module Calliope
         return
       end
 
-      @tracks.each do |track|
-        @client.http.modify_player(guild, track: track.to_h)
+      @tracks.each do |playable|
+        @client.http.modify_player(guild, track: playable.to_h)
       end
     end
   end

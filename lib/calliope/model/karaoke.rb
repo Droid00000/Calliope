@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The karaoke filter.
   class Karaoke
     # @return [Integer]
     attr_reader :level

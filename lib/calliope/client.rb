@@ -90,12 +90,12 @@ module Calliope
     end
 
     def encode_query(query)
-      return query unless query.match?(/^(?:https?:\/\/)?(?:www\.)?youtu.be\/([a-zA-Z0-9\-_]+)$/)
-    
+      return query unless query.match?(%r{^(?:https?://)?(?:www\.)?youtu.be/([a-zA-Z0-9\-_]+)$})
+
       query = query.sub("?feature=shared", "").strip
-    
+
       query.insert(query.index("e") + 2, "watch?v=")
-    
+
       query.sub("youtu.be", "youtube.com")
     end
 

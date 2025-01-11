@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # Info about the version of lavalink.
   class Info
     # @return [String]
     attr_reader :major_version

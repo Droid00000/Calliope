@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The tremolo filter.
   class Tremolo
     # @return [Integer]
     attr_reader :depth

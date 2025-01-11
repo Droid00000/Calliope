@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # A single track object.
   class Track
     # @return [String]
     attr_reader :isrc

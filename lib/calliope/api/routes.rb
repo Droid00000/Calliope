@@ -62,7 +62,7 @@ module Calliope
       # @param guild_id [Integer, String] ID of the guild to update a queue for.
       # @param type [String] The type of queue to update. NORMAL, REPEAT, TRACK.
       # @param tracks [Array<Hash>] An array of encoded track objects.
-      def update_queue(guild_id, tracks: :undef, index: :undef, type: "normal")
+      def update_queue(guild_id, tracks: :undef, type: "normal")
         request :PATCH, "sessions/#{session}/players/#{guild_id}/queue",
                 body: filter_undef({ tracks: tracks, type: type })
       end

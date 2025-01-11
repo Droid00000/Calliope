@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The Equalizer filter.
   class Equalizer
     # @return [Integer]
     attr_reader :band

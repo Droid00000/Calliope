@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # A lavalink player for a guild.
   class Player
     # @return [Integer]
     attr_reader :ping

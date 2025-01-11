@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The timescale filter.
   class Timescale
     # @return [Integer]
     attr_reader :rate

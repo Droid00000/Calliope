@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The distortion filter.
   class Distortion
     # @return [Integer]
     attr_reader :sin_offset
