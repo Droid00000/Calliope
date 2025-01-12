@@ -130,6 +130,22 @@ module Calliope
       @client.http.delete_queue(@guild)
     end
 
+    # A hash containing the metadata of a player.
+    def export
+      { track: track, position: position, queue: queue, volume: volume }.compact
+    end
+
+    # Import data from an export.
+    def import(hash)
+      track = hash[:track] if hash[:track]
+
+      position = hash[:position] if hash[:position]
+
+      queue = hash[:queue] if hash[:queue]
+      
+      volume = hash[:volume] if hash[:volume]
+    end
+
     private
 
     # @!visibility private
