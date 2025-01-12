@@ -142,7 +142,7 @@ module Calliope
       position = hash[:position] if hash[:position]
 
       queue = hash[:queue] if hash[:queue]
-      
+
       volume = hash[:volume] if hash[:volume]
     end
 
