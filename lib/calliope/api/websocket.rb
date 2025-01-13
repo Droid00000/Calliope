@@ -47,7 +47,7 @@ module Calliope
         when :stats
           @client.__send__(:notify_stats, dispatch)
         when :event
-          @client.__send__(:notify_event, dispatch)
+          @client.__send__(:handle_event, dispatch)
         end
       end
 
