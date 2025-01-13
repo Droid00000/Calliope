@@ -30,8 +30,6 @@ module Calliope
         @driver.set_header("Session-Id", session_id) if session_id
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
-        sleep(5)
-
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
         @thread = Thread.new { @driver.parse(@tcp.readpartial(4096)) until @dead }
 
@@ -41,14 +39,14 @@ module Calliope
       # @!visibility private
       # Handles a dispatch from the Websocket.
       def handle_dispatch(dispatch)
-        case dispatch["op"]
-        when "playerUpdate"
+        case dispatch["op"].to_sym
+        when :playerUpdate
           @client.__send__(:notify_update, dispatch)
-        when "ready"
+        when :ready
           @client.__send__(:notify_ready, dispatch)
-        when "stats"
+        when :stats
           @client.__send__(:notify_stats, dispatch)
-        when "event"
+        when :event
           @client.__send__(:notify_event, dispatch)
         end
       end
