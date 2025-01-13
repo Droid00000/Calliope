@@ -137,13 +137,7 @@ module Calliope
 
     # Import data from an export.
     def import(hash)
-      track = hash[:track] if hash[:track]
-
-      position = hash[:position] if hash[:position]
-
-      queue = hash[:queue].map(&:to_h) if hash[:queue]
-
-      volume = hash[:volume] if hash[:volume]
+      # To-Do
     end
 
     private
