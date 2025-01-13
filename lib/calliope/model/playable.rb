@@ -140,7 +140,7 @@ module Calliope
     # @param selected [Boolean] Whether the selected track should be queued.
     # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
     def produce_queue(guild, track: nil, selected: false, first: true)
-      raise ArgumentError unless @tracks || track
+      raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
         @client.players[guild].queue = [@selected_track.to_h]
