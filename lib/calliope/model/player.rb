@@ -146,15 +146,15 @@ module Calliope
     # @note For internal use only.
     # Updates the player data with new data.
     def update_data(payload)
-      @voice = payload["voice"] if payload["voice"]
-      @volume = payload["volume"] if payload["volume"]
-      @paused = payload["paused"] if payload["paused"]
-      @playing = payload["playing"] if payload["playing"]
-      @guild = payload["guildId"]&.to_i if payload["guildId"]
-      @ping = payload["state"]["ping"] if payload.dig("state", "ping")
-      @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
+      @voice = payload["voice"] if payload.key?("voice")
+      @volume = payload["volume"] if payload.key?("volume")
+      @paused = payload["paused"] if payload.key?("paused")
+      @playing = payload["playing"] if payload.key?("playing")
+      @ping = payload["state"]["ping"] if payload.key?("state")
+      @guild = payload["guildId"]&.to_i if payload.key?("guildId")
       @track = payload["track"].nil? ? nil : Track.new(payload["track"])
-      @connected = payload["state"]["connected"] if payload.dig("state", "connected")
+      @connected = payload["state"]["connected"] if payload.key?("state")
+      @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
     end
   end
 end
