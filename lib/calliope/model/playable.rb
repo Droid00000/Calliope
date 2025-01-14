@@ -28,10 +28,10 @@ module Calliope
       @tracks = case @type
                 when :playlist
                   payload["data"]["tracks"].map { |track| Track.new(track) }
+                when :decode
+                  [payload].flatten.map { |track| Track.new(track) }
                 when :search
                   payload["data"].map { |track| Track.new(track) }
-                when :decode
-                  payload.map { |track| Track.new(track) }
                 when :track
                   [Track.new(payload["data"])]
                 end
@@ -166,7 +166,7 @@ module Calliope
     # @param selected [Boolean] Whether the selected track should be played.
     # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
     def play(guild, track: nil, selected: false, first: true)
-      raise ArgumentError unless @tracks || track
+      raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
         @client.http.modifiy_player(guild, track: @selected_track.to_h)

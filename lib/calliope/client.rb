@@ -52,7 +52,8 @@ module Calliope
     # @param password [String] Password for connecting to the Lavalink node.
     # @param application_id [Integer] The snowflake of the application using the node.
     # @param session_id [String] ID of a previous lavalink session to resume if there's one.
-    def initialize(address, password, application_id, session_id: nil)
+    # @param log_mode [Symbol] The log mode of the library. This has to be enabled manually.
+    def initialize(address, password, application_id, session_id: nil, log_mode: :off)
       @address = "#{address}/v4"
       @password = password
       @players = {}
@@ -61,12 +62,6 @@ module Calliope
       @mutex = Mutex.new
       @http = API::HTTP.new(@address, @password)
       @socket = API::Socket.new(@address, @password, application_id, session_id, self)
-    end
-
-    # Checks if there's an active player.
-    # @param id [Integer] ID of a guild.
-    def player?(id)
-      @players.key?(id)
     end
 
     # Connect to a lavalink node.
@@ -89,21 +84,29 @@ module Calliope
       @states.delete(guild)
     end
 
-    def encode_query(query)
-      return query unless query.match?(%r{^(?:https?://)?(?:www\.)?youtu.be/([a-zA-Z0-9\-_]+)$})
-
-      query = query.sub("?feature=shared", "").strip
-
-      query.insert(query.index("e") + 2, "watch?v=")
-
-      query.sub("youtu.be", "youtube.com")
-    end
-
     # Performs a search on a given query.
     # @param query [String] The item to search for.
-    # @return [Playable] The playable object.
-    def search(query)
-      Playable.new(@http.youtube(encode_query(query)), self)
+    # @param provider [Symbol] The provider to use when searching.
+    # @return [Playable] The playable object or empty data if nothing could be found.
+    def search(query, provider: :automatic)
+      case provider
+      when :youtube_music
+        Playable.new(@http.youtube_music(query), self)
+      when :apple_music
+        Playable.new(@http.apple_music(query), self)
+      when :soundcloud
+        Playable.new(@http.soundcloud(query), self)
+      when :automatic
+        Playable.new(resolve_search(query), self)
+      when :vk_music
+        Playable.new(@http.vk_music(query), self)
+      when :spotify
+        Playable.new(@http.spotify(query), self)
+      when :youtube
+        Playable.new(@http.youtube(query), self)
+      when :deezer
+        Playable.new(@http.deezer(query), self)
+      end
     end
 
     # Decodes a bunch of encoded tracks into a playable object.
@@ -111,7 +114,7 @@ module Calliope
     # @return [Playable] The playable object resulting from these tracks.
     def decode(*tracks)
       if tracks.flatten.size == 1
-        Track.new(@http.decode_track(tracks.flatten), self)
+        Playable.new(@http.decode_track(tracks.flatten), self)
       else
         Playable.new(@http.decode_tracks(tracks.flatten), self)
       end
@@ -189,6 +192,27 @@ module Calliope
     # Internal handler for the track excepction event.
     def track_exception(data)
       Calliope::Events::TrackException.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal resolver for URLs.
+    def resolve_search(query)
+      case query
+      when /^(?:http(s)??\:\/\/)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+)/
+        @http.search(query)
+      when /^(?:http(s)??\:\/\/)?(?:www\.)?(music\.apple\.com\/[a-z]{2}\/(?:album|playlist|track)\/[a-zA-Z0-9]+(?:\/[a-zA-Z0-9]+)?)/
+        @http.search(query)
+      when /^(?:http(s)??\:\/\/)?(?:www\.)?(?:(?:youtube\.com\/watch\?v=)|(?:youtu.be\/))(?:[a-zA-Z0-9\-_])+/
+        @http.search(query)
+      when /^(?:http(s)??\:\/\/)?(?:www\.)?(open\.spotify\.com\/(track|album|playlist)\/[a-zA-Z0-9]{22})/
+        @http.search(query)
+      when /^(?:http(s)??\:\/\/)?(?:www\.)?soundcloud\.com\/[a-zA-Z0-9\-_]+(?:\/[a-zA-Z0-9\-_]+)?/
+        @http.search(query)
+      when /^(?:http(s)??\:\/\/)?(?:www\.)?deezer\.com\/[a-z]{2}\/(track|album|playlist)\/\d+/
+        @http.search(query)
+      else
+        @http.youtube(query)
+      end
     end
   end
 end
