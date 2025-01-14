@@ -154,7 +154,7 @@ module Calliope
       # @param query [String] Song URL to resolve.
       # @return [Hash] Hash containing matched tracks.
       def search(query)
-        request :GET "loadtracks?identifier=#{query}"
+        request :GET, "loadtracks?identifier=#{query}"
       end
 
       # Decode a Base64 track into a track object.

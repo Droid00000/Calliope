@@ -50,3 +50,18 @@ Metrics/AbcSize:
 # I don't like the extra end it introduces.
 Style/IfUnlessModifier:
   Enabled: false
+
+# Kinda need to have this due to regex stuff.
+Lint/DuplicateBranch:
+  Exclude:
+  - lib/calliope/client.rb
+
+# Again, kinda need this due to regex stuff.
+Layout/LineLength:
+  Exclude:
+  - lib/calliope/client.rb
+
+# Partially disabled so my lazy ass doesn't forget.
+Lint/UnusedMethodArgument:
+  Exclude:
+  - lib/calliope/client.rb

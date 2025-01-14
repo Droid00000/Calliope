@@ -198,17 +198,17 @@ module Calliope
     # Internal resolver for URLs.
     def resolve_search(query)
       case query
-      when /^(?:http(s)??\:\/\/)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+)/
+      when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
         @http.search(query)
-      when /^(?:http(s)??\:\/\/)?(?:www\.)?(music\.apple\.com\/[a-z]{2}\/(?:album|playlist|track)\/[a-zA-Z0-9]+(?:\/[a-zA-Z0-9]+)?)/
+      when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
         @http.search(query)
-      when /^(?:http(s)??\:\/\/)?(?:www\.)?(?:(?:youtube\.com\/watch\?v=)|(?:youtu.be\/))(?:[a-zA-Z0-9\-_])+/
+      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
         @http.search(query)
-      when /^(?:http(s)??\:\/\/)?(?:www\.)?(open\.spotify\.com\/(track|album|playlist)\/[a-zA-Z0-9]{22})/
+      when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
         @http.search(query)
-      when /^(?:http(s)??\:\/\/)?(?:www\.)?soundcloud\.com\/[a-zA-Z0-9\-_]+(?:\/[a-zA-Z0-9\-_]+)?/
+      when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
         @http.search(query)
-      when /^(?:http(s)??\:\/\/)?(?:www\.)?deezer\.com\/[a-z]{2}\/(track|album|playlist)\/\d+/
+      when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
         @http.search(query)
       else
         @http.youtube(query)
