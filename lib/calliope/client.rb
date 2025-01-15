@@ -210,6 +210,8 @@ module Calliope
         @http.search(query)
       when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
         @http.search(query)
+      when %r{/^amsearch:.|^spsearch:.|^ytsearch:.|^ytmsearch:.|^dzsearch:.|^scsearch:.}
+        @http.search(query)
       else
         @http.youtube(query)
       end
