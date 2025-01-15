@@ -131,7 +131,7 @@ module Calliope
     # @param guild [Integer] The ID of the guild playing.
     # @return [String] If the player is currently playing or it's operating in queue mode.
     def status(guild)
-      @client.players[guild]&.playing? ? "Queued" : "Now Playing"
+      @client.players[guild]&.track ? "Queued" : "Now Playing"
     end
 
     # Queue the tracks for this playable object.
