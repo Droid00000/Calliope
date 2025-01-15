@@ -45,7 +45,7 @@ module Calliope
       # @param hash [Hash] The hash to filter from.
       # @return [Hash] The new filtered hash.
       def filter_undef(hash)
-        hash.reject { |_, v| v == :undef }
+        hash&.reject { |_, v| v == :undef }
       end
 
       # @param response [Faraday::Response] Faraday request object.

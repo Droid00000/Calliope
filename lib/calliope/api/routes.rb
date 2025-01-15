@@ -171,7 +171,8 @@ module Calliope
         request :POST, "decodetracks", body: tracks
       end
 
-      # @param session_id [String, Integer] Voice session ID for a Discord voice connection.
+      # Get all the players for this active session.
+      # @return [Array<Hash>] Array of player objects.
       def get_players
         request :GET, "sessions/#{session}/players"
       end
