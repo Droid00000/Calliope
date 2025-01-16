@@ -65,3 +65,7 @@ Layout/LineLength:
 Lint/UnusedMethodArgument:
   Exclude:
   - lib/calliope/client.rb
+
+# Always use the percent sign for regex matching.
+Style/RegexpLiteral:
+  EnforcedStyle: "percent_r"
