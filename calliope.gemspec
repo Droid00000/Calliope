@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
 
   spec.bindir = "exe"
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = ">= 3.3"
+  spec.required_ruby_version = ">= 3.2.4"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
 
   spec.add_dependency "faraday", "~> 2.12.2"
