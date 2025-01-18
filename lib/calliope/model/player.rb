@@ -102,11 +102,11 @@ module Calliope
     # @param index [Integer] Position of the track.
     # @return [Track] The track that's currently playing.
     def next(index)
-      index.nil? ? track = queue[0].to_h : track = queue[index].to_h
+      index.nil? ? set_track(queue[0].to_h) : set_track(queue[index].to_h)
 
       @client.http.delete_queue_track(@guild, index)
 
-      self.track
+      get_current_track
     end
 
     # Go back to the previous track in the queue.
@@ -145,6 +145,17 @@ module Calliope
     end
 
     private
+
+    # Set the track that this player is playing.
+    def set_track(track)
+      update_data(@client.http.modify_player(@guild, track: track.to_h))
+    end
+
+    # Get the currently playing track.
+    def get_current_track
+      update_data(@client.http.get_player(@guild))
+      @track
+    end
 
     # @!visibility private
     # @note For internal use only.
