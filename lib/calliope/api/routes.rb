@@ -78,8 +78,7 @@ module Calliope
       # @param index [Integer] The index of the track to get.
       # @param position [Integer] The new position of the track.
       def move_queue_track(guild_id, index, position)
-        request :POST, "sessions/#{session}/players/#{guild_id}/queue/#{index}/move",
-                body: { position: position }
+        request :POST, "sessions/#{session}/players/#{guild_id}/queue/#{index}/move?position=#{position}"
       end
 
       # @param guild_id [Integer, String] ID of the guild to get the next track for.
