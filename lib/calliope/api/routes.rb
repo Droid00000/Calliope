@@ -20,7 +20,7 @@ module Calliope
       # @param paused [Boolean] Whether the player should be paused.
       # @param filters [Hash] A hash representing filters to apply.
       # @param voice [Hash] A hash representing a voice state object.
-      def modify_player(guild_id, replace: true, track: :undef, position: :undef,
+      def modify_player(guild_id, replace: false, track: :undef, position: :undef,
                         end_time: :undef, volume: :undef, paused: :undef,
                         filters: :undef, voice: :undef, state: :undef)
         body = {
@@ -72,6 +72,14 @@ module Calliope
       def add_queue_tracks(guild_id, tracks)
         request :POST, "sessions/#{session}/players/#{guild_id}/queue/tracks",
                 body: tracks
+      end
+
+      # @param guild_id [Integer, String] ID of the guild to move the track for.
+      # @param index [Integer] The index of the track to get.
+      # @param position [Integer] The new position of the track.
+      def move_queue_track(guild_id, index, position)
+        request :POST, "sessions/#{session}/players/#{guild_id}/queue/#{index}/move",
+                body: { position: position }
       end
 
       # @param guild_id [Integer, String] ID of the guild to get the next track for.
