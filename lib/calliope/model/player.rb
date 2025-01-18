@@ -111,6 +111,8 @@ module Calliope
       end
 
       @client.http.delete_queue_track(@guild, index + 1)
+
+      track
     end
 
     # Go back to the previous track in the queue.
