@@ -69,3 +69,7 @@ Lint/UnusedMethodArgument:
 # Always use the percent sign for regex matching.
 Style/RegexpLiteral:
   EnforcedStyle: "percent_r"
+
+# Semi-colon syntax isn't that bad.
+Style/Semicolon:
+  Enabled: false

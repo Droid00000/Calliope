@@ -76,16 +76,13 @@ module Calliope
     def connect(guild, token: nil, session: nil, endpoint: nil)
       @mutex.synchronize do
         @states[guild] ||= {}
-        @states[guild][:sessionId] = session if session
-        @states[guild][:endpoint] = endpoint if endpoint
-        @states[guild][:token] = token if token
+        @states[guild].merge!(to_voice(token, endpoint, session))
       end
 
-      return unless @states[guild][:sessionId] && @states[guild][:token]
+      return unless @states[guild].keys.count == 3
 
       player = @http.modify_player(guild, voice: @states[guild])
-      @players[guild] = Player.new(player, self)
-      @states.delete(guild)
+      @players[guild] = Player.new(player, self); @states.delete(guild)
     end
 
     # Performs a search on a given query.
@@ -144,6 +141,15 @@ module Calliope
     end
 
     private
+
+    # Create a voice state hash for the given data.
+    # @param token [String] The voice media server token.
+    # @param endpoint [String] The voice media server endpoint.
+    # @param session_id [String] The voice media sever session ID.
+    # @return [Hash] The hash from the resulting voice media data.
+    def to_voice(token, endpoint, session_id)
+      { token: token, sessionId: session_id, endpoint: endpoint }.compact
+    end
 
     # @!visibility private
     # Generic handler for the event dispatch event.
