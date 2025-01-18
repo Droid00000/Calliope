@@ -18,13 +18,13 @@ Gem::Specification.new do |spec|
     "rubygems_mfa_required" => "true"
   }
 
-  spec.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|bin|features|.git|.github/appveyor/Gemfile)/})
+  spec.files = `git ls-files -z`.split("\x0").reject do |files|
+    files.match(%r{^(test|spec|bin|features|.git|.github/appveyor/Gemfile)/})
   end
 
   spec.bindir = "exe"
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = ">= 3.2.4"
+  spec.required_ruby_version = ">= 3.3"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
 
   spec.add_dependency "faraday", "~> 2.12.2"

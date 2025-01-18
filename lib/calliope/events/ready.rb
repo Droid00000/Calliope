@@ -21,6 +21,7 @@ module Calliope
         @client = client
         @resumed = payload["resumed"]
         @session_id = payload["sessionId"]
+        @client.resumed = payload["resumed"]
         @client.session = payload["sessionId"]
         @client.http.session = payload["sessionId"]
       end

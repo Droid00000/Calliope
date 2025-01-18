@@ -45,6 +45,9 @@ module Calliope
     # @return [Hash<Integer => Player>]
     attr_accessor :players
 
+    # @return [Boolean]
+    attr_accessor :resumed
+
     # @return [String]
     attr_accessor :password
 
@@ -59,6 +62,7 @@ module Calliope
       @players = {}
       @states = {}
       @session = nil
+      @resumed = nil
       @mutex = Mutex.new
       @http = API::HTTP.new(@address, @password)
       @socket = API::Socket.new(@address, @password, application_id, session_id, self)
@@ -125,6 +129,18 @@ module Calliope
     def delete_player(guild)
       @players.delete(guild)
       @http.destroy_player(guild)
+    end
+
+    # Set whether this session is resumable.
+    # @param resuming [Boolean] Whether this session is resumable.
+    def resuming=(resuming)
+      @http.update_session(resuming: resuming)
+    end
+
+    # Set the player timeout.
+    # @param timeout [Integer] The timeout amount in seconds.
+    def timeout=(timeout)
+      @http.update_session(timeout: timeout)
     end
 
     private
