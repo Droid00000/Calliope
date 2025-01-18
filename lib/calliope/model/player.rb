@@ -102,17 +102,11 @@ module Calliope
     # @param index [Integer] Position of the track.
     # @return [Track] The track that's currently playing.
     def next(index)
-      stop_playing
+      index.nil? ? track = queue[0].to_h : track = queue[index].to_h
 
-      if index.nil? || index.zero?
-        @client.http.move_queue_track(@guild, 0, 0)
-      else
-        @client.http.move_queue_track(@guild, index, 0)
-      end
+      @client.http.delete_queue_track(@guild, index)
 
-      @client.http.delete_queue_track(@guild, index + 1)
-
-      track
+      self.track
     end
 
     # Go back to the previous track in the queue.
