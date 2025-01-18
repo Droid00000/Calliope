@@ -110,7 +110,7 @@ module Calliope
 
       stop_playing
 
-      @client.http.delete_queue_track(index + 1)
+      @client.http.delete_queue_track(@guild, index + 1)
     end
 
     # Go back to the previous track in the queue.
