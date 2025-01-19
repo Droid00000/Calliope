@@ -112,132 +112,130 @@ module Calliope
       end
     end
 
+    # Decodes a bunch of encoded tracks into a playable object.
+    # @param tracks [Array<String>, String] The encoded tracks to deocde.
+    # @return [Playable] The playable object resulting from these tracks.
+    def decode(*tracks)
+      if tracks.flatten.size == 1
+        Playable.new(@http.decode_track(tracks.flatten), self)
+      else
+        Playable.new(@http.decode_tracks(tracks.flatten), self)
+      end
+    end
+
+    # Delete a player.
+    # @param guild [Integer, String] ID of the guild to delete the player for.
+    def delete_player(guild)
+      @players.delete(guild)
+      @http.destroy_player(guild)
+    end
+
+    # Set whether this session is resumable.
+    # @param resuming [Boolean] Whether this session is resumable.
+    def resuming=(resuming)
+      @http.update_session(resuming: resuming)
+    end
+
+    # Set the player timeout.
+    # @param timeout [Integer] The timeout amount in seconds.
+    def timeout=(timeout)
+      @http.update_session(timeout: timeout)
+    end
+
+    private
+
+    # Create a voice state hash for the given data.
+    # @param token [String] The voice media server token.
+    # @param endpoint [String] The voice media server endpoint.
+    # @param session_id [String] The voice media sever session ID.
+    # @return [Hash] The hash from the resulting voice media data.
+    def to_voice(token, endpoint, session_id)
+      { token: token, sessionId: session_id, endpoint: endpoint }.compact
+    end
+
+    # @!visibility private
+    # Generic handler for the event dispatch event.
+    def handle_event(data)
+      case data["type"]&.to_sym
+      when :TrackEndEvent
+        track_end(data)
+      when :TrackStuckEvent
+        track_stuck(data)
+      when :TrackStartEvent
+        track_start(data)
+      when :TrackExceptionEvent
+        track_exception(data)
+      when :WebsocketClosedEvent
+        websocket_close(data)
+      end
+    end
+
+    # @!visibility private
+    # Internal handler for the update event.
+    def notify_update(data)
+      Calliope::Events::State.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the stats event.
+    def notify_stats(data)
+      Calliope::Events::Stats.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the ready event.
+    def notify_ready(data)
+      Calliope::Events::Ready.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the track end event.
+    def track_end(data)
+      Calliope::Events::TrackEnd.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the track start event.
+    def track_start(data)
+      Calliope::Events::TrackStart.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the track stuck event.
+    def track_stuck(data)
+      Calliope::Events::TrackStuck.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the socket closed event.
+    def websocket_close(data)
+      Calliope::Events::SocketClosed.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal handler for the track excepction event.
+    def track_exception(data)
+      Calliope::Events::TrackException.new(data, self)
+    end
+
+    # @!visibility private
+    # Internal resolver for URLs.
     def url?(query)
-      # Decodes a bunch of encoded tracks into a playable object.
-      # @param tracks [Array<String>, String] The encoded tracks to deocde.
-      # @return [Playable] The playable object resulting from these tracks.
-      def decode(*tracks)
-        if tracks.flatten.size == 1
-          Playable.new(@http.decode_track(tracks.flatten), self)
-        else
-          Playable.new(@http.decode_tracks(tracks.flatten), self)
-        end
-      end
-
-      # Delete a player.
-      # @param guild [Integer, String] ID of the guild to delete the player for.
-      def delete_player(guild)
-        @players.delete(guild)
-        @http.destroy_player(guild)
-      end
-
-      # Set whether this session is resumable.
-      # @param resuming [Boolean] Whether this session is resumable.
-      def resuming=(resuming)
-        @http.update_session(resuming: resuming)
-      end
-
-      # Set the player timeout.
-      # @param timeout [Integer] The timeout amount in seconds.
-      def timeout=(timeout)
-        @http.update_session(timeout: timeout)
-      end
-
-      private
-
-      # Create a voice state hash for the given data.
-      # @param token [String] The voice media server token.
-      # @param endpoint [String] The voice media server endpoint.
-      # @param session_id [String] The voice media sever session ID.
-      # @return [Hash] The hash from the resulting voice media data.
-      def to_voice(token, endpoint, session_id)
-        { token: token, sessionId: session_id, endpoint: endpoint }.compact
-      end
-
-      # @!visibility private
-      # Generic handler for the event dispatch event.
-      def handle_event(data)
-        case data["type"]&.to_sym
-        when :TrackEndEvent
-          track_end(data)
-        when :TrackStuckEvent
-          track_stuck(data)
-        when :TrackStartEvent
-          track_start(data)
-        when :TrackExceptionEvent
-          track_exception(data)
-        when :WebsocketClosedEvent
-          websocket_close(data)
-        end
-      end
-
-      # @!visibility private
-      # Internal handler for the update event.
-      def notify_update(data)
-        Calliope::Events::State.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the stats event.
-      def notify_stats(data)
-        Calliope::Events::Stats.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the ready event.
-      def notify_ready(data)
-        Calliope::Events::Ready.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the track end event.
-      def track_end(data)
-        Calliope::Events::TrackEnd.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the track start event.
-      def track_start(data)
-        Calliope::Events::TrackStart.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the track stuck event.
-      def track_stuck(data)
-        Calliope::Events::TrackStuck.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the socket closed event.
-      def websocket_close(data)
-        Calliope::Events::SocketClosed.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal handler for the track excepction event.
-      def track_exception(data)
-        Calliope::Events::TrackException.new(data, self)
-      end
-
-      # @!visibility private
-      # Internal resolver for URLs.
-      def url?(query)
-        case query
-        when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
-          true
-        when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
-          true
-        when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
-          true
-        when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
-          true
-        when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
-          true
-        when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
-          true
-        else
-          false
-        end
+      case query
+      when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
+        true
+      else
+        false
       end
     end
 
