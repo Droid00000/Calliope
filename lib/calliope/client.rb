@@ -226,9 +226,9 @@ module Calliope
         true
       when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
         true
-      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
+      when %r{^(?:https?://)?(?:www\.)?(?:open\.spotify\.com|player\.spotify\.com)/(track|album|playlist)/[a-zA-Z0-9]{22}}
         true
-      when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
+      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
         true
       when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
         true
@@ -247,9 +247,9 @@ module Calliope
         @http.search(query)
       when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
         @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
+      when %r{^(?:https?://)?(?:www\.)?(?:open\.spotify\.com|player\.spotify\.com)/(track|album|playlist)/[a-zA-Z0-9]{22}}
         @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
+      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
         @http.search(query)
       when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
         @http.search(query)
