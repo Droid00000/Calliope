@@ -105,9 +105,9 @@ module Calliope
       index.nil? ? set_track(queue[0].to_h) : set_track(queue[index].to_h)
 
       if destructive
-        @client.http.delete_queue_tracks(@guild, index, queue[0...index].count)
+        @client.http.update_queue(@guild, tracks: queue.drop(index + 1).map(&:to_h))
       end
-      
+
       unless destructive
         @client.http.delete_queue_track(@guild, index)
       end
