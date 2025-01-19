@@ -221,21 +221,21 @@ module Calliope
     def find(query)
       case query
       when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       when %r{^amsearch:.|^spsearch:.|^ytsearch:.|^ytmsearch:.|^dzsearch:.|^scsearch:.}
-        @http.search(query)
+        Playable.new(@http.search(query), self)
       else
-        @http.spotify(query)
+        Playable.new(@http.spotify(query), self)
       end
     end
 
