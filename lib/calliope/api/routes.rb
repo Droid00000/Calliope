@@ -87,6 +87,13 @@ module Calliope
         request :DELETE, "/v4/sessions/#{session}/players/#{guild_id}/queue/#{index}"
       end
 
+      # @param guild_id [Integer, String] ID of the guild to delete the track for.
+      # @param index [Integer] The index of the track to start deleting at.
+      # @param amount [Integer] The amount of tracks to remove.
+      def delete_queue_tracks(guild_id, index, amount)
+        request :DELETE, "/v4/sessions/#{session}/players/#{guild_id}/queue/#{index}/?amount=#{amount}"
+      end
+
       # @param guild_id [Integer, String] ID of the guild to get the next track for.
       def next_queue_track(guild_id)
         request :POST, "sessions/#{session}/players/#{guild_id}/queue/next"

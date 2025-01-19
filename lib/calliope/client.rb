@@ -154,7 +154,7 @@ module Calliope
     # @!visibility private
     # Generic handler for the event dispatch event.
     def handle_event(data)
-      case data["type"].to_sym
+      case data["type"]&.to_sym
       when :TrackEndEvent
         track_end(data)
       when :TrackStuckEvent
