@@ -115,6 +115,17 @@ module Calliope
       get_current_track
     end
 
+    # Set a random track to be played from the queue.
+    def play_random
+      index = rand(queue.length)
+
+      set_track(queue[index].to_h)
+
+      @client.http.delete_queue_track(@guild, index)
+
+      get_current_track
+    end
+
     # Go back to the previous track in the queue.
     # @return [Track, nil] The Track that was previously playing or nil.
     def previous_track
