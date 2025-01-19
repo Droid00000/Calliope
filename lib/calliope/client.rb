@@ -107,6 +107,8 @@ module Calliope
         Playable.new(@http.youtube(query), self)
       when :deezer
         Playable.new(@http.deezer(query), self)
+      when :manual
+        Playable.new(@http.search(query), self)
       end
     end
 
