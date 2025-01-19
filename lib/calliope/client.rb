@@ -89,7 +89,7 @@ module Calliope
     # @param query [String] The item to search for.
     # @param provider [Symbol] The provider to use when searching.
     # @return [Playable] The playable object or empty data if nothing could be found.
-    def search(query, provider: :automatic)
+    def search(query, provider = :automatic)
       case provider
       when :youtube_music
         Playable.new(@http.youtube_music(query), self)
@@ -214,29 +214,6 @@ module Calliope
     # Internal handler for the track excepction event.
     def track_exception(data)
       Calliope::Events::TrackException.new(data, self)
-    end
-
-    # @!visibility private
-    # Internal resolver for URLs.
-    def find(query)
-      case query
-      when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
-        Playable.new(@http.search(query), self)
-      when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
-        Playable.new(@http.search(query), self)
-      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
-        Playable.new(@http.search(query), self)
-      when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
-        Playable.new(@http.search(query), self)
-      when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
-        Playable.new(@http.search(query), self)
-      when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
-        Playable.new(@http.search(query), self)
-      when %r{^amsearch:.|^spsearch:.|^ytsearch:.|^ytmsearch:.|^dzsearch:.|^scsearch:.}
-        Playable.new(@http.search(query), self)
-      else
-        Playable.new(@http.spotify(query), self)
-      end
     end
 
     # @!visibility private

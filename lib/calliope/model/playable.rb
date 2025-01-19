@@ -118,6 +118,11 @@ module Calliope
       end
     end
 
+    # The nil method is overwritten for more acccurate results.
+    def nil?
+      @tracks.nil?
+    end
+
     # @!visibility private
     # @note For internal use only.
     # This is a sneaky way to use delegation without actually using it.
