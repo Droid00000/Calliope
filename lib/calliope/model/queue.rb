@@ -85,7 +85,7 @@ module Calliope
     # Play the previous track in the queue. Immediatly overrides the current one.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def previous
-      return if @tracks.empty?
+      return if @history.empty?
 
       @player.track = @history.pop.tap { |track| @history << track }
     end
