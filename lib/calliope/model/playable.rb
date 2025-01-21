@@ -23,6 +23,7 @@ module Calliope
     # @param client [Object]
     def initialize(payload, client = nil)
       @client = client
+      print(payload)
       @type = payload["loadType"]&.to_sym || :decode
 
       @tracks = case @type
