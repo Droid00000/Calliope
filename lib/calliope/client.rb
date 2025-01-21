@@ -65,10 +65,8 @@ module Calliope
     def initialize(address, password, application_id, session_id: nil, log_mode: :off)
       @address = "#{address}/v4"
       @password = password
-      @players = {}
-      @states = {}
-      @session = nil
-      @resumed = nil
+      @players = Hash.new
+      @states = Hash.new
       @mutex = Mutex.new
       @http = API::HTTP.new(@address, @password)
       @socket = API::Socket.new(@address, @password, application_id, session_id, self)

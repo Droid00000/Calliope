@@ -77,6 +77,11 @@ module Calliope
       update_data(@client.http.modify_player(@guild, track: track&.to_h))
     end
 
+    # Stops the currently playing track.
+    def stop_track
+      update_data(@client.http.modify_player(@guild, track: Track.null))
+    end
+
     # Get the currently playing track.
     def track
       update_data(@client.http.get_player(@guild))
@@ -113,7 +118,6 @@ module Calliope
       @voice = payload["voice"] if payload.key?("voice")
       @volume = payload["volume"] if payload.key?("volume")
       @paused = payload["paused"] if payload.key?("paused")
-      @playing = payload["playing"] if payload.key?("playing")
       @ping = payload["state"]["ping"] if payload.key?("state")
       @guild = payload["guildId"]&.to_i if payload.key?("guildId")
       @track = payload["track"].nil? ? nil : Track.new(payload["track"])
