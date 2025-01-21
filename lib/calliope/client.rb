@@ -152,11 +152,11 @@ module Calliope
     # Internal resolver for URLs.
     def resolve_search(query)
       unless Playable.new(@http.search(query)).nil?
-        return Playable.new(@http.search(query, self))
+        return Playable.new(@http.search(query), self)
       end
 
       if Playable.new(@http.search(query)).nil?
-        return Playable.new(@http.youtube(query, self))
+        return Playable.new(@http.youtube(query), self)
       end
     end
 
