@@ -95,7 +95,7 @@ module Calliope
     # @param query [String] The item to search for.
     # @param provider [Symbol] The provider to use when searching.
     # @return [Playable] The playable object or empty data if nothing could be found.
-    def search(query, provider: :automatic)
+    def search(query, provider = :automatic)
       case provider
       when :youtube_music
         Playable.new(@http.youtube_music(query), self)
