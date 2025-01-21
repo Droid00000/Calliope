@@ -95,7 +95,7 @@ module Calliope
     # Start the next track in the queue upon recciving the track end event.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def play(reason)
-      return if (%w[stopped, cleanup, replaced].include?(reason)) || empty?
+     # return if (%w[stopped, cleanup, replaced].include?(reason)) || empty?
 
       @player.track = @tracks.shift.tap { |track| @history << track }
     end
