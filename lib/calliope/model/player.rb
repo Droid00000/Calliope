@@ -77,59 +77,6 @@ module Calliope
       @track
     end
 
-    # Fetches the queue for this current player.
-    def queue
-      response = @client.http.get_queue(@guild)["tracks"]
-
-      response.map { |track| Track.new(track) } unless response.empty?
-    end
-
-    # Set the queue used by the Lavalink player.
-    # By default this won't override the current queue.
-    def queue=(tracks)
-      @client.http.add_queue_tracks(@guild, tracks) if queue
-
-      @client.http.update_queue(@guild, tracks: tracks) unless queue
-    end
-
-    # Stops the currently playing track.
-    def stop_playing
-      @client.http.modify_player(@guild, track: Track.null, replace: false)
-      @track = nil
-    end
-
-    # Skip to the next track in the queue.
-    # @return [Track] The track that's currently playing.
-    def next_track
-      stop_playing
-      @track = Track.new(@client.http.next_queue_track(@guild))
-    end
-
-    # Go back to the previous track in the queue.
-    # @return [Track, nil] The Track that was previously playing or nil.
-    def previous_track
-      begin
-        @client.http.previous_queue_track(@guild)
-      rescue Calliope::NotFound
-        raise "There isn't a queue to play from!"
-      end
-
-      stop_playing
-      @client.http.previous_queue_track(@guild)
-      track
-    end
-
-    # Shuffles the current queue.
-    def shuffle_queue
-      @client.http.update_queue(@guild, tracks: queue.shuffle.map(&:to_h))
-      queue.first
-    end
-
-    # Deletes the current queue.
-    def delete_queue
-      @client.http.delete_queue(@guild)
-    end
-
     # A hash containing the metadata of a player.
     def export
       { track: track, position: position, queue: queue, volume: volume }.compact

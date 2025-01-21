@@ -51,49 +51,6 @@ module Calliope
                 body: filter_undef({ resuming: resuming, timeout: timeout })
       end
 
-      # @param guild_id [Integer, String] ID of the guild to create a queue for.
-      # @param type [String] The type of queue to create. NORMAL, REPEAT, TRACK.
-      # @param tracks [Array<Hash>] An array of encoded track objects.
-      def create_queue(guild_id, tracks, type: :undef)
-        request :POST, "sessions/#{session}/players/#{guild_id}/queue",
-                body: filter_undef({ tracks: tracks, type: type })
-      end
-
-      # @param guild_id [Integer, String] ID of the guild to update a queue for.
-      # @param type [String] The type of queue to update. NORMAL, REPEAT, TRACK.
-      # @param tracks [Array<Hash>] An array of encoded track objects.
-      def update_queue(guild_id, tracks: :undef, type: "normal")
-        request :PATCH, "sessions/#{session}/players/#{guild_id}/queue",
-                body: filter_undef({ tracks: tracks, type: type })
-      end
-
-      # @param guild_id [Integer, String] ID of the guild to add tracks for.
-      # @param tracks [Array<Hash>] An array of encoded track objects.
-      def add_queue_tracks(guild_id, tracks)
-        request :POST, "sessions/#{session}/players/#{guild_id}/queue/tracks",
-                body: tracks
-      end
-
-      # @param guild_id [Integer, String] ID of the guild to get the next track for.
-      def next_queue_track(guild_id)
-        request :POST, "sessions/#{session}/players/#{guild_id}/queue/next"
-      end
-
-      # @param guild_id [Integer, String] ID of the guild to add tracks for.
-      def previous_queue_track(guild_id)
-        request :POST, "sessions/#{session}/players/#{guild_id}/queue/previous"
-      end
-
-      # @param guild_id [Integer, String] ID of the guild to retrive the queue for.
-      def get_queue(guild_id)
-        request :GET, "sessions/#{session}/players/#{guild_id}/queue"
-      end
-
-      # @param guild_id [Integer, String] ID of the guild to delete a queue for.
-      def delete_queue(guild_id)
-        request :DELETE, "sessions/#{session}/players/#{guild_id}/tracks/queue"
-      end
-
       # Perform a search using the lavasearch extension.
       # @param query [String] The term to search for.
       # @param types [String] Track, album, artist, text, etc.

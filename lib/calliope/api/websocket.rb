@@ -39,7 +39,7 @@ module Calliope
       # @!visibility private
       # Handles a dispatch from the Websocket.
       def handle_dispatch(dispatch)
-        case dispatch["op"].to_sym
+        case dispatch["op"]&.to_sym
         when :playerUpdate
           @client.__send__(:notify_update, dispatch)
         when :ready

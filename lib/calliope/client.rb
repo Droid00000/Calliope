@@ -4,6 +4,7 @@ require "json"
 require "socket"
 require "faraday"
 require "forwardable"
+require "event_emmiter"
 require "websocket/driver"
 
 require_relative "model/info"
@@ -11,6 +12,7 @@ require_relative "api/routes"
 require_relative "api/client"
 require_relative "model/track"
 require_relative "model/player"
+require_relative "events/block"
 require_relative "events/ready"
 require_relative "events/state"
 require_relative "events/stats"
@@ -30,6 +32,9 @@ require_relative "model/channel_mix"
 module Calliope
   # Used to access the Lavalink API.
   class Client
+    # Emit events easily.
+    include EventEmmiter
+
     # @return [API::Client]
     attr_accessor :http
 
@@ -154,66 +159,119 @@ module Calliope
     # @!visibility private
     # Generic handler for the event dispatch event.
     def handle_event(data)
-      case data["type"].to_sym
-      when :TrackEndEvent
+      case data["type"]
+      when "TrackEndEvent"
         track_end(data)
-      when :TrackStuckEvent
+      when "TrackStuckEvent"
         track_stuck(data)
-      when :TrackStartEvent
+      when "TrackStartEvent"
         track_start(data)
-      when :TrackExceptionEvent
+      when "SegmentLoaded"
+        segments_loaded(data)
+      when "SegmentSkipped"
+        segment_skipped(data)
+      when "ChaptersLoaded"
+        chapters_loaded(data)
+      when "ChaptersStarted"
+        chapter_started(data)
+      when "TrackExceptionEvent"
         track_exception(data)
-      when :WebsocketClosedEvent
+      when "WebsocketClosedEvent"
         websocket_close(data)
       end
     end
 
     # @!visibility private
-    # Internal handler for the update event.
-    def notify_update(data)
-      Calliope::Events::State.new(data, self)
-    end
-
-    # @!visibility private
     # Internal handler for the stats event.
     def notify_stats(data)
-      Calliope::Events::Stats.new(data, self)
+      emit(:stats, Calliope::Events::Stats.new(data, self))
     end
 
     # @!visibility private
     # Internal handler for the ready event.
     def notify_ready(data)
-      Calliope::Events::Ready.new(data, self)
+      emit(:ready, Calliope::Events::Ready.new(data, self))
     end
 
     # @!visibility private
     # Internal handler for the track end event.
     def track_end(data)
-      Calliope::Events::TrackEnd.new(data, self)
+      emit(__method__, Calliope::Events::TrackEnd.new(data, self))
+    end
+
+    # @!visibility private
+    # Internal handler for the update event.
+    def notify_update(data)
+      emit(:player_update, Calliope::Events::State.new(data, self))
     end
 
     # @!visibility private
     # Internal handler for the track start event.
     def track_start(data)
-      Calliope::Events::TrackStart.new(data, self)
+      emit(__method__, Calliope::Events::TrackStart.new(data, self))
     end
 
     # @!visibility private
     # Internal handler for the track stuck event.
     def track_stuck(data)
-      Calliope::Events::TrackStuck.new(data, self)
+      emit(__method__, Calliope::Events::TrackStuck.new(data, self))
     end
 
     # @!visibility private
     # Internal handler for the socket closed event.
     def websocket_close(data)
-      Calliope::Events::SocketClosed.new(data, self)
+      emit(__method__, Calliope::Events::SocketClosed.new(data, self))
     end
 
     # @!visibility private
     # Internal handler for the track excepction event.
     def track_exception(data)
-      Calliope::Events::TrackException.new(data, self)
+      emit(__method__, Calliope::Events::TrackException.new(data, self))
+    end
+
+    # @!visibility private
+    # Internal handler for the segment loaded event.
+    def segments_loaded(data)
+      emit(__method__, Calliope::Events::SegmentsLoaded.new(data, self))
+    end
+
+    # @!visibility private
+    # Internal handler for the segment skipped event.
+    def segment_skipped(data)
+      emit(__method__, Calliope::Events::SegmentSkipped.new(data, self))
+    end
+
+    # @!visibility private
+    # Internal handler for the chapters loaded event.
+    def chapters_loaded(data)
+      emit(__method__, Calliope::Events::ChaptersLoaded.new(data, self))
+    end
+
+    # @!visibility private
+    # Internal handler for the chapter started event.
+    def chapter_started(data)
+      emit(__method__, Calliope::Events::ChapterStarted.new(data, self))
+    end
+
+    # @!visibility private
+    # Internal resolver for URLs.
+    def url?(query)
+      case query
+      when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
+        true
+      when %r{^(?:https?://)?(?:www\.)?(?:open\.spotify\.com|player\.spotify\.com)/(track|album|playlist)/[a-zA-Z0-9]{22}}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
+        true
+      when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
+        true
+      else
+        false
+      end
     end
 
     # @!visibility private
@@ -224,9 +282,9 @@ module Calliope
         @http.search(query)
       when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
         @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
+      when %r{^(?:https?://)?(?:www\.)?(?:open\.spotify\.com|player\.spotify\.com)/(track|album|playlist)/[a-zA-Z0-9]{22}}
         @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?(open\.spotify\.com/(track|album|playlist)/[a-zA-Z0-9]{22})}
+      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
         @http.search(query)
       when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
         @http.search(query)
