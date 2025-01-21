@@ -151,13 +151,7 @@ module Calliope
     # @!visibility private
     # Internal resolver for URLs.
     def resolve_search(query)
-      unless Playable.new(@http.search(query)).nil?
-        return Playable.new(@http.search(query), self)
-      end
-
-      if Playable.new(@http.search(query)).nil?
-        return Playable.new(@http.youtube(query), self)
-      end
+      Playable.new(@http.search(query)).nil? ? @http.youtube(query) : @http.search(query)
     end
 
     # Create a voice state hash for the given data.
