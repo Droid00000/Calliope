@@ -34,18 +34,18 @@ module Calliope
 
     # Add tracks to the end of the queue. Will start the next track by default.
     # @param tracks [Array<Track>, Track, Playable] Track(s) or playable objects.
-    def add(tracks, user = true)
+    def add(tracks)
       @tracks << tracks if tracks.is_a?(Track)
 
       if tracks.is_a?(Array)
-        tracks.flatten.each { |track| add(track, nil) }
+        tracks.flatten.each { |track| add(track) }
       end
 
       if tracks.is_a?(Playable)
         tracks.tracks.each { |track| @tracks << track }
       end
 
-      play(0) if @player.__send__(:can_start) && user
+      play(0) if @player.__send__(:can_start_player_tracks?)
     end
 
     # Move the position of a track in the array.

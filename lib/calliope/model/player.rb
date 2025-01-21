@@ -100,7 +100,7 @@ module Calliope
 
     private
 
-    def can_start
+    def can_start_player_tracks?
      return true if !playing?
     end
 
