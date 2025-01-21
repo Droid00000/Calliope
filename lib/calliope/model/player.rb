@@ -101,7 +101,7 @@ module Calliope
     private
 
     def can_start
-      !@player.track && !@player.paused?
+      !track && !paused?
     end
 
     # @!visibility private
