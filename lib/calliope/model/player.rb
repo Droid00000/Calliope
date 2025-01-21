@@ -101,7 +101,7 @@ module Calliope
     private
 
     def can_start
-      track && playing? ? false : true
+     return true if !playing?
     end
 
     # @!visibility private
