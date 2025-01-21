@@ -13,6 +13,9 @@ module Calliope
     attr_reader :paused
     alias paused? paused
 
+    # @return [Queue]
+    attr_reader :queue
+
     # @return [Hash]
     attr_reader :voice
 
@@ -41,6 +44,7 @@ module Calliope
       @voice = payload["voice"]
       @volume = payload["volume"]
       @paused = payload["paused"]
+      @queue = TrackQueue.new(self)
       @guild = payload["guildId"].to_i
       @ping = payload["state"]["ping"]
       @position = payload["state"]["position"]
@@ -68,7 +72,7 @@ module Calliope
 
     # Set the track that this player is playing.
     def track=(track)
-      update_data(@client.http.modify_player(@guild, track: track.to_h))
+      update_data(@client.http.modify_player(@guild, track: track&.to_h))
     end
 
     # Get the currently playing track.
@@ -85,6 +89,13 @@ module Calliope
     # Import data from an export.
     def import(hash)
       # To-Do
+    end
+
+    # Guild ID based comparison.
+    def ==(other)
+      return false unless other.is_a?(Player)
+
+      other.guild == @guild
     end
 
     private

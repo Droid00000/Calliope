@@ -53,19 +53,26 @@ module Calliope
       @source_name = payload["info"]["sourceName"]
     end
 
+    # A null track object that stops the current track from playing.
+    def self.null
+      { encoded: nil }
+    end
+
     # Converts this track into a hash that can used for playback.
     def to_h
       { encoded: @encoded }
     end
 
+    # Identifier based comparison.
+    def ==(other)
+      return false unless other.is_a?(Track)
+
+      other.identifier == @identifier
+    end
+
     # A string representation of the track time.
     def strftime
       Time.at(@duration / 1000.0).utc.strftime("%M:%S")
-    end
-
-    # A null track object that stops the current track from playing.
-    def self.null
-      { encoded: nil }
     end
   end
 end

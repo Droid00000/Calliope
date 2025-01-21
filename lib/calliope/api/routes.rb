@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
 module Calliope
+  # The API namespace.
   module API
     # Represents REST endpoints that can be queried.
     module Routes
-      # Gets an active voice player that already exists.
-      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
-      def get_player(guild_id)
-        request :GET, "sessions/#{session}/players/#{guild_id}"
-      end
-
       # Updates or creates a new voice player in a server.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       # @param replace [Boolean] If the current track should be overriden by the new track.
@@ -38,6 +33,28 @@ module Calliope
                 body: filter_undef(body)
       end
 
+      # Remove sponsor block categories.
+      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
+      # @param guild_id [Array<String>] Array of categories to delete.
+      def destroy_categories(guild_id, categories)
+        request :DELETE, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories",
+                body: categories
+      end
+
+      # Update the sponsor block categories.
+      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
+      # @param guild_id [Array<String>] Array of categories to update.
+      def update_categories(guild_id, categories)
+        request :PUT, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories",
+                body: categories
+      end
+
+      # Get the enabled sponsor block categories.
+      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
+      def get_categories(guild_id)
+        request :GET, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories"
+      end
+
       # Deletes and disconnects a voice player, stopping all further playback.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       def destroy_player(guild_id)
@@ -49,6 +66,12 @@ module Calliope
       def update_session(resuming: :undef, timeout: :undef)
         request :PATCH, "sessions/#{session}",
                 body: filter_undef({ resuming: resuming, timeout: timeout })
+      end
+
+      # Gets an active voice player that already exists.
+      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
+      def get_player(guild_id)
+        request :GET, "sessions/#{session}/players/#{guild_id}"
       end
 
       # Perform a search using the lavasearch extension.
@@ -107,6 +130,13 @@ module Calliope
         request :GET, "loadtracks?identifier=scsearch:#{query}"
       end
 
+      # Decode a Base64 track into a track object.
+      # @param track [String] Base64 encoded track.
+      # @return [Hash] Hash containing the decoded track.
+      def decode_track(track)
+        request :GET, "decodetrack?encodedTrack=#{track}"
+      end
+
       # Run a query on a given URL.
       # @param query [String] Song URL to resolve.
       # @return [Hash] Hash containing matched tracks.
@@ -114,15 +144,8 @@ module Calliope
         request :GET, "loadtracks?identifier=#{query}"
       end
 
-      # Decode a Base64 track into a track object.
-      # @param track [String] Base64 encoded string with the track data.
-      # @return [Hash] Hash containing the decoded track.
-      def decode_track(track)
-        request :GET, "decodetrack?encodedTrack=#{track}"
-      end
-
       # Decode multiple Base64 tracks into a track object.
-      # @param tracks [Array] Array of Base64 encoded strings with the track data.
+      # @param tracks [Array] Base64 encoded tracks.
       # @return [Hash] Hash containing decoded tracks.
       def decode_tracks(tracks)
         request :POST, "decodetracks", body: tracks

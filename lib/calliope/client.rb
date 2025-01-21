@@ -147,6 +147,18 @@ module Calliope
 
     private
 
+    # @!visibility private
+    # Internal resolver for URLs.
+    def resolve_search(query)
+      unless Playable.new(@http.search(query)).nil?
+        return Playable.new(@http.search(query, self))
+      end
+
+      if Playable.new(@http.search(query)).nil?
+        return Playable.new(@http.youtube(query, self))
+      end
+    end
+
     # Create a voice state hash for the given data.
     # @param token [String] The voice media server token.
     # @param endpoint [String] The voice media server endpoint.
@@ -271,29 +283,6 @@ module Calliope
         true
       else
         false
-      end
-    end
-
-    # @!visibility private
-    # Internal resolver for URLs.
-    def resolve_search(query)
-      case query
-      when %r{^(?:http(s)?://)?(?:www\.)?(?:music\.youtube\.com|m\.youtube\.com)(?:/(?:watch\?v=[\w-]+|playlist\?list=[\w-]+|track/[\w-]+))}
-        @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?(music\.apple\.com/[a-z]{2}/(?:album|playlist|track)/[a-zA-Z0-9]+(?:/[a-zA-Z0-9]+)?)}
-        @http.search(query)
-      when %r{^(?:https?://)?(?:www\.)?(?:open\.spotify\.com|player\.spotify\.com)/(track|album|playlist)/[a-zA-Z0-9]{22}}
-        @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?(?:(?:youtube\.com/watch\?v=)|(?:youtu.be/))(?:[a-zA-Z0-9\-_])+}
-        @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?soundcloud\.com/[a-zA-Z0-9\-_]+(?:/[a-zA-Z0-9\-_]+)?}
-        @http.search(query)
-      when %r{^(?:http(s)??://)?(?:www\.)?deezer\.com/[a-z]{2}/(track|album|playlist)/\d+}
-        @http.search(query)
-      when %r{^amsearch:.|^spsearch:.|^ytsearch:.|^ytmsearch:.|^dzsearch:.|^scsearch:.}
-        @http.search(query)
-      else
-        @http.youtube(query)
       end
     end
   end

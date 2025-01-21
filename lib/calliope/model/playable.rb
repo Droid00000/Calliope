@@ -21,7 +21,7 @@ module Calliope
     # @!visibility private
     # @param payload [Hash]
     # @param client [Object]
-    def initialize(payload, client)
+    def initialize(payload, client = nil)
       @client = client
       @type = payload["loadType"]&.to_sym || :decode
 
@@ -132,6 +132,12 @@ module Calliope
     # @return [String] If the player is currently playing or it's operating in queue mode.
     def status(guild)
       @client.players[guild]&.track ? "Queued" : "Now Playing"
+    end
+
+    # Utility method that overrides nil by default to be more useful.
+    # @return [Boolean] If this is an empty/nullable playable object.
+    def nil?
+      @tracks.nil?
     end
 
     # Queue the tracks for this playable object.
