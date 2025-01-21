@@ -34,7 +34,7 @@ module Calliope
   # Used to access the Lavalink API.
   class Client
     # Emit events easily.
-    include EventEmmiter
+    include EventEmitter
 
     # @return [API::Client]
     attr_accessor :http
