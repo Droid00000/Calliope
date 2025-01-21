@@ -35,28 +35,10 @@ module Calliope
       end
     end
 
-    # Raised whenever a track begins playing.
-    class TrackStart < TrackEvent
-      # @return [Boolean]
-      attr_reader :playing
-
-      # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
-      def initialize(payload, client)
-        super
-
-        @playing = (@player&.playing = true)
-      end
-    end
-
     # Raised when a track stops playing.
     class TrackEnd < TrackEvent
       # @return [String]
       attr_reader :reason
-
-      # @return [Boolean]
-      attr_reader :playing
 
       # @!visibility private
       # @param payload [Hash]
@@ -65,15 +47,12 @@ module Calliope
         super
 
         @reason = payload["reason"]
-        @playing = (@player&.playing = false)
+        @player.queue.play(payload["reason"])
       end
     end
 
     # Raised when a track gets stuck playing.
     class TrackStuck < TrackEvent
-      # @return [Boolean]
-      attr_reader :playing
-
       # @return [Integer]
       attr_reader :threshold
 
@@ -84,7 +63,6 @@ module Calliope
         super
 
         @threshold = payload["thresholdMs"]
-        @playing = (@player&.playing = false)
       end
     end
 
@@ -96,9 +74,6 @@ module Calliope
       # @return [String]
       attr_reader :message
 
-      # @return [Boolean]
-      attr_reader :playing
-
       # @return [String]
       attr_reader :severity
 
@@ -108,11 +83,13 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @playing = (@player&.playing = false)
         @cause = payload["exception"]["cause"]
         @message = payload["exception"]["message"]
         @severitiy = payload["exception"]["severity"]
       end
     end
+
+    # Raised whenever a track begins playing.
+    class TrackStart < TrackEvent; end
   end
 end

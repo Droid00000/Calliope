@@ -3,6 +3,7 @@
 module Calliope
   # A queue of tracks.
   class TrackQueue
+    # Allows delegation.
     extend Forwardable
 
     # @return [Boolean]

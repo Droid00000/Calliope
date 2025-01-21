@@ -149,21 +149,21 @@ module Calliope
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
-        @client.players[guild].queue = [@selected_track.to_h]
+        @client.players[guild].queue.add(@selected_track)
         return
       end
 
       if track && @tracks[track]
-        @client.players[guild].queue = [@tracks[track].to_h]
+        @client.players[guild].queue.add(@tracks[track])
         return
       end
 
       if search? && first
-        @client.players[guild].queue = [@tracks.first.to_h]
+        @client.players[guild].queue.add(@tracks.first)
         return
       end
 
-      @client.players[guild].queue = @tracks.map(&:to_h)
+      @client.players[guild].queue.add(@tracks)
     end
 
     # Play the tracks for this playable object.

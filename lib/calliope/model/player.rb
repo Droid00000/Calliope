@@ -100,6 +100,10 @@ module Calliope
 
     private
 
+    def can_start
+      !@player.track && !@player.paused?
+    end
+
     # @!visibility private
     # @note For internal use only.
     # Updates the player data with new data.
