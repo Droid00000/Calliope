@@ -72,6 +72,8 @@ module Calliope
 
     # Set the track that this player is playing.
     def track=(track)
+      return if track.nil?
+
       update_data(@client.http.modify_player(@guild, track: track&.to_h))
     end
 
