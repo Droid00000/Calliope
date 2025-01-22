@@ -3,7 +3,7 @@
 module Calliope
   # Generic class for events.
   module Events
-    # Raised when the ready event is reccived.
+    # Raised when the ready event is received.
     class Ready
       # @return [Object]
       attr_reader :client
@@ -15,8 +15,6 @@ module Calliope
       attr_reader :session_id
 
       # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
       def initialize(payload, client)
         @client = client
         @resumed = payload["resumed"]
