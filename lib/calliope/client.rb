@@ -120,18 +120,11 @@ module Calliope
     # @param tracks [Array<String>, String] The encoded tracks to deocde.
     # @return [Playable] The playable object resulting from these tracks.
     def decode(*tracks)
-      if tracks.flatten.size == 1
-        Playable.new(@http.decode_track(tracks.flatten), self)
-      else
+      if tracks.flatten.size > 1
         Playable.new(@http.decode_tracks(tracks.flatten), self)
+      else
+        Playable.new(@http.decode_track(tracks.flatten.first), self)
       end
-    end
-
-    # Delete a player.
-    # @param guild [Integer, String] ID of the guild to delete the player for.
-    def delete_player(guild)
-      @players.delete(guild)
-      @http.destroy_player(guild)
     end
 
     # Set whether this session is resumable.
