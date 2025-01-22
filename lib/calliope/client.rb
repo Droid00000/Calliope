@@ -146,7 +146,8 @@ module Calliope
     def resolve_search(query)
       Playable.new(@http.search(query)).nil? ? @http.youtube(query) : @http.search(query)
     end
-
+    
+    # @!visibility private
     # Create a voice state hash for the given data.
     # @param token [String] The voice media server token.
     # @param endpoint [String] The voice media server endpoint.
