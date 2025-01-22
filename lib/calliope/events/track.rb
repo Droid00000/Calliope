@@ -17,8 +17,8 @@ module Calliope
       # @return [Object]
       attr_reader :player
 
-      def_delegator :@track, :source, :encoded
-      def_delegator :@track, :position, :duration
+      #def_delegator :@track, :source, :encoded
+      #def_delegator :@track, :position, :duration
 
       # @!visibility private
       def initialize(payload, client)
