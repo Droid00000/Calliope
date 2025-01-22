@@ -17,7 +17,7 @@ module Calliope
       # @param voice [Hash] A hash representing a voice state object.
       def modify_player(guild_id, replace: false, track: :undef, position: :undef,
                         end_time: :undef, volume: :undef, paused: :undef,
-                        filters: :undef, voice: :undef, state: :undef)
+                        filters: :undef, voice: :undef)
         body = {
           track: track,
           position: position,
@@ -25,8 +25,7 @@ module Calliope
           volume: volume,
           paused: paused,
           filters: filters,
-          voice: voice,
-          state: state
+          voice: voice
         }
 
         request :PATCH, "sessions/#{session}/players/#{guild_id}?noReplace=#{replace}",
