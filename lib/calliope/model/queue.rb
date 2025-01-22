@@ -4,7 +4,7 @@ module Calliope
   # A queue of tracks.
   class TrackQueue
     # Allows delegation.
-    include Delegation
+    include ::Delegation
 
     # @return [Boolean]
     attr_accessor :loop
