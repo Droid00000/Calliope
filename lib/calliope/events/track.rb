@@ -5,7 +5,7 @@ module Calliope
   module Events
     # Base class for track events.
     class TrackEvent
-      include ::Delegation
+      include Delegation
 
       # @return [Client]
       attr_reader :client
