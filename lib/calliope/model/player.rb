@@ -75,7 +75,7 @@ module Calliope
     def volume=(volume)
       update_data(@client.http.modify_player(@guild, volume: volume))
     end
-    
+
     # Whether the next track should override.
     # @param replace [Boolean] Whether to override or not.
     def no_replace=(replace)

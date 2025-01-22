@@ -138,6 +138,18 @@ module Calliope
       @http.update_session(timeout: timeout)
     end
 
+    # Get the version of this lavalink player.
+    # @return [Integer] The version of this player.
+    def version
+      @version || @version = @http.version
+    end
+
+    # Get information about this lavalink player.
+    # @return [Info] Info about this lavalink player.
+    def info
+      @info || @info = Info.new(@http.info)
+    end
+
     private
 
     # @!visibility private
