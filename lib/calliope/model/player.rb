@@ -76,11 +76,6 @@ module Calliope
       update_data(@client.http.modify_player(@guild, position: position))
     end
 
-    # Stops the currently playing track.
-    def stop_track
-      update_data(@client.http.modify_player(@guild, track: Track.null))
-    end
-
     # Delete this player. Immediately stops playback.
     def delete
       @client.players.delete(guild).tap { @client.http.destroy_player(guild) }
@@ -92,9 +87,9 @@ module Calliope
     end
 
     # Set the track that this player is playing.
-    # @param track [Track] The track object to set.
+    # @param track [Track, nil] The track object to set. Nil stops the current track.
     def track=(track)
-      update_data(@client.http.modify_player(@guild, track: track&.to_h)) unless track.nil?
+      update_data(@client.http.modify_player(@guild, track: track&.to_h || Track.null))
     end
 
     # Import data from an export.
