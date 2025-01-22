@@ -62,8 +62,8 @@ module Calliope
     # @param password [String] Password for connecting to the Lavalink node.
     # @param application_id [Integer] The snowflake of the application using the node.
     # @param session_id [String] ID of a previous lavalink session to resume if there's one.
-    # @param log_mode [Symbol] The log mode of the library. This has to be enabled manually.
-    def initialize(address, password, application_id, session_id: nil, log_mode: :off)
+    # @param logging [Symbol] The log mode of the library. This has to be enabled manually.
+    def initialize(address, password, application_id, session_id: nil, logging: :off)
       @address = "#{address}/v4"
       @password = password
       @players = Hash.new
