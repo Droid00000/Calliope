@@ -17,21 +17,22 @@ module Calliope
     # @return [Array<Tracks>]
     attr_accessor :history
 
-    #def_delegator :@tracks, :last, :first
-    #def_delegator :@tracks, :size, :sample
-    #def_delegator :@tracks, :count, :empty?
-    #def_delegator :@tracks, :clear, :shuffle
-    #def_delegator :@tracks, :length, :replace
+    def_delegator :@tracks, :last, :last
+    def_delegator :@tracks, :size, :size
+    def_delegator :@tracks, :count, :count
+    def_delegator :@tracks, :clear, :clear
+    def_delegator :@tracks, :first, :first
+    def_delegator :@tracks, :sample, :sample
+    def_delegator :@tracks, :empty?, :empty?
+    def_delegator :@tracks, :length, :length
+    def_delegator :@tracks, :shuffle, :shuffle
+    def_delegator :@tracks, :replace, :replace
 
     # @!visibility private
     def initialize(player)
       @player = player
       @tracks = Array.new
       @history = Array.new
-    end
-
-    %i[first, last, sample, size, empty?, count, shuffle, clear, replace, length].each do |method|
-      define_method(method) { |*arguments| @tracks.send(method, *arguments) }
     end
 
     # Add tracks to the end of the queue. Will start the next track by default.
@@ -97,7 +98,7 @@ module Calliope
     # Start the next track in the queue upon recciving the track end event.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def play(reason)
-      return if %w[stopped cleanup replaced].include?(reason) || @tracks.empty?
+      return if %w[stopped cleanup replaced].include?(reason) || empty?
 
       @player.track = @tracks.shift.tap { |track| @history << track }
     end
