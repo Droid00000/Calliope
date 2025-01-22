@@ -15,42 +15,6 @@ Naming/AccessorMethodName:
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
 
-# No reason for me to have this here.
-Style/MissingRespondToMissing:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/ClassLength:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/PerceivedComplexity:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/CyclomaticComplexity:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/ParameterLists:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/MethodLength:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/BlockLength:
-  Enabled: false
-
-# Most of these metrics are useless.
-Metrics/AbcSize:
-  Enabled: false
-
-# I don't like the extra end it introduces.
-Style/IfUnlessModifier:
-  Enabled: false
-
 # Kinda need to have this due to regex stuff.
 Lint/DuplicateBranch:
   Exclude:
@@ -70,6 +34,14 @@ Lint/UnusedMethodArgument:
 # Always use the percent sign for regex matching.
 Style/RegexpLiteral:
   EnforcedStyle: "percent_r"
+
+# Most of these metrics are useless.
+Metrics:
+  Enabled: false
+
+# I don't like the extra end it introduces.
+Style/IfUnlessModifier:
+  Enabled: false
 
 # A literal is more readable for me.
 Style/EmptyLiteral:
