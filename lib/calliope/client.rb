@@ -87,7 +87,7 @@ module Calliope
       return unless @states[guild].keys.count == 3
 
       player = @http.modify_player(guild, voice: @states[guild])
-      @players[guild] = Player.new(player, self) && @states.delete(guild)
+      @players[guild] = Player.new(player, self).tap { @states.delete(guild) }
     end
 
     # Performs a search on a given query.
