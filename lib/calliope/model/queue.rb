@@ -101,7 +101,7 @@ module Calliope
     def play(reason)
       return if %w[stopped cleanup replaced].include?(reason) || empty?
 
-      @player.track = @looped.tap { |track| @history << track } if @looped
+      return @player.track = @looped if @looped
 
       @player.track = @tracks.shift.tap { |track| @history << track } unless @looped
     end
