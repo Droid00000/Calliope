@@ -3,6 +3,7 @@
 require "json"
 require "socket"
 require "faraday"
+require "forwardable"
 require "event_emitter"
 require "websocket/driver"
 
