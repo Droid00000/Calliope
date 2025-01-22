@@ -5,8 +5,6 @@ module Calliope
   module Events
     # Base class for track events.
     class TrackEvent
-      extend Forwardable
-
       # @return [Client]
       attr_reader :client
 
@@ -19,8 +17,6 @@ module Calliope
       # @return [Object]
       attr_reader :player
 
-      def_delegator :@track, :isrc, :name
-      def_delegator :@track, :cover, :artist
       def_delegator :@track, :source, :encoded
       def_delegator :@track, :position, :duration
 
@@ -30,6 +26,10 @@ module Calliope
         @guild = payload["guildId"].to_i
         @player = @client.players[@guild]
         @track = Track.new(payload["track"])
+      end
+
+      %i[name, isrc, cover, artist, source, encoded, position, duration] do |method|
+        define_method(method) { @track.send(method) }
       end
     end
 

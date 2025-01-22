@@ -30,6 +30,10 @@ module Calliope
       @history = Array.new
     end
 
+    %i[first, last, sample, size, empty?, count, shuffle, clear, replace, length] do |method|
+      define_method(method) { |*arguments| @tracks.send(method, *arguments) }
+    end
+
     # Add tracks to the end of the queue. Will start the next track by default.
     # @param tracks [Array<Track>, Track, Playable] Track(s) or playable objects.
     def add(tracks)
