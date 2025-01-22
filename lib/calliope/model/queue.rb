@@ -48,7 +48,7 @@ module Calliope
         tracks.tracks.each { |track| @tracks << track }
       end
 
-      play(0) if !@player.track && !@player.paused?
+      play(0) unless @player.paused? || @player.playing?
     end
 
     # Move the position of a track in the array.
