@@ -17,11 +17,11 @@ module Calliope
     # @return [Array<Tracks>]
     attr_accessor :history
 
-    def_delegator :@tracks, :last, :first
-    def_delegator :@tracks, :size, :sample
-    def_delegator :@tracks, :count, :empty?
-    def_delegator :@tracks, :clear, :shuffle
-    def_delegator :@tracks, :length, :replace
+    #def_delegator :@tracks, :last, :first
+    #def_delegator :@tracks, :size, :sample
+    #def_delegator :@tracks, :count, :empty?
+    #def_delegator :@tracks, :clear, :shuffle
+    #def_delegator :@tracks, :length, :replace
 
     # @!visibility private
     def initialize(player)
