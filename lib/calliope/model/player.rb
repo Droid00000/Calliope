@@ -89,7 +89,7 @@ module Calliope
     # Set the track that this player is playing.
     # @param track [Track, nil] The track object to set. Nil stops the current track.
     def track=(track)
-      update_data(@client.http.modify_player(@guild, track: track&.to_h || Track.null))
+      update_data(@client.http.modify_player(@guild, track: track&.to_h || Track.null)); @track
     end
 
     # Import data from an export.

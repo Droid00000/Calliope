@@ -5,7 +5,7 @@ module Calliope
   class TrackQueue
     extend Forwardable
 
-    # @return [Boolean]
+    # @return [TrackLoop]
     attr_accessor :looped
 
     # @return [Player]
@@ -31,7 +31,7 @@ module Calliope
     # @!visibility private
     def initialize(player)
       @player = player
-      @looped = false
+      @looped = Loop.new
       @tracks = Array.new
       @history = Array.new
     end
@@ -55,7 +55,7 @@ module Calliope
     # Check if there's still object in the queue.
     # @return [Boolean] If we can start the next track.
     def full?
-      !@tracks.empty? || @looped
+      !@tracks.empty? || @looped.full?
     end
 
     # Move the position of a track in the array.
@@ -85,19 +85,36 @@ module Calliope
     end
 
     # Play the previous track in the queue. Immediatly overrides the current one.
-    # @return [Array<Tracks>] The the entire track history so far at this point.
+    # @return [Track, Array<Track>] The new track object that's now playing.
     def previous
       return unless @history.fetch(-2, nil)
 
-      @player.track = @history[-2].tap { |track| @history << track }
+      @player.track = @history[-2].tap { |track| @history.unshift(track) }
     end
 
     # Play the next track in the queue. Immediatly overrides the current one.
-    # @return [Array<Tracks>] The the entire track history so far at this point.
+    # @return [Track, Array<Track>] The new track object that's now playing.
     def next
       return if empty?
 
-      @player.track = @tracks&.shift&.tap { |track| @history << track }
+      @player.track = @tracks&.shift&.tap { |track| @history.unshift(track) }
+    end
+
+    # Skip to a track at a specific index.
+    # @param index [Integer] The index of the track to skip to.
+    # @return [Track] The new track object that's now playing.
+    def skip(index)
+      return unless @tracks.fetch(index, nil)
+
+      @player.track = @tracks.delete_at(index).tap { |track| @history.unshift(track) }
+    end
+
+    # Get and play a random track from the queue.
+    # @return [Track] The track object that's now playing.
+    def random
+      return if empty?
+
+      @player.track = @tracks.delete_at(rand(@tracks.size)).tap { |track| @history.unshift(track) }
     end
 
     # @!visibility private
@@ -107,9 +124,9 @@ module Calliope
     def play(reason)
       return if %w[stopped cleanup replaced].include?(reason) || !full?
 
-      return @player.track = @looped.tap { |track| @history << track } if @looped
+      @player.track = @looped.shift.tap { |track| @history.unshift(track) } if @looped
 
-      @player.track = @tracks.shift.tap { |track| @history << track } unless @looped
+      @player.track = @tracks.shift.tap { |track| @history.unshift(track) } unless @looped
     end
   end
 end
