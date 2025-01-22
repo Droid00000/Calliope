@@ -106,7 +106,7 @@ module Calliope
     # Play the next track in the queue. Immediatly overrides the current one.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def next
-      return if @tracks.empty?
+      return if empty?
 
       @player.track = @tracks&.shift&.tap { |track| @history << track }
     end
@@ -116,7 +116,7 @@ module Calliope
     # Start the next track in the queue upon recciving the track end event.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def play(reason)
-      return if %w[stopped cleanup replaced].include?(reason) || @tracks.empty?
+      return if %w[stopped cleanup replaced].include?(reason) || empty?
 
       @player.track = @tracks.shift.tap { |track| @history << track }
     end
