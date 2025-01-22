@@ -4,7 +4,7 @@ module Calliope
   # A queue of tracks.
   class TrackQueue
     # Allows delegation.
-    extend Forwardable
+    include Delegation
 
     # @return [Boolean]
     attr_accessor :loop
@@ -18,14 +18,36 @@ module Calliope
     # @return [Array<Tracks>]
     attr_accessor :history
 
-    def_delegator :@tracks, :last, :first
-    def_delegator :@tracks, :size, :sample
-    def_delegator :@tracks, :count, :empty?
-    def_delegator :@tracks, :clear, :shuffle
-    def_delegator :@tracks, :length, :replace
+    # @!attribute [r] last
+    #   @return [Track] The last track in the queue.
+    #   @see Array#last
+    # @!attribute [r] first
+    #   @return [Track] The first track in the queue.
+    #   @see Array#first
+    # @!attribute [r] size
+    #   @return [Integer] The amount of tracks in the queue.
+    #   @see Array#size
+    # @!attribute [r] sample
+    #   @return [Track] A random track in the queue.
+    #   @see Array#sample
+    # @!attribute [r] count
+    #   @return [Integer] The amount of tracks in the queue.
+    #   @see Array#count
+    # @!attribute [r] empty?
+    #   @return [Boolean] Whether the queue is empty or not.
+    #   @see Array#empty?
+    # @!attribute [r] clear
+    #   @return [Array] Remove all the tracks in the queue.
+    #   @see Array#clear
+    # @!attribute [r] shuffle
+    #   @return [Array] Shuffles the tracks in the queue.
+    #   @see Array#shuffle
+    # @!attribute [r] replace
+    #   @return [Array] Replace all the tracks in the queue.
+    #   @see Array#replace
+    delegate :last, :first, :size, :sample, :count, :empty?, :clear, :shuffle, :replace, to: :tracks
 
     # @!visibility private
-    # @param player [Player]
     def initialize(player)
       @player = player
       @tracks = Array.new
@@ -45,7 +67,7 @@ module Calliope
         tracks.tracks.each { |track| @tracks << track }
       end
 
-      play(0) if @player.__send__(:can_start_player_tracks?)
+      play(0) if !@player.track && !@player.paused?
     end
 
     # Move the position of a track in the array.
@@ -74,12 +96,6 @@ module Calliope
       amount ? @tracks.slice!(index, amount) : @tracks.delete_at(index)
     end
 
-    # Play the next track in the queue. Immediatly overrides the current one.
-    # @return [Array<Tracks>] The the entire track history so far at this point.
-    def next
-      @player.track = @tracks&.shift&.tap { |track| @history << track }
-    end
-
     # Play the previous track in the queue. Immediatly overrides the current one.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def previous
@@ -88,12 +104,20 @@ module Calliope
       @player.track = @history[-2].tap { |track| @history << track }
     end
 
+    # Play the next track in the queue. Immediatly overrides the current one.
+    # @return [Array<Tracks>] The the entire track history so far at this point.
+    def next
+      return if empty?
+
+      @player.track = @tracks&.shift&.tap { |track| @history << track }
+    end
+
     # @!visibility private
     # @note For internal use only.
     # Start the next track in the queue upon recciving the track end event.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def play(reason)
-      return if (%w[stopped, cleanup, replaced].include?(reason)) || @tracks.empty?
+      return if %w[stopped cleanup replaced].include?(reason) || empty?
 
       @player.track = @tracks.shift.tap { |track| @history << track }
     end

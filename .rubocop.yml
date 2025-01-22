@@ -70,6 +70,6 @@ Lint/UnusedMethodArgument:
 Style/RegexpLiteral:
   EnforcedStyle: "percent_r"
 
-# Semi-colon syntax isn't that bad.
-Style/Semicolon:
+# A literal is more readable for me.
+Style/EmptyLiteral:
   Enabled: false

@@ -22,7 +22,7 @@ module Calliope
     # @return [String]
     attr_reader :encoded
 
-    # @return [Time]
+    # @return [Integer]
     attr_reader :duration
 
     # @return [Integer]

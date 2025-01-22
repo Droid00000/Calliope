@@ -3,7 +3,6 @@
 require "json"
 require "socket"
 require "faraday"
-require "forwardable"
 require "event_emitter"
 require "websocket/driver"
 
@@ -19,12 +18,15 @@ require_relative "events/state"
 require_relative "events/stats"
 require_relative "events/track"
 require_relative "events/voice"
+require_relative "model/segment"
+require_relative "model/chapter"
 require_relative "api/websocket"
 require_relative "model/tremolo"
 require_relative "model/vibrato"
 require_relative "model/filters"
 require_relative "model/karaoke"
 require_relative "model/playable"
+require_relative "model/delegate"
 require_relative "model/equalizer"
 require_relative "model/timescale"
 require_relative "model/distortion"
@@ -79,14 +81,14 @@ module Calliope
     # @param endpoint [String] Endpoint of the server.
     def connect(guild, token: nil, session: nil, endpoint: nil)
       @mutex.synchronize do
-        @states[guild] ||= {}
+        @states[guild] = {} unless @states[guild]
         @states[guild].merge!(to_voice(token, endpoint, session))
       end
 
       return unless @states[guild].keys.count == 3
 
       player = @http.modify_player(guild, voice: @states[guild])
-      @players[guild] = Player.new(player, self); @states.delete(guild)
+      @players[guild] = Player.new(player, self) && @states.delete(guild)
     end
 
     # Performs a search on a given query.

@@ -67,12 +67,12 @@ module Calliope
     # Return the duration formatted as: M:S or H:M:S.
     # @return [String] The formatted time string.
     def strftime
-      if @tracks && (@type == :search || @type == :track || (@type == :playlist && @tracks.count == 1))
-        return Time.at(@tracks.first.duration / 1000.0).utc.strftime("%M:%S")
+      if @tracks && (@type == :search || @type == :track || @tracks.size == 1 || (@type == :playlist && @tracks.count == 1))
+        return @tracks.first.strftime
       end
 
       if @tracks && @type == :playlist && @selected_track
-        return Time.at(@selected_track.duration / 1000.0).utc.strftime("%M:%S")
+        return @selected_track.strftime
       end
 
       return unless (@type == :playlist && @selected_track.nil?) || @type == :decode

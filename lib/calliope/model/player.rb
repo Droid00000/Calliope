@@ -52,6 +52,12 @@ module Calliope
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
     end
 
+    # Get the currently playing track.
+    # @return [Track] The track object.
+    def track
+      update_data(@client.http.get_player(@guild)) && @track
+    end
+
     # Pause or unpause playback.
     # @param paused [Boolean] Whether this player should be currently paused.
     def paused=(paused)
@@ -70,27 +76,25 @@ module Calliope
       update_data(@client.http.modify_player(@guild, position: position))
     end
 
-    # Set the track that this player is playing.
-    def track=(track)
-      return if track.nil?
-
-      update_data(@client.http.modify_player(@guild, track: track&.to_h))
-    end
-
     # Stops the currently playing track.
     def stop_track
       update_data(@client.http.modify_player(@guild, track: Track.null))
     end
 
-    # Get the currently playing track.
-    def track
-      update_data(@client.http.get_player(@guild))
-      @track
+    # Delete this player. Immediately stops playback.
+    def delete
+      @client.players.delete(guild).tap { @client.http.destroy_player(guild) }
     end
 
     # A hash containing the metadata of a player.
     def export
       { track: track, position: position, queue: queue, volume: volume }.compact
+    end
+
+    # Set the track that this player is playing.
+    # @param track [Track] The track object to set.
+    def track=(track)
+      update_data(@client.http.modify_player(@guild, track: track&.to_h)) unless track.nil?
     end
 
     # Import data from an export.
@@ -106,10 +110,6 @@ module Calliope
     end
 
     private
-
-    def can_start_player_tracks?
-     !track && !paused? && !playing?
-    end
 
     # @!visibility private
     # @note For internal use only.
