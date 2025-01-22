@@ -55,7 +55,7 @@ module Calliope
     # Get the currently playing track.
     # @return [Track] The track object.
     def track
-      update_data(@client.http.get_player(@guild)) && @track
+      update_data(@client.http.get_player(@guild)).tap { @track }
     end
 
     # Pause or unpause playback.
