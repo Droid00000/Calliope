@@ -15,9 +15,9 @@ module Calliope
     # @!visibility private
     # @param payload [Hash]
     def initialize(payload)
-      @category = payload["segments"]["category"].to_sym
-      @end_time = Time.at(payload["segments"]["end"] / 1000.0)
-      @start_time = Time.at(payload["segments"]["start"] / 1000.0)
+      @category = payload["category"].to_sym
+      @end_time = Time.at(payload["end"] / 1000.0)
+      @start_time = Time.at(payload["start"] / 1000.0)
     end
   end
 end
