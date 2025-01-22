@@ -10,6 +10,7 @@ module Calliope
 
       # @return [Boolean]
       attr_reader :resumed
+      alias resumed? resumed
 
       # @return [String]
       attr_reader :session_id
