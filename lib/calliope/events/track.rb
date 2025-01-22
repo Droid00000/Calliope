@@ -5,8 +5,6 @@ module Calliope
   module Events
     # Base class for track events.
     class TrackEvent
-      include Calliope
-
       # @return [Client]
       attr_reader :client
 
@@ -43,7 +41,7 @@ module Calliope
       # @!attribute [r] duration
       #   @return [Integer] The duration of the track in milliseconds.
       #   @see Track#duration
-      delegate :name, :isrc, :cover, :artist, :source, :encoded, :position, :duration, to: :track
+      Calliope.delegate :name, :isrc, :cover, :artist, :source, :encoded, :position, :duration, to: :track
 
       # @!visibility private
       # @param payload [Hash]

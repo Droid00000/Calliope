@@ -3,9 +3,6 @@
 module Calliope
   # A queue of tracks.
   class TrackQueue
-    # Allows delegation.
-    include Calliope
-
     # @return [Boolean]
     attr_accessor :loop
 
@@ -45,7 +42,7 @@ module Calliope
     # @!attribute [r] replace
     #   @return [Array] Replace all the tracks in the queue.
     #   @see Array#replace
-    delegate :last, :first, :size, :sample, :count, :empty?, :clear, :shuffle, :replace, to: :tracks
+    Calliope.delegate :last, :first, :size, :sample, :count, :empty?, :clear, :shuffle, :replace, to: :tracks
 
     # @!visibility private
     def initialize(player)

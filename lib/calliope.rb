@@ -18,7 +18,7 @@ module Calliope
   # on events to properties on data objects.
   # @param methods [Array<Symbol>] The methods to delegate.
   # @param hash [Hash<Symbol => Symbol>] A hash with one `:to` key and the value the method to be delegated to.
-  def delegate(*methods, hash)
+  def self.delegate(*methods, hash)
     methods.each do |m|
       define_method(m) do |*params|
         object = __send__(hash[:to])
