@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift(File.expand_path('lib', __dir__))
-
 Gem::Specification.new do |spec|
   spec.name = "calliope"
   spec.authors = ["Droid00000"]

@@ -4,7 +4,6 @@ require "json"
 require "socket"
 require "faraday"
 require "event_emitter"
-require "model/delegate"
 require "websocket/driver"
 
 require_relative "model/info"
