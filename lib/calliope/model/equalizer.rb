@@ -15,5 +15,25 @@ module Calliope
       @band = payload["band"]
       @gain = payload["gain"]
     end
+
+    # Equalizer builder.
+    class Builder
+      # @return [Integer]
+      attr_accessor :band
+
+      # @return [Integer]
+      attr_accessor :gain
+
+      # @!visibility private
+      def initialize(payload)
+        @band = payload[:band]
+        @gain = payload[:gain]
+      end
+
+      # @!visibility private
+      def to_h
+        { band: @band, gain: @gain }
+      end
+    end
   end
 end
