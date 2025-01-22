@@ -52,6 +52,12 @@ module Calliope
       play(0) unless @player.paused? || @player.playing?
     end
 
+    # Check if there's still object in the queue.
+    # @return [Boolean] If we can start the next track.
+    def full?
+      !@tracks.empty? || @looped
+    end
+
     # Move the position of a track in the array.
     # @param position [Integer] The current index of the track.
     # @param index [Integer] The new index of the track.
@@ -99,9 +105,9 @@ module Calliope
     # Start the next track in the queue upon recciving the track end event.
     # @return [Array<Tracks>] The the entire track history so far at this point.
     def play(reason)
-      return if %w[stopped cleanup replaced].include?(reason) || empty?
+      return if %w[stopped cleanup replaced].include?(reason) || !full?
 
-      return @player.track = @looped if @looped
+      return @player.track = @looped.tap { |track| @history << track } if @looped
 
       @player.track = @tracks.shift.tap { |track| @history << track } unless @looped
     end
