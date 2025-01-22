@@ -98,8 +98,8 @@ module Calliope
     end
 
     # Guild ID based comparison.
-    def ==(object)
-      object.is_a?(Player) ? object.guild == @guild : false
+    def ==(other)
+      other.is_a?(Player) ? other.guild == @guild : false
     end
 
     private

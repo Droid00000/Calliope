@@ -60,6 +60,7 @@ Lint/DuplicateBranch:
 Layout/LineLength:
   Exclude:
   - lib/calliope/client.rb
+  - lib/calliope/model/playable.rb
 
 # Partially disabled so my lazy ass doesn't forget.
 Lint/UnusedMethodArgument:
@@ -72,4 +73,8 @@ Style/RegexpLiteral:
 
 # A literal is more readable for me.
 Style/EmptyLiteral:
+  Enabled: false
+
+# Semicolons can be useful for one-liners.
+Style/Semicolon:
   Enabled: false
