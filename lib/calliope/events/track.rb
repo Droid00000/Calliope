@@ -23,35 +23,35 @@ module Calliope
         @guild = payload["guildId"].to_i
         @player = @client.players[@guild]
         @track = Track.new(payload["track"])
-      end
 
-      # @!attribute [r] name
-      #   @return [String] The name of the track.
-      #   @see Track#name
-      # @!attribute [r] isrc
-      #   @return [String, nil] The ISRC code of the track, or nil.
-      #   @see Track#isrc
-      # @!attribute [r] cover
-      #   @return [String] The artwork URL of the track.
-      #   @see Track#cover
-      # @!attribute [r] artist
-      #   @return [String] the track's creator.
-      #   @see Track#artist
-      # @!attribute [r] source
-      #   @return [String] the source URL of the track.
-      #   @see Track#source
-      # @!attribute [r] encoded
-      #   @return [String] the Base64 encoded track.
-      #   @see Track#encoded
-      # @!attribute [r] position
-      #   @return [Integer] The current position of the track in milliseconds.
-      #   @see Track#position
-      # @!attribute [r] duration
-      #   @return [Integer] The duration of the track in milliseconds.
-      #   @see Track#duration
-      #   @see Array#replace
-      %i[name, isrc, cover, artist, source, encoded, position, duration].each do |method|
-        define_method(method) { @track.send(method) }
+        # @!attribute [r] name
+        #   @return [String] The name of the track.
+        #   @see Track#name
+        # @!attribute [r] isrc
+        #   @return [String, nil] The ISRC code of the track, or nil.
+        #   @see Track#isrc
+        # @!attribute [r] cover
+        #   @return [String] The artwork URL of the track.
+        #   @see Track#cover
+        # @!attribute [r] artist
+        #   @return [String] the track's creator.
+        #   @see Track#artist
+        # @!attribute [r] source
+        #   @return [String] the source URL of the track.
+        #   @see Track#source
+        # @!attribute [r] encoded
+        #   @return [String] the Base64 encoded track.
+        #   @see Track#encoded
+        # @!attribute [r] position
+        #   @return [Integer] The current position of the track in milliseconds.
+        #   @see Track#position
+        # @!attribute [r] duration
+        #   @return [Integer] The duration of the track in milliseconds.
+        #   @see Track#duration
+        #   @see Array#replace
+        %i[name, isrc, cover, artist, source, encoded, position, duration].each do |method|
+          define_method(method) { @track.send(method) }
+        end
       end
     end
 

@@ -20,37 +20,37 @@ module Calliope
       @player = player
       @tracks = Array.new
       @history = Array.new
-    end
 
-    # @!attribute [r] last
-    #   @return [Track] The last track in the queue.
-    #   @see Array#last
-    # @!attribute [r] first
-    #   @return [Track] The first track in the queue.
-    #   @see Array#first
-    # @!attribute [r] size
-    #   @return [Integer] The amount of tracks in the queue.
-    #   @see Array#size
-    # @!attribute [r] sample
-    #   @return [Track] A random track in the queue.
-    #   @see Array#sample
-    # @!attribute [r] count
-    #   @return [Integer] The amount of tracks in the queue.
-    #   @see Array#count
-    # @!attribute [r] empty?
-    #   @return [Boolean] Whether the queue is empty or not.
-    #   @see Array#empty?
-    # @!attribute [r] clear
-    #   @return [Array] Remove all the tracks in the queue.
-    #   @see Array#clear
-    # @!attribute [r] shuffle
-    #   @return [Array] Shuffles the tracks in the queue.
-    #   @see Array#shuffle
-    # @!attribute [r] replace
-    #   @return [Array] Replace all the tracks in the queue.
-    #   @see Array#replace
-    %i[last, first, size, sample, count, empty?, clear, shuffle, replace].each do |method|
-      define_method(method) { |*arguments| @tracks.send(method, *arguments) }
+      # @!attribute [r] last
+      #   @return [Track] The last track in the queue.
+      #   @see Array#last
+      # @!attribute [r] first
+      #   @return [Track] The first track in the queue.
+      #   @see Array#first
+      # @!attribute [r] size
+      #   @return [Integer] The amount of tracks in the queue.
+      #   @see Array#size
+      # @!attribute [r] sample
+      #   @return [Track] A random track in the queue.
+      #   @see Array#sample
+      # @!attribute [r] count
+      #   @return [Integer] The amount of tracks in the queue.
+      #   @see Array#count
+      # @!attribute [r] empty?
+      #   @return [Boolean] Whether the queue is empty or not.
+      #   @see Array#empty?
+      # @!attribute [r] clear
+      #   @return [Array] Remove all the tracks in the queue.
+      #   @see Array#clear
+      # @!attribute [r] shuffle
+      #   @return [Array] Shuffles the tracks in the queue.
+      #   @see Array#shuffle
+      # @!attribute [r] replace
+      #   @return [Array] Replace all the tracks in the queue.
+      #   @see Array#replace
+      %i[last, first, size, sample, count, empty?, clear, shuffle, replace].each do |method|
+        define_method(method) { |*arguments| @tracks.send(method, *arguments) }
+      end
     end
 
     # Add tracks to the end of the queue. Will start the next track by default.
