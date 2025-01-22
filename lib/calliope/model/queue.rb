@@ -6,7 +6,7 @@ module Calliope
     extend Forwardable
 
     # @return [Boolean]
-    attr_accessor :loop
+    attr_accessor :looped
 
     # @return [Player]
     attr_accessor :player
@@ -31,6 +31,7 @@ module Calliope
     # @!visibility private
     def initialize(player)
       @player = player
+      @looped = false
       @tracks = Array.new
       @history = Array.new
     end
@@ -100,7 +101,9 @@ module Calliope
     def play(reason)
       return if %w[stopped cleanup replaced].include?(reason) || empty?
 
-      @player.track = @tracks.shift.tap { |track| @history << track }
+      return @player.track = @looped.tap { |track| @history << track } if @looped
+
+      @player.track = @tracks.shift.tap { |track| @history << track } unless @looped
     end
   end
 end
