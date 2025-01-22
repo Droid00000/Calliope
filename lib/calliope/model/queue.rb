@@ -30,7 +30,7 @@ module Calliope
       @history = Array.new
     end
 
-    %i[first, last, sample, size, empty?, count, shuffle, clear, replace, length] do |method|
+    %i[first, last, sample, size, empty?, count, shuffle, clear, replace, length].each do |method|
       define_method(method) { |*arguments| @tracks.send(method, *arguments) }
     end
 

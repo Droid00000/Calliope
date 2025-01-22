@@ -28,7 +28,7 @@ module Calliope
         @track = Track.new(payload["track"])
       end
 
-      %i[name, isrc, cover, artist, source, encoded, position, duration] do |method|
+      %i[name, isrc, cover, artist, source, encoded, position, duration].each do |method|
         define_method(method) { @track.send(method) }
       end
     end
