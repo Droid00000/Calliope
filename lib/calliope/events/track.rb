@@ -17,6 +17,14 @@ module Calliope
       # @return [Object]
       attr_reader :player
 
+      # @!visibility private
+      def initialize(payload, client)
+        @client = client
+        @guild = payload["guildId"].to_i
+        @player = @client.players[@guild]
+        @track = Track.new(payload["track"])
+      end
+
       # @!attribute [r] name
       #   @return [String] The name of the track.
       #   @see Track#name
@@ -41,16 +49,9 @@ module Calliope
       # @!attribute [r] duration
       #   @return [Integer] The duration of the track in milliseconds.
       #   @see Track#duration
-      Calliope.delegate :name, :isrc, :cover, :artist, :source, :encoded, :position, :duration, to: :track
-
-      # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
-      def initialize(payload, client)
-        @client = client
-        @guild = payload["guildId"].to_i
-        @player = @client.players[@guild]
-        @track = Track.new(payload["track"])
+      #   @see Array#replace
+      %i[name, isrc, cover, artist, source, encoded, position, duration].each do |method|
+        define_method(method) { @track.send(method) }
       end
     end
 
@@ -60,8 +61,6 @@ module Calliope
       attr_reader :playing
 
       # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
       def initialize(payload, client)
         super
 
@@ -78,8 +77,6 @@ module Calliope
       attr_reader :playing
 
       # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
       def initialize(payload, client)
         super
 
@@ -95,8 +92,6 @@ module Calliope
       attr_reader :threshold
 
       # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
       def initialize(payload, client)
         super
 
@@ -119,8 +114,6 @@ module Calliope
       attr_reader :severity
 
       # @!visibility private
-      # @param payload [Hash]
-      # @param client [Client]
       def initialize(payload, client)
         super
 
