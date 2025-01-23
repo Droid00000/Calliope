@@ -48,12 +48,10 @@ module Calliope
 
       # @!visibility private
       def to_h
-        {
-          level: @level,
+        { level: @level,
           monoLevel: @mono_level,
           filterBand: @filter_band,
-          filterWidth: @filter_width
-        }
+          filterWidth: @filter_width }.compact
       end
     end
   end

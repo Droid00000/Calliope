@@ -32,7 +32,7 @@ module Calliope
 
       # @!visibility private
       def to_h
-        { band: @band, gain: @gain }
+        { band: @band, gain: @gain }.compact
       end
     end
   end
