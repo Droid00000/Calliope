@@ -142,7 +142,7 @@ module Calliope
     # @param [Hash] The hash containing the metadata about the queue.
     # @return [self] The new imported values from the old exported ones.
     def import(hash)
-      return if hash.nil?
+      return unless hash
 
       @looped.type = hash[:looped] if hash[:looped]
 
