@@ -110,6 +110,12 @@ module Calliope
       @player.track = @tracks.delete_at(index).tap { |track| @history.unshift(track) }
     end
 
+    # Convert the queue into tracks that can be re-used and re-imported later down the line.
+    # @return [Hash] A hash containing all the data about this queue excluding the looped track.
+    def to_h
+      { history: @history.map(&:to_h), tracks: @tracks.map(&:to_h), looped: @looped.type }
+    end
+
     # Get and play a random track from the queue.
     # @return [Track] The track object that's now playing.
     def random
@@ -128,6 +134,19 @@ module Calliope
       @player.track = @looped.shift.tap { |track| @history.unshift(track) } if @looped.full?
 
       @player.track = @tracks.shift.tap { |track| @history.unshift(track) } unless @looped.full?
+    end
+
+    # @!visibility private
+    # @note For internal use only.
+    # Import the previously exported queue back into the player.
+    # @param [Hash] The hash containing the metadata about the queue.
+    # @return [self] The new imported values from the old exported ones.
+    def import(hash)
+      return if hash.nil?
+
+      @looped.type = hash[:looped] if hash[:looped]
+
+      @history = @player.client.decode(hash[:history]); add(@player.client.decode(hash[:tracks]))
     end
   end
 end

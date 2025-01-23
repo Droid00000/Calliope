@@ -95,7 +95,7 @@ module Calliope
 
     # A hash containing the metadata of a player.
     def export
-      { track: track, position: position, queue: queue, volume: volume }.compact
+      { track: @track&.to_h, position: @position, queue: @queue.to_h, volume: @volume }.compact
     end
 
     # Set the track that this player is playing.
@@ -106,7 +106,7 @@ module Calliope
 
     # Import data from an export.
     def import(hash)
-      # To-Do
+      update_data(@client.http.update_player(@guild, hash.reject { |key| key == :queue })).tap { @queue.import(hash[:queue]) }
     end
 
     # Guild ID based comparison.
