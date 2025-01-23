@@ -6,6 +6,7 @@ require "faraday"
 require "event_emitter"
 require "websocket/driver"
 
+require_relative "model/loop"
 require_relative "model/info"
 require_relative "api/routes"
 require_relative "api/client"

@@ -20,6 +20,11 @@ Lint/DuplicateBranch:
   Exclude:
   - lib/calliope/client.rb
 
+# I prefer conditionals.
+Style/GuardClause:
+  Exclude:
+  - lib/calliope/model/loop.rb
+
 # Again, kinda need this due to regex stuff.
 Layout/LineLength:
   Exclude:
@@ -49,4 +54,8 @@ Style/EmptyLiteral:
 
 # Semicolons can be useful for one-liners.
 Style/Semicolon:
+  Enabled: false
+
+# Simpler and quicker.
+Style/ParallelAssignment:
   Enabled: false

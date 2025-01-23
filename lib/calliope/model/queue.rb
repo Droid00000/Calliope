@@ -3,9 +3,10 @@
 module Calliope
   # A queue of tracks.
   class TrackQueue
+    # Allows delegation.
     extend Forwardable
 
-    # @return [TrackLoop]
+    # @return [Loop]
     attr_accessor :looped
 
     # @return [Player]
@@ -95,7 +96,7 @@ module Calliope
     # Play the next track in the queue. Immediatly overrides the current one.
     # @return [Track, Array<Track>] The new track object that's now playing.
     def next
-      return if empty?
+      return unless full?
 
       @player.track = @tracks&.shift&.tap { |track| @history.unshift(track) }
     end
@@ -112,7 +113,7 @@ module Calliope
     # Get and play a random track from the queue.
     # @return [Track] The track object that's now playing.
     def random
-      return if empty?
+      return unless full?
 
       @player.track = @tracks.delete_at(rand(@tracks.size)).tap { |track| @history.unshift(track) }
     end
@@ -124,9 +125,9 @@ module Calliope
     def play(reason)
       return if %w[stopped cleanup replaced].include?(reason) || !full?
 
-      @player.track = @looped.shift.tap { |track| @history.unshift(track) } if @looped
+      @player.track = @looped.shift.tap { |track| @history.unshift(track) } if @looped.full?
 
-      @player.track = @tracks.shift.tap { |track| @history.unshift(track) } unless @looped
+      @player.track = @tracks.shift.tap { |track| @history.unshift(track) } unless @looped.full?
     end
   end
 end
