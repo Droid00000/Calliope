@@ -150,6 +150,12 @@ module Calliope
       @info || @info = Info.new(@http.info)
     end
 
+    # Ge the stats for this lavalink player.
+    # @return [Stats] Stats about this lavalink player.
+    def stats
+      Stats.new(@http.stats)
+    end
+
     private
 
     # @!visibility private

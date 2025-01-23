@@ -14,6 +14,9 @@ module Calliope
       # @return [Integer]
       attr_reader :time
 
+      # @return [Player]
+      attr_reader :player
+
       # @return [Integer]
       attr_reader :guild
 
@@ -28,9 +31,10 @@ module Calliope
       # @param client [Client]
       def initialize(payload, client)
         @client = client
-        @guild = payload["GuildId"]
+        @guild = payload["GuildId"].to_i
         @ping = payload["state"]["ping"]
         @time = payload["state"]["time"]
+        @player = @client.players[@guild]
         @position = payload["state"]["position"]
         @connected = payload["state"]["connected"]
       end
