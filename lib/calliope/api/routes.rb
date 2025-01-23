@@ -151,10 +151,29 @@ module Calliope
         request :POST, "decodetracks", body: tracks
       end
 
+      # Unmark a failed route planner address.
+      # @param address [String] The failed address.
+      def unmark_routeplanner_address(address)
+        request :POST, "/routeplanner/free/address",
+                 body: { address: address }
+      end
+
       # Get all the players for this active session.
       # @return [Array<Hash>] Array of player objects.
       def get_players
         request :GET, "sessions/#{session}/players"
+      end
+
+      # Unmark all failed route planner address.
+      # @return [nil] Returns a 204 on success.
+      def unmark_all_routeplanner_address
+        request :POST, "/routeplanner/free/all"
+      end
+
+      # Get the route planner status.
+      # @return [Hash, nil] The route planner status or nil.
+      def get_routeplanner_status
+        request :GET, "routeplanner/status"
       end
 
       # Returns information about a Lavalink player.
