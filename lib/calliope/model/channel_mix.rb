@@ -27,16 +27,16 @@ module Calliope
     # Channel Mix builder.
     class Builder
       # @return [Integer]
-      attr_reader :left_to_left
+      attr_accessor :left_to_left
 
       # @return [Integer]
-      attr_reader :left_to_right
+      attr_accessor :left_to_right
 
       # @return [Integer]
-      attr_reader :right_to_left
+      attr_accessor :right_to_left
 
       # @return [Integer]
-      attr_reader :right_to_right
+      attr_accessor :right_to_right
 
       # @!visibility private
       def initialize(payload)
