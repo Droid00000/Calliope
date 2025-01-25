@@ -155,7 +155,7 @@ module Calliope
       # @param address [String] The failed address.
       def unmark_routeplanner_address(address)
         request :POST, "/routeplanner/free/address",
-                 body: { address: address }
+                body: { address: address }
       end
 
       # Get all the players for this active session.

@@ -31,7 +31,13 @@ module Calliope
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
-        @thread = Thread.new { @driver.parse(@tcp.readpartial(4096)) until @dead }
+        @thread = Thread.new do
+          begin
+            @driver.parse(@tcp.readpartial(4096)) until @dead
+          rescue StandardError => error
+            # @client.logger.log_exception(error)
+          end
+        end
 
         @driver.start
       end

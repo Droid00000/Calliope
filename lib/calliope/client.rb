@@ -12,6 +12,7 @@ require_relative "api/routes"
 require_relative "api/client"
 require_relative "model/queue"
 require_relative "model/track"
+require_relative "model/logger"
 require_relative "model/player"
 require_relative "events/block"
 require_relative "events/ready"
@@ -35,7 +36,6 @@ require_relative "model/channel_mix"
 module Calliope
   # Used to access the Lavalink API.
   class Client
-    # Emit events easily.
     include EventEmitter
 
     # @return [API::Client]
@@ -70,6 +70,7 @@ module Calliope
       @players = Hash.new
       @states = Hash.new
       @mutex = Mutex.new
+      @logger = Logger.new(logging)
       @http = API::HTTP.new(@address, @password)
       @socket = API::Socket.new(@address, @password, application_id, session_id, self)
     end
@@ -221,7 +222,7 @@ module Calliope
     # @!visibility private
     # Internal handler for the update event.
     def notify_update(data)
-      emit(:player_update, Calliope::Events::State.new(data, self))
+      emit(:player_state, Calliope::Events::State.new(data, self))
     end
 
     # @!visibility private

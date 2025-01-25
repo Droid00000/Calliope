@@ -113,7 +113,7 @@ module Calliope
     # Convert the queue into tracks that can be re-used and re-imported later down the line.
     # @return [Hash] A hash containing all the data about this queue excluding the looped track.
     def to_h
-      { history: @history.map(&:to_h), tracks: @tracks.map(&:to_h), looped: @looped.type }
+      { history: @history.map(&:encoded), tracks: @tracks.map(&:encoded), looped: @looped.type }
     end
 
     # Get and play a random track from the queue.
@@ -142,11 +142,9 @@ module Calliope
     # @param [Hash] The hash containing the metadata about the queue.
     # @return [self] The new imported values from the old exported ones.
     def import(hash)
-      return unless hash
-
       @looped.type = hash[:looped] if hash[:looped]
 
-      @history = @player.client.decode(hash[:history]); add(@player.client.decode(hash[:tracks]))
+      @history = @player.client.decode(hash[:history]).tap { add(@player.client.decode(hash[:tracks])) }
     end
   end
 end

@@ -46,7 +46,7 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @playing = (@player&.playing = true)
+        @player.__send__(:update_track, @track)
       end
     end
 
@@ -63,7 +63,7 @@ module Calliope
         super
 
         @reason = payload["reason"]
-        @playing = (@player&.playing = false)
+        @player.__send__(:update_track, nil)
         @player.queue.play(payload["reason"])
       end
     end
@@ -78,6 +78,7 @@ module Calliope
         super
 
         @threshold = payload["thresholdMs"]
+        @player.__send__(:update_track, nil)
       end
     end
 
@@ -99,7 +100,7 @@ module Calliope
       def initialize(payload, client)
         super
 
-        @playing = (@player&.playing = false)
+        @player.__send__(:update_track, nil)
         @cause = payload["exception"]["cause"]
         @message = payload["exception"]["message"]
         @severitiy = payload["exception"]["severity"]

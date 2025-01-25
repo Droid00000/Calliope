@@ -63,11 +63,14 @@ module Calliope
       { encoded: @encoded }
     end
 
-    # Identifier based comparison.
-    def ==(other)
-      return false unless other.is_a?(Track)
+    # Converts this track into a hash that can used for playback.
+    def to_i
+      { identifier: @identifier }
+    end
 
-      other.identifier == @identifier
+    # Base64 encoding based comparison.
+    def ==(other)
+      other.is_a?(Track) ? other.encoded == @encoded : false
     end
 
     # A string representation of the track time.

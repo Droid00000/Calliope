@@ -52,6 +52,7 @@ module Calliope
       end
 
       if @tracks && (type == :playlist && selected_track.nil?)
+        @total_tracks = payload["data"]["pluginInfo"]["totalTracks"] || nil
         @cover = payload["data"]["pluginInfo"]["artworkUrl"] || @cover
         @artist = payload["data"]["pluginInfo"]["author"] || @artist
         @source = payload["data"]["pluginInfo"]["url"] || @source
@@ -145,7 +146,7 @@ module Calliope
     # @param track [Integer] Index of a specific track to queue.
     # @param selected [Boolean] Whether the selected track should be queued.
     # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
-    def produce_queue(guild, track: nil, selected: false, first: true)
+    def queue(guild, track: nil, selected: false, first: true)
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
@@ -166,7 +167,7 @@ module Calliope
       @client.players[guild].queue.add(@tracks)
     end
 
-    # Play the tracks for this playable object.
+    # Play a track from this playable object.
     # @param guild [Integer] ID of the guild to play for.
     # @param track [Integer] Index of a specific track to play.
     # @param selected [Boolean] Whether the selected track should be played.
@@ -175,22 +176,18 @@ module Calliope
       raise ArgumentError unless @tracks && @client.players[guild]
 
       if @selected_track && selected
-        @client.http.modifiy_player(guild, track: @selected_track.to_h)
+        @client.players[guild].track = @selected_track
         return
       end
 
       if track && @tracks[track]
-        @client.http.modify_player(guild, track: @tracks[track].to_h)
+        @client.players[guild].track = @tracks[track]
         return
       end
 
       if search? && first
-        @client.http.modify_player(guild, track: @tracks.first.to_h)
+        @client.players[guild].track = @tracks.first
         return
-      end
-
-      @tracks.each do |playable|
-        @client.http.modify_player(guild, track: playable.to_h)
       end
     end
   end
