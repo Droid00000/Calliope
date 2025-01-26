@@ -4,12 +4,12 @@ require_relative "calliope/client"
 
 # Calliope and all its functionality.
 module Calliope
-  # Raised when the request body to the lavalink server was malformed.
+  # Raised when the request body to the lavalink server contains an error.
   class BadBody < RuntimeError; end
 
-  # Raised when our authentication is insufficent for connecting to the lavalink server.
+  # Raised when incorrect credentials were provided to the lavalink server.
   class Unauthorized < RuntimeError; end
 
-  # Raised when the resource, usually a track, couldn't be found.
+  # Raised when the requested resource path doesn't exist or can't be found.
   class NotFound < RuntimeError; end
 end

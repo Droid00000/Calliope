@@ -66,12 +66,6 @@ module Calliope
       update_data(@client.http.modify_player(guild, end_time: time))
     end
 
-    # Set the volume of this player.
-    # @param volume [Integer] Number between 0-1000.
-    def volume=(volume)
-      update_data(@client.http.modify_player(guild, volume: volume))
-    end
-
     # Whether the next track should override.
     # @param replace [Boolean] Whether to override or not.
     def no_replace=(replace)
@@ -87,6 +81,12 @@ module Calliope
     # Delete this player. Immediately stops playback.
     def delete
       @client.players.delete(guild).tap { @client.http.destroy_player(guild) }
+    end
+
+    # Set the volume of this player.
+    # @param volume [Integer] Number between 0-1000.
+    def volume=(volume)
+      update_data(@client.http.modify_player(guild, volume: volume.clamp(0, 1000)))
     end
 
     # A hash containing the metadata of a player.
