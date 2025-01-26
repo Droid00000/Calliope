@@ -82,7 +82,7 @@ module Calliope
     # @param endpoint [String] Endpoint of the server.
     def connect(guild, token: nil, session: nil, endpoint: nil)
       @mutex.synchronize do
-        @states[guild] = {} unless @states[guild]
+        @states[guild] ||= {}
         @states[guild].merge!(to_voice(token, endpoint, session))
       end
 
