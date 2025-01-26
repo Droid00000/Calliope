@@ -88,9 +88,9 @@ module Calliope
     # Play the previous track in the queue. Immediatly overrides the current one.
     # @return [Track, Array<Track>] The new track object that's now playing.
     def previous
-      return unless @history.first
+      return unless @history.fetch(1, nil)
 
-      @player.track = @history.first.tap { |track| @history.unshift(track) }
+      @player.track = @history[1].tap { |track| @history.unshift(track) }
     end
 
     # Play the next track in the queue. Immediatly overrides the current one.
