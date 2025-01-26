@@ -54,6 +54,9 @@ module Calliope
 
     # A block style builder for filters.
     class Builder
+      # @return [Integer]
+      attr_reader :volume
+
       # @return [Object]
       attr_accessor :karaoke
 
@@ -83,12 +86,13 @@ module Calliope
 
       # @!visibility private
       def initalize
+        @volume = nil
         @karaoke = nil
         @tremolo = nil
         @vibrato = nil
-        @rotation = {}
-        @low_pass = {}
-        @equalizer = []
+        @rotation = nil
+        @low_pass = nil
+        @equalizer = nil
         @timescale = nil
         @distortion = nil
         @channel_mix = nil
@@ -96,19 +100,19 @@ module Calliope
 
       # Add low pass to this builder.
       def low_pass(smoothing)
-        @low_pass[:smoothing] = smoothing
+        @low_pass = { smoothing: smoothing }
       end
 
       # Add rotation to this builder.
       def rotation(rotation_hz)
-        @rotation[:roationHz] = rotation_hz
+        @rotation = { roationHz: rotation_hz }
       end
 
       # Add karaoke to this builder.
       def karaoke(**arguments)
         builder = Karaoke::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        yield builder if block_given?
 
         @karaoke = builder.to_h
       end
@@ -117,7 +121,7 @@ module Calliope
       def tremolo(**arguments)
         builder = Tremolo::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        yield builder if block_given?
 
         @tremolo = builder.to_h
       end
@@ -126,7 +130,7 @@ module Calliope
       def vibrato(**arguments)
         builder = Vibrato::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        yield builder if block_given?
 
         @vibrato = builder.to_h
       end
@@ -135,7 +139,9 @@ module Calliope
       def equalizer(**arguments)
         builder = Equalizer::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        @equalizer = [] if @equalizer.nil?
+
+        yield builder if block_given?
 
         @equalizer << builder.to_h
       end
@@ -144,7 +150,7 @@ module Calliope
       def timescale(**arguments)
         builder = Timescale::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        yield builder if block_given?
 
         @timescale = builder.to_h
       end
@@ -153,7 +159,7 @@ module Calliope
       def distortion(**arguments)
         builder = Distortion::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        yield builder if block_given?
 
         @distortion = builder.to_h
       end
@@ -162,14 +168,23 @@ module Calliope
       def channel_mix(**arguments)
         builder = ChannelMix::Builder.new(arguments)
 
-        yield(builder) if block_given?
+        yield builder if block_given?
 
         @channel_mix = builder.to_h
       end
 
       # @!visibility private
       def to_h
-        # . . .
+        { volume: @volume,
+          equalizer: @equalizer,
+          karaoke: @karaoke,
+          timescale: @timescale,
+          tremolo: @tremolo,
+          vibrato: @vibrato,
+          rotation: @rotation,
+          distortion: @distortion,
+          channelMix: @channel_mix,
+          lowPass: @low_pass }.compact
       end
     end
   end

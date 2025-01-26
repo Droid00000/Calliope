@@ -6,9 +6,6 @@ module Calliope
     # @return [true, false] whether this logger is in extra-fancy mode!
     attr_writer :fancy
 
-    # @return [String, nil] The bot token to be redacted or nil if it shouldn't.
-    attr_writer :token
-
     # @return [Array<IO>, Array<#puts & #flush>] the streams the logger should write to.
     attr_accessor :streams
 

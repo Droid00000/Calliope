@@ -105,6 +105,15 @@ module Calliope
       update_data(@client.http.update_player(@guild, hash.delete(:queue))); @queue.import(hash[:queue])
     end
 
+    # Update the filters for this player. Overrides all existing filters.
+    # @param filters [Hash] A hash of filters to set for the player. Overrides the builder.
+    # @yieldparam [Filters::Builder] Yields the filter builder for easy creation of a filter.
+    def filters=(filters = nil)
+      builder = Filters::Builder.new.tap { |builder| yield builder }
+
+      update_data(@client.http.modify_player(guild, filters: filters || builder.to_h))
+    end
+
     # Check if a player is currently playing something.
     # @return [Boolean] Whether this player is currently playing something.
     def playing?
