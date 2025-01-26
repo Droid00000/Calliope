@@ -34,8 +34,8 @@ module Calliope
         @thread = Thread.new do
           begin
             @driver.parse(@tcp.readpartial(4096)) until @dead
-          rescue StandardError => error
-            # @client.logger.log_exception(error)
+          rescue StandardError => e
+            @client.logger.log_exception(e)
           end
         end
 
