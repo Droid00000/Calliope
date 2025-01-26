@@ -103,11 +103,14 @@ module Calliope
 
     # Skip to a track at a specific index.
     # @param index [Integer] The index of the track to skip to.
+    # @param destructive [Boolean] Whether to remove previous tracks.
     # @return [Track] The new track object that's now playing.
-    def skip(index)
+    def skip(index, destructive: false)
       return unless @tracks.fetch(index, nil)
 
-      @player.track = @tracks.delete_at(index).tap { |track| @history.unshift(track) }
+      @player.track = @tracks.delete_at(index).tap { |track| @history.unshift(track) } unless destructive
+
+      @player.track = remove(0, amount: index + 1).tap { |tracks| @history.unshift(*tracks) }.last if destructive
     end
 
     # Convert the queue into tracks that can be re-used and re-imported later down the line.
