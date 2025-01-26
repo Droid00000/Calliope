@@ -97,7 +97,7 @@ module Calliope
     # Set the track that this player is playing.
     # @param track [Track, nil] The track object to set. Nil stops the current track.
     def track=(track)
-      return @track if update_data(@client.http.modify_player(guild, track: track&.to_h || Track.null))
+      @track if update_data(@client.http.modify_player(guild, track: track&.to_h || Track.null))
     end
 
     # Import data from an export.
@@ -108,8 +108,8 @@ module Calliope
     # Update the filters for this player. Overrides all existing filters.
     # @param filters [Hash] A hash of filters to set for the player. Overrides the builder.
     # @yieldparam [Filters::Builder] Yields the filter builder for easy creation of a filter.
-    def filters=(filters = nil)
-      builder = Filters::Builder.new.tap { |builder| yield builder }
+    def filters=(filters = nil, &)
+      builder = Filters::Builder.new.tap(&)
 
       update_data(@client.http.modify_player(guild, filters: filters || builder.to_h))
     end
@@ -131,7 +131,7 @@ module Calliope
     # @note For internal use only.
     # Updates the track data with new data.
     def update_track(payload)
-      payload ? @track = Track.new(track) : @track = nil
+      @track = payload ? Track.new(track) : nil
     end
 
     # @!visibility private

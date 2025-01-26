@@ -84,20 +84,6 @@ module Calliope
       # @return [Object]
       attr_accessor :channel_mix
 
-      # @!visibility private
-      def initalize
-        @volume = nil
-        @karaoke = nil
-        @tremolo = nil
-        @vibrato = nil
-        @rotation = nil
-        @low_pass = nil
-        @equalizer = nil
-        @timescale = nil
-        @distortion = nil
-        @channel_mix = nil
-      end
-
       # Add low pass to this builder.
       def low_pass(smoothing)
         @low_pass = { smoothing: smoothing }

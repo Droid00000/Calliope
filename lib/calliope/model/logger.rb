@@ -12,22 +12,22 @@ module Calliope
     # Creates a new logger.
     # @param fancy [true, false] Whether this logger uses fancy mode (ANSI escape codes to make the output colourful)
     # @param streams [Array<IO>, Array<#puts & #flush>] the streams the logger should write to.
-    def initialize(mode, fancy = true, streams = [$stdout])
+    def initialize(mode, fancy: true, streams: [$stdout])
       @fancy = fancy
-      self.mode = :normal
+      self.mode = mode
       @streams = streams
     end
 
     # The modes this logger can have. This is probably useless unless you want to write your own Logger
     MODES = {
-      debug: { long: 'DEBUG', short: 'D', format_code: '' },
-      good: { long: 'GOOD', short: '✓', format_code: "\u001B[32m" }, # green
-      info: { long: 'INFO', short: 'i', format_code: '' },
-      warn: { long: 'WARN', short: '!', format_code: "\u001B[33m" }, # yellow
-      error: { long: 'ERROR', short: '✗', format_code: "\u001B[31m" }, # red
-      out: { long: 'OUT', short: '→', format_code: "\u001B[36m" }, # cyan
-      in: { long: 'IN', short: '←', format_code: "\u001B[35m" }, # purple
-      ratelimit: { long: 'RATELIMIT', short: 'R', format_code: "\u001B[41m" } # red background
+      debug: { long: "DEBUG", short: "D", format_code: "" },
+      good: { long: "GOOD", short: "✓", format_code: "\u001B[32m" }, # green
+      info: { long: "INFO", short: "i", format_code: "" },
+      warn: { long: "WARN", short: "!", format_code: "\u001B[33m" }, # yellow
+      error: { long: "ERROR", short: "✗", format_code: "\u001B[31m" }, # red
+      out: { long: "OUT", short: "→", format_code: "\u001B[36m" }, # cyan
+      in: { long: "IN", short: "←", format_code: "\u001B[35m" }, # purple
+      ratelimit: { long: "RATELIMIT", short: "R", format_code: "\u001B[41m" } # red background
     }.freeze
 
     # The ANSI format code that resets formatting
@@ -66,10 +66,10 @@ module Calliope
     end
 
     # Logs an exception to the console.
-    # @param e [Exception] The exception to log.
-    def log_exception(e)
-      error("Exception: #{e.inspect}")
-      e.backtrace.each { |line| error(line) }
+    # @param err [Exception] The exception to log.
+    def log_exception(err)
+      error("Exception: #{err.inspect}")
+      err.backtrace.each { |line| error(line) }
     end
 
     private
@@ -77,9 +77,9 @@ module Calliope
     def write(log, mode)
       @streams.each do |stream|
         if @fancy && !stream.is_a?(File)
-          fancy_write(stream, log.to_s, mode, "calliope", Time.now.strftime('%Y-%m-%d %H:%M:%S.%L'))
+          fancy_write(stream, log.to_s, mode, "calliope", Time.now.strftime("%Y-%m-%d %H:%M:%S.%L"))
         else
-          simple_write(stream, log.to_s, mode, "calliope", Time.now.strftime('%Y-%m-%d %H:%M:%S.%L'))
+          simple_write(stream, log.to_s, mode, "calliope", Time.now.strftime("%Y-%m-%d %H:%M:%S.%L"))
         end
       end
     end

@@ -32,11 +32,9 @@ module Calliope
 
         @tcp = TCPSocket.new(@url.host || "localhost", @url.port)
         @thread = Thread.new do
-          begin
-            @driver.parse(@tcp.readpartial(4096)) until @dead
-          rescue StandardError => e
-            @client.logger.log_exception(e)
-          end
+          @driver.parse(@tcp.readpartial(4096)) until @dead
+        rescue StandardError => e
+          @client.logger.log_exception(e)
         end
 
         @driver.start

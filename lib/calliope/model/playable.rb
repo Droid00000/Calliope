@@ -185,10 +185,9 @@ module Calliope
         return
       end
 
-      if search? && first
-        @client.players[guild].track = @tracks.first
-        return
-      end
+      return unless search? && first
+
+      @client.players[guild].track = @tracks.first
     end
   end
 end
