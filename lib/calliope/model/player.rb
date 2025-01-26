@@ -130,14 +130,15 @@ module Calliope
     # @!visibility private
     # @note For internal use only.
     # Updates the track data with new data.
-    def update_track(payload)
-      @track = payload ? Track.new(track) : nil
+    def update_track(track)
+      @track = track
     end
 
     # @!visibility private
     # @note For internal use only.
     # Updates the player data with new data.
     def update_data(payload)
+      payload ||= @client.http.get_player(@guild)
       @voice = payload["voice"] if payload.key?("voice")
       @volume = payload["volume"] if payload.key?("volume")
       @paused = payload["paused"] if payload.key?("paused")
