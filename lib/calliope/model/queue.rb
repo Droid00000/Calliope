@@ -104,7 +104,6 @@ module Calliope
     # Skip to a track at a specific index.
     # @param index [Integer] The index of the track to skip to.
     # @param destructive [Boolean] Whether to remove previous tracks.
-    # @return [Track] The new track object that's now playing.
     def skip(index, destructive: false)
       return unless @tracks.fetch(index, nil)
 

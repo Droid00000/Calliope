@@ -122,11 +122,11 @@ module Calliope
     # Decodes a bunch of encoded tracks into a playable object.
     # @param tracks [Array<String>, String] The encoded tracks to deocde.
     # @return [Playable] The playable object resulting from these tracks.
-    def decode(*tracks)
-      if tracks.flatten.size > 1
-        Playable.new(@http.decode_tracks(tracks.flatten), self)
+    def decode(tracks)
+      if tracks.is_a(String)
+        Playable.new(@http.decode_track(tracks), self)
       else
-        Playable.new(@http.decode_track(tracks.flatten.first), self)
+        Playable.new(@http.decode_tracks(tracks), self)
       end
     end
 
