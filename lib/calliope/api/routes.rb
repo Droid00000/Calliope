@@ -167,7 +167,7 @@ module Calliope
       # Unmark all failed route planner address.
       # @return [nil] Returns a 204 on success.
       def unmark_all_routeplanner_address
-        request :POST, "/routeplanner/free/all"
+        request :POST, "routeplanner/free/all"
       end
 
       # Get the route planner status.
@@ -186,7 +186,7 @@ module Calliope
         request :GET, "version"
       end
 
-      # Returns the version of a Lavalink player.
+      # Returns the stats of a Lavalink player.
       def stats
         request :GET, "stats"
       end
