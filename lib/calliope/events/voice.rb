@@ -17,6 +17,9 @@ module Calliope
       # @return [String]
       attr_reader :reason
 
+      # @return [Player]
+      attr_reader :player
+
       # @return [Boolean]
       attr_reader :remote
       alias remote? remote
@@ -27,9 +30,10 @@ module Calliope
       def initialize(payload, client)
         @client = client
         @code = payload["code"]
-        @guild = payload["guildId"]
         @reason = payload["reason"]
         @remote = payload["byRemote"]
+        @guild = payload["guildId"].to_i
+        @player = client.players[@guild]
       end
     end
   end
