@@ -42,8 +42,8 @@ module Calliope
       def modify_lavasrc_config(spotify: :undef, deezer: :undef, apple_music: :undef,
                                 yandex_music: :undef, vk_music: :undef, **arguments)
         body = {
-          applemusic: apple_music,
           yandexMusic: yandex_music,
+          applemusic: apple_music,
           vkMusic: vk_music,
           spotify: spotify,
           deezer: deezer,
@@ -53,20 +53,18 @@ module Calliope
         request :PATCH, "lavasrc/config", body: filter_undef(body)
       end
 
-      # Remove sponsor block categories.
-      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
-      # @param guild_id [Array<String>] Array of categories to delete.
-      def destroy_categories(guild_id, categories)
-        request :DELETE, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories",
-                body: categories
-      end
-
       # Update the sponsor block categories.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       # @param guild_id [Array<String>] Array of categories to update.
       def update_categories(guild_id, categories)
         request :PUT, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories",
                 body: categories
+      end
+
+      # Remove sponsor block categories.
+      # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
+      def destroy_categories(guild_id, categories)
+        request :DELETE, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories"
       end
 
       # Get the enabled sponsor block categories.
