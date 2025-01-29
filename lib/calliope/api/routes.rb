@@ -33,6 +33,26 @@ module Calliope
                 body: filter_undef(body)
       end
 
+      # Temporarily update the lavasrc config for the session. Resets on restart.
+      # @param spotify [Hash] A spotify hash with your secret, ID, and SPDC cookie.
+      # @param deezer [Hash] A deezer hash with your ARL and an array of formats.
+      # @param apple_music [Hash] An apple music hash with your media API token.
+      # @param yandex_music [Hash] A yandex music hash with your access token.
+      # @param vk_music [Hash] A VK music hash containing your user token.
+      def modify_lavasrc_config(spotify: :undef, deezer: :undef, apple_music: :undef,
+                                yandex_music: :undef, vk_music: :undef, **arguments)
+        body = {
+          applemusic: apple_music,
+          yandexMusic: yandex_music,
+          vkMusic: vk_music,
+          spotify: spotify,
+          deezer: deezer,
+          **arguments
+        }
+
+        request :PATCH, "lavasrc/config", body: filter_undef(body)
+      end
+
       # Remove sponsor block categories.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
       # @param guild_id [Array<String>] Array of categories to delete.

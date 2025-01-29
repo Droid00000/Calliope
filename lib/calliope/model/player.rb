@@ -54,6 +54,12 @@ module Calliope
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
     end
 
+    # Bulk update the properties of the player in one go.
+    # @see API::Routes.modify_player for parameters.
+    def modify(**arguments)
+      update_data(@client.http.modify_player(guild, **arguments))
+    end
+
     # Pause or unpause playback.
     # @param paused [Boolean] Whether this player should be currently paused.
     def paused=(paused)
@@ -91,7 +97,7 @@ module Calliope
 
     # A hash containing the metadata of a player.
     def export
-      { track: @track&.to_h, position: @position, queue: @queue.to_h, volume: @volume }.compact
+      { track: track&.to_h, position: position, queue: queue.to_h, volume: volume }.compact
     end
 
     # Set the track that this player is playing.
@@ -102,7 +108,7 @@ module Calliope
 
     # Import data from an export.
     def import(hash)
-      update_data(@client.http.update_player(@guild, hash.delete(:queue))); @queue.import(hash[:queue])
+      update_data(@client.http.update_player(guild, hash.delete(:queue))); @queue.import(hash[:queue])
     end
 
     # Update the filters for this player. Overrides all existing filters.
@@ -118,6 +124,12 @@ module Calliope
     # @return [Boolean] Whether this player is currently playing something.
     def playing?
       @track && !@paused
+    end
+
+    # Helper method to get the current `status` of a player.
+    # @return [String] The current playback status of the player.
+    def status
+      playing? ? "Queued" : "Now Playing"
     end
 
     # Guild ID based comparison.

@@ -92,6 +92,8 @@ module Calliope
       @players[guild] = Player.new(player, self).tap { @states.delete(guild) }
     end
 
+    alias create_player connect
+
     # Performs a search on a given query.
     # @param query [String] The item to search for.
     # @param provider [Symbol] The provider to use when searching.
@@ -145,13 +147,13 @@ module Calliope
     # Get the version of this lavalink player.
     # @return [Integer] The version of this player.
     def version
-      @version || @version = @http.version
+      @version ||= @http.version
     end
 
     # Get information about this lavalink player.
     # @return [Info] Info about this lavalink player.
     def info
-      @info || @info = Info.new(@http.info)
+      @info ||= Info.new(@http.info)
     end
 
     # Ge the stats for this lavalink player.

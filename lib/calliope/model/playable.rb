@@ -41,7 +41,7 @@ module Calliope
         @selected_track = if payload["data"]["info"]["selectedTrack"] == -1
                             nil
                           else
-                            @tracks[payload["info"]["SelectedTrack"]]
+                            @tracks[payload["data"]["info"]["SelectedTrack"]]
                           end
       end
 
@@ -51,11 +51,21 @@ module Calliope
         end
       end
 
-      if @tracks && (type == :playlist && selected_track.nil?)
+      if @tracks && (type == :playlist && selected_track.nil?) && !payload["data"]["pluginInfo"].empty?
+        @playlist_type = payload["data"]["pluginInfo"]["totalTracks"]&.to_sym
         @total_tracks = payload["data"]["pluginInfo"]["totalTracks"] || nil
         @cover = payload["data"]["pluginInfo"]["artworkUrl"] || @cover
         @artist = payload["data"]["pluginInfo"]["author"] || @artist
         @source = payload["data"]["pluginInfo"]["url"] || @source
+      end
+
+      if @tracks && type == :track && !payload["data"]["pluginInfo"].empty?
+        @album_name = payload["data"]["pluginInfo"]["albumName"]
+        @album_cover = payload["data"]["pluginInfo"]["albumArtUrl"]
+        @artist_url = payload["data"]["pluginInfo"]["artistUrl"]
+        @artist_cover = payload["data"]["pluginInfo"]["artistArtworkUrl"]
+        @preview_url = payload["data"]["pluginInfo"]["previewUrl"]
+        @is_preview = payload["data"]["pluginInfo"]["isPreview"]
       end
 
       return unless @selected_track
@@ -132,7 +142,7 @@ module Calliope
     # @param guild [Integer] The ID of the guild playing.
     # @return [String] If the player is currently playing or it's operating in queue mode.
     def status(guild)
-      @client.players[guild]&.track ? "Queued" : "Now Playing"
+      @client.players[guild]&.status || "Now Playing"
     end
 
     # Utility method that overrides nil by default to be more useful.
@@ -165,29 +175,6 @@ module Calliope
       end
 
       @client.players[guild].queue.add(@tracks)
-    end
-
-    # Play a track from this playable object.
-    # @param guild [Integer] ID of the guild to play for.
-    # @param track [Integer] Index of a specific track to play.
-    # @param selected [Boolean] Whether the selected track should be played.
-    # @param first [Boolean] Whether the first track should be played if this is a search result. Defaults to true.
-    def play(guild, track: nil, selected: false, first: true)
-      raise ArgumentError unless @tracks && @client.players[guild]
-
-      if @selected_track && selected
-        @client.players[guild].track = @selected_track
-        return
-      end
-
-      if track && @tracks[track]
-        @client.players[guild].track = @tracks[track]
-        return
-      end
-
-      return unless search? && first
-
-      @client.players[guild].track = @tracks.first
     end
   end
 end

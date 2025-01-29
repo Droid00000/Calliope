@@ -39,9 +39,6 @@ module Calliope
 
     # Raised whenever a track begins playing.
     class TrackStart < TrackEvent
-      # @return [Boolean]
-      attr_reader :playing
-
       # @!visibility private
       def initialize(payload, client)
         super
@@ -54,9 +51,6 @@ module Calliope
     class TrackEnd < TrackEvent
       # @return [String]
       attr_reader :reason
-
-      # @return [Boolean]
-      attr_reader :playing
 
       # @!visibility private
       def initialize(payload, client)
@@ -89,9 +83,6 @@ module Calliope
 
       # @return [String]
       attr_reader :message
-
-      # @return [Boolean]
-      attr_reader :playing
 
       # @return [String]
       attr_reader :severity
