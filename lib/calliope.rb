@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "calliope/client"
+require "calliope/client"
 
 # Calliope and all its functionality.
 module Calliope
