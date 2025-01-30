@@ -50,9 +50,6 @@ module Calliope
     # @return [String]
     attr_accessor :address
 
-    # @return [Hash<Integer => Player>]
-    attr_accessor :players
-
     # @return [Boolean]
     attr_accessor :resumed
 
@@ -132,6 +129,24 @@ module Calliope
       end
     end
 
+    # Get a specific player for a guild.
+    # @param guild [Integer] Guild to get the lavalink player for.
+    # @param request [Boolean] If the player should be requested over HTTP.
+    # @return [Player, nil] The requested player, or nil if it can't be found.
+    def player(guild, request: false)
+      if request
+        @players[guild] = Player.new(@http.get_player(guild), self)
+      else
+        @players[guild] ||= Player.new(@http.get_player(guild), self)
+      end
+    end
+
+    # Get all the players for this session.
+    # @param request [Boolean] If all players should be requested over HTTP.
+    def players(request: false)
+      request ? process_players(@http.get_players) : @players
+    end
+
     # Set whether this session is resumable.
     # @param resuming [Boolean] Whether this session is resumable.
     def resuming=(resuming)
@@ -178,6 +193,14 @@ module Calliope
     # @return [Hash] The hash from the resulting voice media data.
     def to_voice(token, endpoint, session_id)
       { token: token, sessionId: session_id, endpoint: endpoint }.compact
+    end
+
+    # @!visibility private
+    # Internal processer for players.
+    def process_players(players)
+      players.map! { |data| Player.new(data, self) }
+
+      @players if players.each { |data| @players[data.guild] = data }
     end
 
     # @!visibility private
