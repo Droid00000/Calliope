@@ -4,34 +4,37 @@ require "json"
 require "socket"
 require "faraday"
 require "event_emitter"
+require "calliope/logging"
 require "websocket/driver"
 
-require_relative "model/loop"
-require_relative "model/info"
-require_relative "api/routes"
-require_relative "api/client"
-require_relative "model/queue"
-require_relative "model/track"
-require_relative "model/logger"
-require_relative "model/player"
-require_relative "events/block"
-require_relative "events/ready"
-require_relative "events/state"
-require_relative "events/stats"
-require_relative "events/track"
-require_relative "events/voice"
-require_relative "model/segment"
-require_relative "model/chapter"
-require_relative "api/websocket"
-require_relative "model/tremolo"
-require_relative "model/vibrato"
-require_relative "model/filters"
-require_relative "model/karaoke"
-require_relative "model/playable"
-require_relative "model/equalizer"
-require_relative "model/timescale"
-require_relative "model/distortion"
-require_relative "model/channel_mix"
+require "calliope/API/routes"
+require "calliope/API/client"
+require "calliope/API/websocket"
+
+require "calliope/events/block"
+require "calliope/events/ready"
+require "calliope/events/state"
+require "calliope/events/stats"
+require "calliope/events/track"
+require "calliope/events/voice"
+
+require "calliope/player/loop"
+require "calliope/player/queue"
+require "calliope/player/track"
+require "calliope/player/player"
+require "calliope/player/filters"
+require "calliope/player/playable"
+
+require "calliope/plugins/segment"
+require "calliope/plugins/chapter"
+
+require "calliope/filters/tremolo"
+require "calliope/filters/vibrato"
+require "calliope/filters/karaoke"
+require "calliope/filters/equalizer"
+require "calliope/filters/timescale"
+require "calliope/filters/distortion"
+require "calliope/filters/channel_mix"
 
 module Calliope
   # Used to access the Lavalink API.
@@ -95,7 +98,7 @@ module Calliope
     # @param query [String] The item to search for.
     # @param provider [Symbol] The provider to use when searching.
     # @return [Playable] The playable object or empty data if nothing could be found.
-    def search(query, provider = :automatic)
+    def search(query, provider: :automatic)
       case provider
       when :youtube_music
         Playable.new(@http.youtube_music(query), self)
@@ -113,6 +116,8 @@ module Calliope
         Playable.new(@http.youtube(query), self)
       when :deezer
         Playable.new(@http.deezer(query), self)
+      when :manual
+        Playable.new(@http.search(query), self)
       when :url
         Playable.new(@http.search(query), self)
       end
@@ -165,10 +170,76 @@ module Calliope
       @version ||= @http.version
     end
 
-    # Get information about this lavalink player.
-    # @return [Info] Info about this lavalink player.
-    def info
-      @info ||= Info.new(@http.info)
+    # Get the git branch for this lavalink server.
+    # @return [String] The git branch for this server.
+    def branch
+      @branch || @branch if process_info
+    end
+
+    # Get the enabled filters for this lavalink server.
+    # @return [Array<Symbol>] Enabled filters for this server.
+    def filters
+      @filters || @filters if process_info
+    end
+
+    # Get the enabled sources for this lavalink server.
+    # @return [Array<Symbol>] Enabled sources for this server.
+    def sources
+      @sources || @sources if process_info
+    end
+
+    # Get the commit SHA for this lavalink server.
+    # @return [String] The commit SHA for this server.
+    def commit
+      @commit || @commit if proccess_info
+    end
+
+    # Get the plugins enabled for this lavalink server.
+    # @return [Hash<Symbol => Integer>] The enabled plugins.
+    def plugins
+      @plugins || @plugins if process_info
+    end
+
+    # Get the lavaplayers version for this lavalink server.
+    # @return [String] The lavaplayer version for this server.
+    def lavaplayer_version
+      @lavaplayer || @lavaplayer if proccess_info
+    end
+
+    # Get the JVM version for this lavalink server.
+    # @return [Integer] The JVM version for this server.
+    def jvm_version
+      @jvm_version || @jvm_version if process_info
+    end
+
+    # The timestamp for when the commit was created.
+    # @return [Time] Timestamp for this commit of this server.
+    def commit_time
+      @commit_time || @commit_time if proccess_info
+    end
+
+    # Get the major version for this lavalink server.
+    # @return [Integer] The major version for this server.
+    def major_version
+      @patch_version || @patch_version if process_info
+    end
+
+    # Get the patch version for this lavalink server.
+    # @return [Integer] The patch version for this server.
+    def patch_version
+      @patch_version || @patch_version if process_info
+    end
+
+    # Get the minor version for this lavalink server.
+    # @return [Integer] The minor version for this server.
+    def minor_version
+      @minor_version || @minor_version if proccess_info
+    end
+
+    # Get the semver or sem version for this lavalink server.
+    # @return [String] the sematic version for this server.
+    def sematic_version
+      @sematic_version || @sematic_version if process_info
     end
 
     # Ge the stats for this lavalink player.
@@ -201,6 +272,32 @@ module Calliope
       players.map! { |data| Player.new(data, self) }
 
       @players if players.each { |data| @players[data.guild] = data }
+    end
+
+    # @!visibility private
+    # Transforms the plugins array into a single hash.
+    def transform_plugins(plugins)
+      plugins.each_with_object({}) do |plugin, result|
+        result[plugin["name"].to_sym] = plugin["version"]
+      end
+    end
+
+    # @!visibility private
+    # Internal processer for info.
+    def process_info(info = nil)
+      info ||= @http.info
+      @jvm_version = info["jvm"]
+      @commit = info["git"]["commit"]
+      @lavaplayer = info["lavaplayer"]
+      @filters = info["filters"].map(&:to_sym)
+      @major_version = info["version"]["major"]
+      @patch_version = info["version"]["patch"]
+      @minor_version = info["version"]["minor"]
+      @branch = info["git"]["branch"]&.downcase
+      @plugins = process_plugins(info["plugins"])
+      @sematic_version = info["version"]["semver"]
+      @sources = info["sourceManagers"].map(&:to_sym)
+      @commit_time = Time.at(info["git"]["commitTime"])
     end
 
     # @!visibility private

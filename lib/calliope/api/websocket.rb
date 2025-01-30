@@ -22,11 +22,11 @@ module Calliope
       def initialize(url, password, user_id, session_id, client)
         @dead = false
         @client = client
-        @url = URI.parse(create_url(url))
         @driver = WebSocket::Driver.client(self)
         @driver.set_header("User-Id", user_id&.to_i)
         @driver.set_header("Authorization", password)
         @driver.set_header("Client-Name", "Calliope/1.0.0")
+        @url = URI.parse("ws#{url.delete("http")}/websocket")
         @driver.set_header("Session-Id", session_id) if session_id
         @driver.on(:message) { |frame| handle_dispatch(JSON.parse(frame.data)) }
 
@@ -53,13 +53,6 @@ module Calliope
         when :event
           @client.__send__(:handle_event, dispatch)
         end
-      end
-
-      # @!visibility private
-      # @param address [String]
-      # @return [String] The URL to use.
-      def create_url(address)
-        "ws#{address.delete_prefix("http")}/websocket"
       end
 
       # @!visibility private
