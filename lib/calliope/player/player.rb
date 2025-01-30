@@ -12,6 +12,9 @@ module Calliope
     # @return [Track, nil]
     attr_reader :track
 
+    # @return [Client]
+    attr_reader :client
+
     # @return [String]
     attr_reader :volume
 
@@ -38,20 +41,10 @@ module Calliope
     attr_reader :connected
 
     # @!visibility private
-    # @param payload [Hash]
-    # @param client [Object]
     def initialize(payload, client)
       @client = client
-      @voice = payload["voice"]
-      @volume = payload["volume"]
-      @paused = payload["paused"]
+      update_data(payload)
       @queue = TrackQueue.new(self)
-      @guild = payload["guildId"].to_i
-      @ping = payload["state"]["ping"]
-      @time = payload["state"]["time"]
-      @position = payload["state"]["position"]
-      @connected = payload["state"]["connected"]
-      @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?
     end
 
     # Bulk update the properties of the player in one go.
@@ -157,6 +150,7 @@ module Calliope
       @ping = payload["state"]["ping"] if payload.key?("state")
       @time = payload["state"]["time"] if payload.key?("state")
       @guild = payload["guildId"]&.to_i if payload.key?("guildId")
+      @position = payload["state"]["position"] if payload.key?("state")
       @track = payload["track"].nil? ? nil : Track.new(payload["track"])
       @connected = payload["state"]["connected"] if payload.key?("state")
       @filters = Filters.new(payload["filters"]) unless payload["filters"].empty?

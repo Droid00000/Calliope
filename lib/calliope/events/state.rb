@@ -35,6 +35,7 @@ module Calliope
         @ping = payload["state"]["ping"]
         @time = payload["state"]["time"]
         @player = @client.players[@guild]
+        @player.__send__(:update_data, payload)
         @position = payload["state"]["position"]
         @connected = payload["state"]["connected"]
       end
