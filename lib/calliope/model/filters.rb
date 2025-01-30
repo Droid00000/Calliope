@@ -38,18 +38,18 @@ module Calliope
 
     # @!visibility private
     # @param payload [Hash]
-    def initialize(payload)
-      @volume = payload["volume"]
-      @karaoke = Karaoke.new(payload["karaoke"])
-      @tremolo = Tremolo.new(payload["tremolo"])
-      @vibrato = Vibrato.new(payload["vibrato"])
-      @plugins = payload["pluginFilters"]
-      @rotation = payload["rotation"]["rotationHz"]
-      @low_pass = payload["lowPass"]["smoothing"]
-      @equalizer = payload["equalizer"].map { |hash| Equalizer.new(hash) }
-      @timescale = Timescale.new(payload["timescale"])
-      @distortion = Distortion.new(payload["distortion"])
-      @channel_mix = ChannelMix.new(payload["channelMix"])
+    def initialize(payload)      
+      @volume = payload["volume"] if payload["volume"]
+      @karaoke = Karaoke.new(payload["karaoke"]) if payload["karaoke"]
+      @tremolo = Tremolo.new(payload["tremolo"]) if payload["tremolo"]
+      @vibrato = Vibrato.new(payload["vibrato"]) if payload["vibrato"]
+      @plugins = payload["pluginFilters"] if payload["pluginFilters"]
+      @rotation = payload["rotation"]["rotationHz"] if payload["rotation"]
+      @low_pass = payload["lowPass"]["smoothing"] if payload payload["lowPass"]
+      @equalizer = payload["equalizer"].map { |hash| Equalizer.new(hash) } if payload["equalizer"]
+      @timescale = Timescale.new(payload["timescale"]) if payload["timescale"]
+      @distortion = Distortion.new(payload["distortion"]) if payload["distortion"]
+      @channel_mix = ChannelMix.new(payload["channelMix"]) if payload["channelMix"]
     end
   end
 end
