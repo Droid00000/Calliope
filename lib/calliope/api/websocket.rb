@@ -73,12 +73,6 @@ module Calliope
       def write(data)
         @tcp.write(data)
       end
-
-      # @!visibility private
-      # Close the websocket driver.
-      def close
-        @driver.close
-      end
     end
   end
 end
