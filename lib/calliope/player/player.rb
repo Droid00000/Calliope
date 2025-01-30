@@ -114,8 +114,8 @@ module Calliope
     # Update the filters for this player. Overrides all existing filters.
     # @param filters [Hash] A hash of filters to set for the player. Overrides the builder.
     # @yieldparam [Filters::Builder] Yields the filter builder for easy creation of a filter.
-    def filters=(filters = nil, &)
-      builder = Filters::Builder.new.tap(&)
+    def filters=(filters = nil)
+      yield (builder = Filters::Builder.new) if block_given?
 
       update_data(@client.http.modify_player(guild, filters: filters || builder.to_h))
     end
@@ -123,7 +123,7 @@ module Calliope
     # Check if a player is currently playing something.
     # @return [Boolean] Whether this player is currently playing something.
     def playing?
-      @track && !@paused
+      track && !paused
     end
 
     # Helper method to get the current `status` of a player.
@@ -134,7 +134,7 @@ module Calliope
 
     # Guild ID based comparison.
     def ==(other)
-      other.is_a?(Player) ? other.guild == @guild : false
+      other.is_a?(Player) ? other.guild == guild : false
     end
 
     private
