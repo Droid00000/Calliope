@@ -189,7 +189,7 @@ module Calliope
       end
 
       # Get the route planner status.
-      # @return [Hash, nil] The route planner status or nil.
+      # @return [Hash, nil] The route planner status.
       def get_routeplanner_status
         request :GET, "routeplanner/status"
       end
