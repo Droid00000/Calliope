@@ -41,9 +41,9 @@ module Calliope
         @forward.tracks.shift.tap { |track| @forward.tracks << track }
       end
 
-      if @type == :TRACK
-        @forward.is_a?(Track) ? @forward : @forward.tracks.fetch(@index)
-      end
+      return unless type == :TRACK
+
+      @forward.is_a?(Track) ? @forward : @forward.tracks.fetch(@index)
     end
   end
 end

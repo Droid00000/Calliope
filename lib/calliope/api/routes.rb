@@ -63,7 +63,7 @@ module Calliope
 
       # Remove sponsor block categories.
       # @param guild_id [String, Integer] Snowflake ID that uniquely identifies a guild.
-      def destroy_categories(guild_id, categories)
+      def destroy_categories(guild_id)
         request :DELETE, "sessions/#{session}/players/#{guild_id}/sponsorblock/categories"
       end
 
