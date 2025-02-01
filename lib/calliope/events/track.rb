@@ -86,6 +86,9 @@ module Calliope
 
       # @return [String]
       attr_reader :severity
+      
+      # @return [String]
+      attr_reader :stack_trace
 
       # @!visibility private
       def initialize(payload, client)
@@ -95,6 +98,7 @@ module Calliope
         @cause = payload["exception"]["cause"]
         @message = payload["exception"]["message"]
         @severitiy = payload["exception"]["severity"]
+        @stack_trace = payload["exception"]["causeStackTrace"]
       end
     end
   end
