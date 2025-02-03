@@ -140,9 +140,7 @@ module Calliope
     # @note For internal use only.
     # Updates the track data with new data.
     def update_track(track)
-      @track = track
-
-      @started_at = Time.now if track
+      @track = track.tap { |data| @started_at = Time.now if data }
     end
 
     # @!visibility private
