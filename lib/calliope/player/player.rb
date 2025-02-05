@@ -112,7 +112,7 @@ module Calliope
     # @param filters [Hash] A hash of filters to set for the player. Overrides the builder.
     # @yieldparam [Filters::Builder] Yields the filter builder for easy creation of a filter.
     def filters=(filters = nil)
-      yield (builder = Filters::Builder.new) if block_given?
+      yield (builder = Filters::Builder.new) if block_given? && filters.nil?
 
       update_data(client.http.modify_player(guild, filters: filters || builder.to_h))
     end
