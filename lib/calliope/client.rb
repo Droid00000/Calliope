@@ -63,7 +63,7 @@ module Calliope
     # @param password [String] Password for connecting to the Lavalink node.
     # @param application_id [Integer] The snowflake of the application using the node.
     # @param session_id [String] ID of a previous lavalink session to resume if there's one.
-    # @param logging [Symbol] The log mode of the library. This has to be enabled manually.
+    # @param logging [Symbol, nil] The log mode of the library. This must be enabled manually.
     def initialize(address, password, application_id, session_id: nil, logging: :off)
       @address = "#{address}/v4"
       @password = password
@@ -164,88 +164,88 @@ module Calliope
       @http.update_session(timeout: timeout)
     end
 
-    # Get the version of this lavalink player.
-    # @return [Integer] The version of this player.
+    # Get the version of this lavalink node.
+    # @return [Integer] The version of this node.
     def version
       @version ||= @http.version
     end
 
-    # Get the git branch for this lavalink server.
-    # @return [String] The git branch for this server.
+    # Get the git branch for this lavalink node.
+    # @return [String] The git branch for this node.
     def branch
-      @branch || @branch if process_info
+      @branch if process_info
     end
 
-    # Get the enabled filters for this lavalink server.
-    # @return [Array<Symbol>] Enabled filters for this server.
+    # Get the enabled filters for this lavalink node.
+    # @return [Array<Symbol>] Enabled filters for this node.
     def filters
-      @filters || @filters if process_info
+      @filters if process_info
     end
 
-    # Get the enabled sources for this lavalink server.
-    # @return [Array<Symbol>] Enabled sources for this server.
+    # Get the enabled sources for this lavalink node.
+    # @return [Array<Symbol>] Enabled sources for this node.
     def sources
-      @sources || @sources if process_info
+      @sources if process_info
     end
 
-    # Get the commit SHA for this lavalink server.
-    # @return [String] The commit SHA for this server.
+    # Get the commit SHA for this lavalink node.
+    # @return [String] The commit SHA for this node.
     def commit
-      @commit || @commit if proccess_info
+      @commit if proccess_info
     end
 
-    # Get the plugins enabled for this lavalink server.
-    # @return [Hash<Symbol => Integer>] The enabled plugins.
+    # Get the plugins enabled for this lavalink node.
+    # @return [Hash<Symbol => Integer>] The enabled node.
     def plugins
-      @plugins || @plugins if process_info
+      @plugins if process_info
     end
 
-    # Get the lavaplayers version for this lavalink server.
-    # @return [String] The lavaplayer version for this server.
+    # Get the lavaplayers version for this lavalink node.
+    # @return [String] The lavaplayer version for this node.
     def lavaplayer_version
-      @lavaplayer || @lavaplayer if proccess_info
+      @lavaplayer if proccess_info
     end
 
-    # Get the JVM version for this lavalink server.
-    # @return [Integer] The JVM version for this server.
+    # Get the JVM version for this lavalink node.
+    # @return [Integer] The JVM version for this node.
     def jvm_version
-      @jvm_version || @jvm_version if process_info
+      @jvm_version if process_info
     end
 
-    # The timestamp for when the commit was created.
-    # @return [Time] Timestamp for this commit of this server.
+    # The timestamp for when the commit was created for this node.
+    # @return [Time] Timestamp for this commit of this lavalink node.
     def commit_time
-      @commit_time || @commit_time if proccess_info
+      @commit_time if proccess_info
     end
 
-    # Get the major version for this lavalink server.
-    # @return [Integer] The major version for this server.
+    # Get the major version for this lavalink node.
+    # @return [Integer] The major version for this node.
     def major_version
-      @patch_version || @patch_version if process_info
+      @patch_version if process_info
     end
 
-    # Get the patch version for this lavalink server.
-    # @return [Integer] The patch version for this server.
+    # Get the patch version for this lavalink node.
+    # @return [Integer] The patch version for this node.
     def patch_version
-      @patch_version || @patch_version if process_info
+      @patch_version if process_info
     end
 
-    # Get the minor version for this lavalink server.
-    # @return [Integer] The minor version for this server.
+    # Get the minor version for this lavalink node.
+    # @return [Integer] The minor version for this node.
     def minor_version
-      @minor_version || @minor_version if proccess_info
+      @minor_version if proccess_info
     end
 
-    # Get the semver or sem version for this lavalink server.
-    # @return [String] the sematic version for this server.
+    # Get the semver or sem version for this lavalink node.
+    # @return [String] the sematic version for this node.
     def sematic_version
-      @sematic_version || @sematic_version if process_info
+      @sematic_version if process_info
     end
 
-    # Ge the stats for this lavalink player.
-    # @return [Stats] Stats about this lavalink player.
+    # Get the stats for this lavalink node.
+    # @return [Stats] Stats about this lavalink node.
     def stats
-      Stats.new(@http.stats)
+      Stats.new(@http.stats, self)
     end
 
     private
@@ -285,6 +285,8 @@ module Calliope
     # @!visibility private
     # Internal processer for info.
     def process_info(info = nil)
+      return true if @branch
+
       info ||= @http.info
       @jvm_version = info["jvm"]
       @commit = info["git"]["commit"]

@@ -58,13 +58,16 @@ module Calliope
         @used_memory = payload["memory"]["used"]
         @system_load = payload["cpu"]["systemLoad"]
         @playing_players = payload["playingPlayers"]
-        @sent_frames = payload["frameStats"]["sent"] unless payload["frameStats"].nil?
         @uptime = Time.at(payload["uptime"] / 1000.0)
         @lavalink_load = payload["cpu"]["lavalinkLoad"]
-        @nulled_frames = payload["frameStats"]["nulled"] unless payload["frameStats"].nil?
-        @deficit_frames = payload["frameStats"]["deficit"] unless payload["frameStats"].nil?
         @allocated_memory = payload["memory"]["allocated"]
         @reserved_memory = payload["memory"]["reservable"]
+
+        unless payload["frameStats"].nil?
+          @sent_frames = payload["frameStats"]["sent"]
+          @nulled_frames = payload["frameStats"]["nulled"]
+          @deficit_frames = payload["frameStats"]["deficit"]
+        end
       end
     end
   end

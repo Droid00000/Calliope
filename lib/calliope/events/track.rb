@@ -86,7 +86,7 @@ module Calliope
 
       # @return [String]
       attr_reader :severity
-      
+
       # @return [String]
       attr_reader :stack_trace
 
