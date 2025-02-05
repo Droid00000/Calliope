@@ -60,25 +60,42 @@ module Calliope
     # Pause or unpause playback.
     # @param paused [Boolean] Whether this player should be currently paused.
     def paused=(paused)
-      update_data(client.http.modify_player(guild, paused: paused))
+      modify(paused: paused)
     end
 
     # The track end time in milliseconds.
     # @param end_time [Integer] The track end time in milliseconds.
     def end_time=(time)
-      update_data(client.http.modify_player(guild, end_time: time))
+      modify(end_time: time)
     end
 
     # Whether the next track should override.
     # @param replace [Boolean] Whether to override or not.
     def no_replace=(replace)
-      update_data(client.http.modify_player(guild, replace: replace))
+      modify(replace: replace)
     end
 
     # Set the position of the currently playing track.
     # @param position [Integer] The track position in milliseconds.
     def position=(position)
-      update_data(client.http.modify_player(guild, position: position))
+      modify(position: position)
+    end
+
+    # Set the volume of this player.
+    # @param volume [Integer] Number between 0-1000.
+    def volume=(volume)
+      modify(volume: volume.clamp(0, 1000))
+    end
+
+    # Set the track that this player is playing.
+    # @param track [Track, nil] The track object to set. Nil stops the current track.
+    def track=(track)
+      @track if modify(track: track&.to_h || Track.null)
+    end
+
+    # Import data from an export.
+    def import(hash)
+      queue.import(hash[:queue]) if modify(hash.delete(:queue))
     end
 
     # Delete this player. Immediately stops playback.
@@ -86,35 +103,18 @@ module Calliope
       client.players.delete(guild).tap { client.http.destroy_player(guild) }
     end
 
-    # Set the volume of this player.
-    # @param volume [Integer] Number between 0-1000.
-    def volume=(volume)
-      update_data(client.http.modify_player(guild, volume: volume.clamp(0, 1000)))
-    end
-
     # A hash containing the metadata of a player.
     def export
       { track: track&.to_h, position: position, queue: queue.to_h, volume: volume }.compact
-    end
-
-    # Set the track that this player is playing.
-    # @param track [Track, nil] The track object to set. Nil stops the current track.
-    def track=(track)
-      @track if update_data(client.http.modify_player(guild, track: track&.to_h || Track.null))
-    end
-
-    # Import data from an export.
-    def import(hash)
-      update_data(client.http.update_player(guild, hash.delete(:queue))); queue.import(hash[:queue])
     end
 
     # Update the filters for this player. Overrides all existing filters.
     # @param filters [Hash] A hash of filters to set for the player. Overrides the builder.
     # @yieldparam [Filters::Builder] Yields the filter builder for easy creation of a filter.
     def filters=(filters = nil)
-      yield (builder = Filters::Builder.new) if block_given? && filters.nil?
+      yield (builder = Filters::Builder.new) if block_given?
 
-      update_data(client.http.modify_player(guild, filters: filters || builder.to_h))
+      modify(filters: filters || builder.to_h)
     end
 
     # Check if a player is currently playing something.
