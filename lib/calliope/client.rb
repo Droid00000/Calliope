@@ -191,7 +191,7 @@ module Calliope
     # Get the commit SHA for this lavalink node.
     # @return [String] The commit SHA for this node.
     def commit
-      @commit if proccess_info
+      @commit if process_info
     end
 
     # Get the plugins enabled for this lavalink node.
@@ -203,7 +203,7 @@ module Calliope
     # Get the lavaplayers version for this lavalink node.
     # @return [String] The lavaplayer version for this node.
     def lavaplayer_version
-      @lavaplayer if proccess_info
+      @lavaplayer if process_info
     end
 
     # Get the JVM version for this lavalink node.
@@ -215,7 +215,7 @@ module Calliope
     # The timestamp for when the commit was created for this node.
     # @return [Time] Timestamp for this commit of this lavalink node.
     def commit_time
-      @commit_time if proccess_info
+      @commit_time if process_info
     end
 
     # Get the major version for this lavalink node.
@@ -233,7 +233,7 @@ module Calliope
     # Get the minor version for this lavalink node.
     # @return [Integer] The minor version for this node.
     def minor_version
-      @minor_version if proccess_info
+      @minor_version if process_info
     end
 
     # Get the semver or sem version for this lavalink node.
