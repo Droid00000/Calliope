@@ -195,7 +195,7 @@ module Calliope
     end
 
     # Get the plugins enabled for this lavalink node.
-    # @return [Hash<Symbol => Integer>] The enabled node.
+    # @return [Hash<Symbol => Integer>] Enabled plugins for this node.
     def plugins
       @plugins if process_info
     end
